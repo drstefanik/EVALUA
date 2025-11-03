@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ChevronDown, LayoutDashboard, Menu, X } from 'lucide-react'
 import ThemeToggle from './ThemeToggle'
-import { getStoredSession, getDashboardPath } from '../api'
+import { getStoredSession, getDashboardPath, routeExists } from '../api'
 import { marketingContent } from '../lib/marketingContent'
 import evaluaGlobe from '../assets/evalua-globe.svg' // <-- logo (rinominato senza spazi)
 
@@ -39,7 +39,14 @@ export default function Navbar() {
   const location = useLocation()
 
   useEffect(() => {
-    setSession(getStoredSession?.() || null)
+    const s = getStoredSession?.() || null
+    setSession(s)
+    if (!s) {
+      requestAnimationFrame(() => {
+        const again = getStoredSession?.() || null
+        if (again) setSession(again)
+      })
+    }
   }, [])
 
   useEffect(() => {
@@ -66,10 +73,15 @@ export default function Navbar() {
 
   const handleDashboard = () => {
     try {
-      const path = getDashboardPath?.(session?.role) || '/dashboard'
-      navigate(path)
+      const s = getStoredSession?.() || session
+      const candidate = getDashboardPath?.(s?.role)
+      if (candidate === '/dashboard' && !routeExists?.('/dashboard')) {
+        navigate('/login', { replace: false })
+        return
+      }
+      navigate(candidate || '/login', { replace: false })
     } catch {
-      navigate('/dashboard')
+      navigate('/login', { replace: false })
     }
   }
 

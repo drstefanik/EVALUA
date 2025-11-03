@@ -4,6 +4,7 @@ import { ChevronDown, LayoutDashboard, Menu, X } from 'lucide-react'
 import ThemeToggle from './ThemeToggle'
 import { getStoredSession, getDashboardPath } from '../api'
 import { marketingContent } from '../lib/marketingContent'
+import evaluaGlobe from '../assets/EVALUA globe.svg' // nuovo logo
 
 const nav = marketingContent.navigation
 
@@ -75,15 +76,21 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--border-subtle)] bg-[var(--surface-elevated)] backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
+        {/* --- LOGO + Brand --- */}
         <div className="flex items-center gap-6">
           <Link
             to="/"
-            className="flex items-center gap-2 text-lg font-semibold tracking-wide text-[var(--brand-primary)]"
+            className="group flex items-center gap-3 text-lg font-semibold tracking-wide text-[var(--brand-primary)] transition-transform hover:scale-[1.02]"
           >
-            <span className="rounded-md bg-[var(--brand-muted)] px-2 py-1 text-sm uppercase text-[var(--brand-primary)]">EE</span>
-            <span className="font-semibold tracking-wide">EVALUA Education</span>
+            <img
+              src={evaluaGlobe}
+              alt="EVALUA logo"
+              className="h-8 w-8 transition-transform duration-300 group-hover:scale-110"
+            />
+            <span className="font-semibold tracking-wide text-[var(--text-primary)]">EVALUA Education</span>
           </Link>
 
+          {/* --- MAIN NAVIGATION --- */}
           <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
             {primaryLinks.map((link) =>
               link.children ? (
@@ -136,6 +143,7 @@ export default function Navbar() {
           </nav>
         </div>
 
+        {/* --- RIGHT MENU (LOGIN / DASHBOARD / THEME) --- */}
         <div className="flex items-center gap-2">
           <div className="lg:hidden">
             <button
@@ -154,7 +162,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={handleDashboard}
-              className="hidden items-center gap-2 rounded-full bg-[var(--brand-primary)] px-4 py-2 text-sm font-semibold text-[var(--brand-primary-contrast)] shadow-soft transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-base)] lg:inline-flex"
+              className="hidden items-center gap-2 rounded-full bg-[var(--brand-primary)] px-4 py-2 text-sm font-semibold text-[var(--brand-primary-contrast)] shadow-soft transition hover:opacity-90 lg:inline-flex"
             >
               <LayoutDashboard size={18} />
               Dashboard
@@ -177,25 +185,13 @@ export default function Navbar() {
                   aria-label="Access menu"
                   className="absolute right-0 mt-2 w-60 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-2 shadow-soft"
                 >
-                  <Link
-                    to="/signup-school"
-                    role="menuitem"
-                    className="block rounded-xl px-3 py-2 text-sm text-[var(--text-muted)] transition hover:bg-[var(--brand-muted)] hover:text-[var(--text-primary)]"
-                  >
+                  <Link to="/signup-school" className="block rounded-xl px-3 py-2 text-sm text-[var(--text-muted)] transition hover:bg-[var(--brand-muted)] hover:text-[var(--text-primary)]">
                     School sign-up
                   </Link>
-                  <Link
-                    to="/signup-student"
-                    role="menuitem"
-                    className="block rounded-xl px-3 py-2 text-sm text-[var(--text-muted)] transition hover:bg-[var(--brand-muted)] hover:text-[var(--text-primary)]"
-                  >
+                  <Link to="/signup-student" className="block rounded-xl px-3 py-2 text-sm text-[var(--text-muted)] transition hover:bg-[var(--brand-muted)] hover:text-[var(--text-primary)]">
                     Student sign-up
                   </Link>
-                  <Link
-                    to="/login"
-                    role="menuitem"
-                    className="block rounded-xl px-3 py-2 text-sm text-[var(--text-muted)] transition hover:bg-[var(--brand-muted)] hover:text-[var(--text-primary)]"
-                  >
+                  <Link to="/login" className="block rounded-xl px-3 py-2 text-sm text-[var(--text-muted)] transition hover:bg-[var(--brand-muted)] hover:text-[var(--text-primary)]">
                     Login
                   </Link>
                 </div>
@@ -207,6 +203,7 @@ export default function Navbar() {
         </div>
       </div>
 
+      {/* MOBILE MENU */}
       {mobileMenuOpen && (
         <div id="mobile-menu" ref={mobileMenuRef} className="lg:hidden">
           <div className="border-t border-[var(--border-subtle)] bg-[var(--surface-base)] px-4 py-4">
@@ -248,22 +245,13 @@ export default function Navbar() {
                 </button>
               ) : (
                 <div className="space-y-2">
-                  <Link
-                    to="/signup-school"
-                    className="block rounded-full border border-[var(--border-subtle)] px-4 py-3 text-center text-sm font-semibold text-[var(--text-primary)]"
-                  >
+                  <Link to="/signup-school" className="block rounded-full border border-[var(--border-subtle)] px-4 py-3 text-center text-sm font-semibold text-[var(--text-primary)]">
                     School sign-up
                   </Link>
-                  <Link
-                    to="/signup-student"
-                    className="block rounded-full border border-[var(--border-subtle)] px-4 py-3 text-center text-sm font-semibold text-[var(--text-primary)]"
-                  >
+                  <Link to="/signup-student" className="block rounded-full border border-[var(--border-subtle)] px-4 py-3 text-center text-sm font-semibold text-[var(--text-primary)]">
                     Student sign-up
                   </Link>
-                  <Link
-                    to="/login"
-                    className="block rounded-full bg-[var(--brand-primary)] px-4 py-3 text-center text-sm font-semibold text-[var(--brand-primary-contrast)]"
-                  >
+                  <Link to="/login" className="block rounded-full bg-[var(--brand-primary)] px-4 py-3 text-center text-sm font-semibold text-[var(--brand-primary-contrast)]">
                     Login
                   </Link>
                 </div>

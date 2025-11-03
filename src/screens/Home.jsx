@@ -18,7 +18,7 @@ export default function Home() {
     <main className="relative overflow-hidden">
       <SEO
         title="Home"
-        description="Evalua Education advances English certification across the Arab world through QUAET benchmarking, adaptive testing, and trusted qualification frameworks for institutions and learners."
+        description="Evalua Education advances English certification across the world through QUAET benchmarking, adaptive testing, and trusted qualification frameworks for institutions and learners."
         path="/"
       />
 
@@ -65,7 +65,7 @@ export default function Home() {
           transition={{ duration: 1, delay: 0.15 }}
           className="max-w-4xl text-4xl font-semibold leading-tight text-[var(--text-primary)] md:text-6xl"
         >
-          Advancing English certification across the Arab world.
+          Advancing English certification across the world.
         </motion.h1>
 
         <motion.p

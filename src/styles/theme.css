@@ -1,17 +1,17 @@
 :root {
   color-scheme: light;
-  --brand-primary: #1f3c88;
+  --brand-primary: #004C46;
   --brand-primary-contrast: #ffffff;
-  --brand-accent: #f97316;
+  --brand-accent: #D4AF37;
   --brand-accent-contrast: #0f172a;
-  --brand-muted: #e2e8f0;
+  --brand-muted: #E03E36;
   --brand-muted-strong: #cbd5f5;
-  --surface-base: #ffffff;
+  --surface-base: #F7F8FA;
   --surface-alt: #f8fafc;
   --surface-elevated: rgba(255, 255, 255, 0.86);
   --surface-overlay: rgba(15, 23, 42, 0.85);
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
+  --text-primary: #0C1B1E;
+  --text-secondary: #52606D;
   --text-muted: #64748b;
   --border-subtle: rgba(30, 64, 175, 0.08);
   --border-strong: rgba(15, 23, 42, 0.16);

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Moon, Sun } from 'lucide-react'
 
-const STORAGE_KEY = 'binext-theme'
+const STORAGE_KEY = 'evalua-theme'
 
 export default function ThemeToggle() {
   const prefersDark = useMemo(() => {
@@ -66,7 +66,7 @@ export default function ThemeToggle() {
     <button
       type="button"
       onClick={toggleTheme}
-      className="relative flex h-9 w-9 items-center justify-center rounded-full border border-binavy/40 bg-white text-binavy transition hover:border-binavy hover:bg-binavy/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-white/20 dark:bg-[#152044] dark:text-biwhite dark:hover:bg-[#001c5e] dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f]"
+      className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--surface-elevated)] text-[var(--brand-primary)] transition hover:border-[var(--border-strong)] hover:bg-[var(--brand-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-base)]"
       aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
     >
       <span className="sr-only">{isDark ? 'Dark theme active' : 'Light theme active'}</span>

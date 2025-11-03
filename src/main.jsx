@@ -13,12 +13,34 @@ import SchoolDashboard from './screens/SchoolDashboard.jsx'
 import StudentDashboard from './screens/StudentDashboard.jsx'
 import Logout from './screens/Logout.jsx'
 import ForgotPassword from './screens/ForgotPassword.jsx'
+import About from './pages/public/About.jsx'
+import Quaet from './pages/public/Quaet.jsx'
+import Solutions from './pages/public/Solutions.jsx'
+import SolutionsTestingPlatform from './pages/public/SolutionsTestingPlatform.jsx'
+import SolutionsCertification from './pages/public/SolutionsCertification.jsx'
+import SolutionsPartnerships from './pages/public/SolutionsPartnerships.jsx'
+import Recognition from './pages/public/Recognition.jsx'
+import Resources from './pages/public/Resources.jsx'
+import Contact from './pages/public/Contact.jsx'
+import Privacy from './pages/public/Privacy.jsx'
+import Terms from './pages/public/Terms.jsx'
 
 const router = createBrowserRouter([
   {
     element: <Layout />,
     children: [
       { path: '/', element: <Home /> },
+      { path: '/about', element: <About /> },
+      { path: '/quaet', element: <Quaet /> },
+      { path: '/solutions', element: <Solutions /> },
+      { path: '/solutions/testing-platform', element: <SolutionsTestingPlatform /> },
+      { path: '/solutions/certification', element: <SolutionsCertification /> },
+      { path: '/solutions/partnerships', element: <SolutionsPartnerships /> },
+      { path: '/recognition', element: <Recognition /> },
+      { path: '/resources', element: <Resources /> },
+      { path: '/contact', element: <Contact /> },
+      { path: '/privacy', element: <Privacy /> },
+      { path: '/terms', element: <Terms /> },
       { path: '/login', element: <Login /> },
       { path: '/signup-school', element: <SignupSchool /> },
       { path: '/signup-student', element: <SignupStudent /> },
@@ -26,18 +48,18 @@ const router = createBrowserRouter([
       { path: '/forgot', element: <ForgotPassword /> },
       {
         element: <ProtectedRoute allowedRoles={['admin']} />,
-        children: [{ path: '/admin', element: <AdminDashboard /> }],
+        children: [{ path: '/admin', element: <AdminDashboard /> }]
       },
       {
         element: <ProtectedRoute allowedRoles={['school']} />,
-        children: [{ path: '/school', element: <SchoolDashboard /> }],
+        children: [{ path: '/school', element: <SchoolDashboard /> }]
       },
       {
         element: <ProtectedRoute allowedRoles={['student']} />,
-        children: [{ path: '/student', element: <StudentDashboard /> }],
-      },
-    ],
-  },
+        children: [{ path: '/student', element: <StudentDashboard /> }]
+      }
+    ]
+  }
 ])
 
 createRoot(document.getElementById('root')).render(<RouterProvider router={router} />)

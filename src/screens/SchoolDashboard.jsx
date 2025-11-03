@@ -130,7 +130,7 @@ export default function SchoolDashboard() {
         <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
           <h2 className="text-2xl font-semibold text-binavy dark:text-white">School Code</h2>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-            Share this code with students so they can register for BI Next courses.
+            Share this code with students so they can register for EVALUA Education courses.
           </p>
 
           {codeError && (

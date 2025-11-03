@@ -7,7 +7,7 @@ export default function Quaet() {
   return (
     <PublicPageLayout
       title="QuAET"
-      description="Il Quality & Assessment Toolkit pensato per le scuole: monitora i progressi degli studenti, migliora l’allineamento didattico e porta risultati misurabili agli esami esterni."
+      description="The Quality & Assessment Toolkit for schools: track student progress, align teaching, and deliver measurable results in external exams."
       eyebrow="QuAET"
       path="/quaet"
     >
@@ -15,25 +15,25 @@ export default function Quaet() {
       <section className="mb-6 grid items-center gap-6 rounded-3xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-8 shadow-soft md:grid-cols-[1.2fr,0.8fr]">
         <div className="space-y-4">
           <h1 className="text-3xl font-semibold leading-tight text-[var(--text-primary)]">
-            Misura. Comprendi. Migliora.
+            Measure. Understand. Improve.
           </h1>
           <p className="text-[var(--text-secondary)]">
-            QuAET aiuta dirigenti, coordinatori e docenti a trasformare i dati in decisioni: prove periodiche
-            allineate al CEFR, analisi degli item, confronti tra classi e piani di recupero mirati. Tutto in un
-            flusso semplice, dalla somministrazione al report.
+            QuAET turns data into decisions for school leaders, coordinators, and teachers:
+            CEFR-aligned periodic tests, item analysis, class comparisons, and targeted catch-up plans.
+            From delivery to reporting in one simple flow.
           </p>
           <div className="flex gap-3 pt-2">
             <Link
               to="/contact"
               className="rounded-2xl bg-[var(--brand)] px-4 py-2 text-sm font-medium text-white hover:opacity-90"
             >
-              Richiedi demo
+              Request a demo
             </Link>
             <Link
               to="/docs/quaet"
               className="rounded-2xl border border-[var(--border-strong)] px-4 py-2 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--surface-alt)]"
             >
-              Scopri di più
+              Learn more
             </Link>
           </div>
         </div>
@@ -47,18 +47,18 @@ export default function Quaet() {
         </div>
       </section>
 
-      {/* COSA MISURA */}
+      {/* WHAT IT MEASURES */}
       <section className="grid gap-6 rounded-3xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-8 shadow-soft md:grid-cols-2">
         <div className="space-y-4">
-          <h2 className="text-2xl font-semibold text-[var(--text-primary)]">Cosa misura</h2>
+          <h2 className="text-2xl font-semibold text-[var(--text-primary)]">What it measures</h2>
           <ul className="space-y-3 text-sm text-[var(--text-secondary)]">
             {[
-              'Competenza linguistica per abilità (Listening, Reading, Use of English, Writing, Speaking) con rubriche CEFR.',
-              'Progressi per classe, parallelo e gruppo di livello con analisi delle tendenze.',
-              'Coerenza didattica e copertura del syllabus rispetto agli obiettivi di periodo.',
-              'Affidabilità delle prove e analisi degli item (difficoltà, discriminazione, distrattori).',
-              'Engagement e attendance in fase di somministrazione.',
-              'Benchmark interni tra plessi e confronto con standard esterni (CEFR/INVALSI dove applicabile).',
+              'Language competence by skill (Listening, Reading, Use of English, Writing, Speaking) with CEFR rubrics.',
+              'Progress by class, cohort, and ability group, with trend analysis.',
+              'Teaching coherence and syllabus coverage against period objectives.',
+              'Test reliability and item analysis (difficulty, discrimination, distractors).',
+              'Engagement and attendance during test delivery.',
+              'Internal benchmarks across campuses and comparison with external standards (CEFR / INVALSI where applicable).',
             ].map((item) => (
               <li key={item} className="flex items-start gap-3">
                 <span className="mt-1 text-lg">✅</span>
@@ -68,27 +68,27 @@ export default function Quaet() {
           </ul>
         </div>
 
-        {/* COME LO USANO LE SCUOLE */}
+        {/* HOW SCHOOLS USE IT */}
         <div className="space-y-4 rounded-2xl bg-[var(--surface-alt)] p-6">
-          <h3 className="text-lg font-semibold text-[var(--text-primary)]">Come lo usano le scuole</h3>
+          <h3 className="text-lg font-semibold text-[var(--text-primary)]">How schools use it</h3>
           <ol className="list-decimal space-y-2 pl-5 text-sm text-[var(--text-secondary)]">
-            <li><strong>Pianifica</strong>: calendario delle verifiche per periodo e classi.</li>
-            <li><strong>Somministra</strong>: prove pronte, istruzioni chiare, tempi standard.</li>
-            <li><strong>Analizza</strong>: report per classe e rete; focus su item e micro-abilità.</li>
-            <li><strong>Intervieni</strong>: micro-unità di recupero e “catch-up clinics”.</li>
-            <li><strong>Monitora</strong>: confronti tra plessi e trend di miglioramento.</li>
+            <li><strong>Plan</strong>: build an assessment calendar by term and class.</li>
+            <li><strong>Deliver</strong>: ready-made tests, clear instructions, standard timings.</li>
+            <li><strong>Analyse</strong>: class and network reports; deep dive on items and micro-skills.</li>
+            <li><strong>Intervene</strong>: targeted catch-up micro-units and clinics.</li>
+            <li><strong>Monitor</strong>: campus comparisons and improvement trends over time.</li>
           </ol>
         </div>
       </section>
 
-      {/* RISULTATI / OUTCOMES */}
+      {/* OUTCOMES */}
       <section className="grid gap-6 rounded-3xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-8 shadow-soft">
-        <h2 className="text-2xl font-semibold text-[var(--text-primary)]">Risultati attesi</h2>
+        <h2 className="text-2xl font-semibold text-[var(--text-primary)]">Expected outcomes</h2>
         <div className="grid gap-4 md:grid-cols-3">
           {[
-            'Miglioramento misurabile ai test esterni grazie a interventi mirati sulle aree deboli.',
-            'Maggiore coerenza didattica tra classi e plessi, con obiettivi condivisi e verificabili.',
-            'Report chiari per leadership, docenti e famiglie: dati comprensibili, decisioni rapide.',
+            'Measurable gains in external exams thanks to targeted work on weak areas.',
+            'Greater teaching coherence across classes and campuses with shared, trackable goals.',
+            'Clear, role-based reporting for leaders, teachers, and families: understandable data, faster decisions.',
           ].map((item) => (
             <div key={item} className="space-y-2 rounded-2xl bg-[var(--surface-alt)] p-6">
               <span className="text-2xl" aria-hidden>📈</span>
@@ -98,16 +98,16 @@ export default function Quaet() {
         </div>
       </section>
 
-      {/* CTA FINALE */}
+      {/* FINAL CTA */}
       <section className="mt-6 rounded-3xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-6 text-center shadow-soft">
         <p className="mb-3 text-sm text-[var(--text-secondary)]">
-          Vuoi vedere i report di esempio e una simulazione di analisi item?
+          Want to preview sample reports and an item-analysis walkthrough?
         </p>
         <Link
           to="/contact"
           className="inline-block rounded-2xl bg-[var(--brand)] px-5 py-2 text-sm font-medium text-white hover:opacity-90"
         >
-          Prenota una demo di QuAET
+          Book a QuAET demo
         </Link>
       </section>
     </PublicPageLayout>

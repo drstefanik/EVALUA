@@ -135,26 +135,69 @@ export function clearSession() {
 }
 
 export function getStoredSession() {
-  const token = localStorage.getItem('token')
-  const role = localStorage.getItem('role')
-  const id = localStorage.getItem('id')
-  const name = localStorage.getItem('name')
-  const schoolId = localStorage.getItem('schoolId')
-  const schoolName = localStorage.getItem('schoolName')
-  const schoolCode = localStorage.getItem('schoolCode')
-  return { token, role, id, name, schoolId, schoolName, schoolCode }
+  let stored = null
+
+  try {
+    const raw = localStorage.getItem('session')
+    if (raw) {
+      stored = JSON.parse(raw)
+    }
+  } catch {
+    stored = null
+  }
+
+  if (stored && typeof stored === 'object') {
+    if (stored?.role && typeof stored.role === 'string') {
+      stored.role = stored.role.toLowerCase()
+    }
+    return stored
+  }
+
+  try {
+    const token = localStorage.getItem('token')
+    const role = localStorage.getItem('role')
+    const id = localStorage.getItem('id')
+    const name = localStorage.getItem('name')
+    const schoolId = localStorage.getItem('schoolId')
+    const schoolName = localStorage.getItem('schoolName')
+    const schoolCode = localStorage.getItem('schoolCode')
+
+    if (!token && !role && !id && !name && !schoolId && !schoolName && !schoolCode) {
+      return null
+    }
+
+    const session = { token, role, id, name, schoolId, schoolName, schoolCode }
+    if (session.role && typeof session.role === 'string') {
+      session.role = session.role.toLowerCase()
+    }
+    return session
+  } catch {
+    return null
+  }
 }
 
 export function getDashboardPath(role) {
-  switch (role) {
-    case 'admin':
-      return '/admin'
-    case 'school':
-      return '/school'
+  const r = String(role || '').toLowerCase()
+  switch (r) {
     case 'student':
       return '/student'
+    case 'school':
+    case 'teacher':
+      return '/school'
+    case 'admin':
+    case 'administrator':
+      return '/admin'
     default:
-      return '/'
+      return '/dashboard'
+  }
+}
+
+export function routeExists(pathname) {
+  try {
+    const links = Array.from(document.querySelectorAll('a[href]')).map((a) => a.getAttribute('href'))
+    return links.includes(pathname)
+  } catch {
+    return false
   }
 }
 

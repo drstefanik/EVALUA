@@ -1,124 +1,137 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import Particles from "../components/Particles.jsx";
-import nextLogo from "../assets/NEXT2.2BG.png";
-import logoBI from "../assets/BRITISH INSTITUTES INTERNATIONAL SCHOOL.png";
-import illStudent from "../assets/illustration-student.svg";
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import Particles from '../components/Particles.jsx'
+import SEO from '../components/SEO.jsx'
+import { marketingContent } from '../lib/marketingContent.js'
 
-const card = (d = 0) => ({
-  initial: { opacity: 0, y: 20, scale: 0.98 },
-  whileInView: { opacity: 1, y: 0, scale: 1 },
-  transition: { duration: 0.5, delay: d },
-  viewport: { once: true, amount: 0.6 },
-});
+const brand = marketingContent.brand
+const solutions = marketingContent.pages.solutions.cards
+
+const cardAnimation = (delay = 0) => ({
+  initial: { opacity: 0, y: 16 },
+  whileInView: { opacity: 1, y: 0 },
+  transition: { duration: 0.6, delay },
+  viewport: { once: true, amount: 0.4 }
+})
 
 export default function Home() {
   return (
-    <main className="relative overflow-hidden bg-gradient-to-b from-biwhite via-biwhite to-binavy/10 text-center dark:from-[#0a0f1f] dark:via-[#0a0f1f] dark:to-[#001c5e]">
-      {/* === BACKGROUNDS === */}
-      <div className="pointer-events-none absolute inset-0 -z-30 animate-gradient-x bg-gradient-to-r from-binavy via-biwhite to-bireg bg-[length:200%_200%] opacity-80 dark:from-[#001c5e] dark:via-[#0a0f1f] dark:to-[#7a0b18] dark:opacity-60" />
-      <div className="absolute inset-0 -z-20 bg-hero-gradient" />
-      <div className="absolute inset-0 -z-10 bg-network bg-cover bg-center opacity-[0.18] dark:opacity-[0.12]" />
-      <div className="absolute inset-0 -z-5">
-        <Particles density={110} />
-      </div>
+    <main className="relative overflow-hidden">
+      <SEO
+        title="Home"
+        description="EVALUA Education partners with Italian schools to deliver QuAET benchmarks, digital assessments, and trusted certification pathways."
+        path="/"
+      />
+      <div className="absolute inset-0 -z-20 bg-hero-sheen" />
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,var(--brand-muted),transparent_60%)]" />
+      <Particles density={120} />
 
-      {/* === HERO === */}
-      <section className="relative z-10 mx-auto flex min-h-[80vh] max-w-7xl flex-col items-center justify-center px-4 pt-24 pb-16">
+      <section className="relative z-10 mx-auto flex min-h-[75vh] max-w-6xl flex-col items-center justify-center gap-8 px-4 pt-24 text-center md:gap-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="flex w-full max-w-4xl flex-col items-center gap-6 rounded-3xl border border-slate-200 bg-white/80 p-10 text-center shadow-sm shadow-soft backdrop-blur dark:border-white/10 dark:bg-[#0a0f1f]/70"
+          transition={{ duration: 0.9 }}
+          className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-base)] px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--text-muted)]"
         >
-          {nextLogo && (
-            <motion.img
-              src={nextLogo}
-              alt="NEXT"
-              className="h-20 w-auto drop-shadow-lg transition-transform duration-500 hover:scale-105 md:h-24"
-              whileHover={{ scale: 1.05 }}
-            />
-          )}
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.35, duration: 0.6 }}
-            className="inline-flex items-center rounded-full border border-binavy/20 bg-binavy/10 px-4 py-1 text-sm font-semibold text-binavy shadow-sm dark:border-white/10 dark:bg-white/10 dark:text-white md:text-base"
+          {brand.tagline}
+        </motion.div>
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.1 }}
+          className="max-w-4xl text-4xl font-semibold leading-tight text-[var(--text-primary)] md:text-6xl"
+        >
+          Accelerate English programmes with evidence, empathy, and inclusive certification journeys.
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.2 }}
+          className="max-w-2xl text-base text-[var(--text-secondary)] md:text-lg"
+        >
+          {brand.mission}
+        </motion.p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.3 }}
+          className="flex flex-wrap justify-center gap-3"
+        >
+          <Link
+            to="/solutions/testing-platform"
+            className="inline-flex items-center gap-2 rounded-full bg-[var(--brand-primary)] px-6 py-3 text-sm font-semibold text-[var(--brand-primary-contrast)] shadow-soft transition hover:opacity-90"
           >
-            Native English eXperience Test
-          </motion.div>
-
-          <h1 className="max-w-3xl text-3xl font-semibold leading-tight text-binavy md:text-5xl dark:text-white">
-            The horizontal certification program for every student in Italy's public schools
-          </h1>
-
-          <p className="max-w-2xl text-base text-slate-600 dark:text-slate-300">
-            Official materials always up to date, a download area dedicated to your campus, and student sign-ups with a School Code.
-          </p>
-
-          <div className="mt-2 flex flex-wrap justify-center gap-3">
-            <Link
-              to="/signup-school"
-              className="rounded-full bg-binavy px-6 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-[#001c5e] focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:hover:bg-[#16348f] dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f]"
-            >
-              Register your school
-            </Link>
-            <Link
-              to="/signup-student"
-              className="rounded-full border border-binavy/30 bg-white px-6 py-3 text-sm font-semibold text-binavy shadow-sm transition hover:border-binavy hover:bg-biwhite focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-white/10 dark:bg-[#152044] dark:text-white dark:hover:bg-[#001c5e] dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f]"
-            >
-              I'm a student
-            </Link>
-          </div>
+            Explore testing platform
+          </Link>
+          <Link
+            to="/contact"
+            className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-base)] px-6 py-3 text-sm font-semibold text-[var(--text-primary)] transition hover:border-[var(--border-strong)]"
+          >
+            Talk with our team
+          </Link>
         </motion.div>
       </section>
 
-      {/* === CARD SEZIONI === */}
-      <section className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 pb-20 md:grid-cols-2">
+      <section className="relative z-10 mx-auto max-w-6xl px-4 pb-20">
         <motion.div
-          {...card(0.1)}
-          className="rounded-3xl border border-slate-200 bg-white p-6 text-left shadow-sm shadow-soft transition-shadow hover:shadow-lg dark:border-white/10 dark:bg-slate-900/70"
+          {...cardAnimation(0.15)}
+          className="grid gap-6 rounded-3xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-8 shadow-soft md:grid-cols-3"
         >
-          <div className="aspect-[21/9] w-full overflow-hidden rounded-2xl bg-binavy/5 dark:bg-white/10">
-            <img src={logoBI} alt="British Institutes" className="h-full w-full object-contain p-6" />
-          </div>
-          <div className="mt-5">
-            <h3 className="mb-2 text-xl font-semibold text-binavy dark:text-white">School</h3>
-            <p className="mb-4 text-sm text-slate-600 dark:text-slate-300">
-              A dedicated space for the campus to share materials with its classes.
+          <div className="space-y-2">
+            <span className="text-2xl" aria-hidden>
+              🧭
+            </span>
+            <h2 className="text-xl font-semibold text-[var(--text-primary)]">One platform, three journeys</h2>
+            <p className="text-sm text-[var(--text-secondary)]">
+              Placement, formative assessment, and certification support working together for leadership teams, teachers, and families.
             </p>
-            <Link
-              to="/signup-school"
-              className="inline-flex items-center text-sm font-semibold text-bireg transition hover:text-bireg/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-[#ff7a88] dark:focus-visible:ring-white/20 dark:focus-visible:ring-offset-[#0a0f1f]"
-            >
-              Open →
-            </Link>
+          </div>
+          <div className="space-y-2">
+            <span className="text-2xl" aria-hidden>
+              🔐
+            </span>
+            <h2 className="text-xl font-semibold text-[var(--text-primary)]">Trusted access</h2>
+            <p className="text-sm text-[var(--text-secondary)]">
+              Dedicated dashboards for schools and students with secure sign-ins, role-based permissions, and downloadable resources.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <span className="text-2xl" aria-hidden>
+              📣
+            </span>
+            <h2 className="text-xl font-semibold text-[var(--text-primary)]">Support that scales</h2>
+            <p className="text-sm text-[var(--text-secondary)]">
+              Implementation templates, stakeholder communication packs, and live coaching during the academic year.
+            </p>
           </div>
         </motion.div>
 
-        <motion.div
-          {...card(0.2)}
-          className="rounded-3xl border border-slate-200 bg-white p-6 text-left shadow-sm shadow-soft transition-shadow hover:shadow-lg dark:border-white/10 dark:bg-slate-900/70"
-        >
-          <div className="aspect-[21/9] w-full overflow-hidden rounded-2xl bg-binavy/5 dark:bg-white/10">
-            <img src={illStudent} alt="Student" className="h-full w-full object-contain p-6" />
-          </div>
-          <div className="mt-5">
-            <h3 className="mb-2 text-xl font-semibold text-binavy dark:text-white">Student</h3>
-            <p className="mb-4 text-sm text-slate-600 dark:text-slate-300">
-              Sign up with your School Code and access the downloads for your campus.
-            </p>
-            <Link
-              to="/signup-student"
-              className="inline-flex items-center text-sm font-semibold text-bireg transition hover:text-bireg/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-[#ff7a88] dark:focus-visible:ring-white/20 dark:focus-visible:ring-offset-[#0a0f1f]"
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          {solutions.map((solution, index) => (
+            <motion.article
+              key={solution.title}
+              {...cardAnimation(0.2 + index * 0.05)}
+              className="flex h-full flex-col justify-between rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-6 shadow-soft"
             >
-              Open →
-            </Link>
-          </div>
-        </motion.div>
+              <div className="space-y-3">
+                <span className="text-2xl" aria-hidden>
+                  {index === 0 ? '🧪' : index === 1 ? '🎓' : '🤝'}
+                </span>
+                <h3 className="text-lg font-semibold text-[var(--text-primary)]">{solution.title}</h3>
+                <p className="text-sm text-[var(--text-secondary)]">{solution.description}</p>
+              </div>
+              <Link
+                to={solution.href}
+                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[var(--brand-primary)] transition hover:opacity-80"
+              >
+                Learn more
+                <span aria-hidden>→</span>
+              </Link>
+            </motion.article>
+          ))}
+        </div>
       </section>
     </main>
-  );
+  )
 }

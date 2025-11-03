@@ -1,0 +1,214 @@
+{
+  "brand": {
+    "name": "EVALUA Education",
+    "tagline": "Evidence-based language growth for every classroom.",
+    "mission": "We help Italian schools measure, strengthen, and celebrate English proficiency through digital tools, QuAET benchmarking, and internationally recognised certifications."
+  },
+  "navigation": {
+    "about": "About",
+    "quaet": "QuAET",
+    "solutions": "Solutions",
+    "solutionsTesting": "Testing platform",
+    "solutionsCertification": "Certification",
+    "solutionsPartnerships": "Partnerships",
+    "recognition": "Recognition",
+    "resources": "Resources",
+    "contact": "Contact",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "footer": {
+    "tagline": "Empowering schools with resilient, inclusive English programmes.",
+    "copyright": "© EVALUA Education"
+  },
+  "pages": {
+    "about": {
+      "title": "About EVALUA Education",
+      "intro": "EVALUA Education is the evolution of BI Next: a research-led team of teachers, psychometricians, and technologists building the fastest way for Italian schools to deliver outstanding English programmes.",
+      "pillars": [
+        {
+          "title": "Pedagogy first",
+          "description": "We co-design pathways with subject experts and real classrooms, aligning programmes with the CEFR and national guidelines."
+        },
+        {
+          "title": "Data with empathy",
+          "description": "Dashboards translate results into actionable insights for leadership teams, not spreadsheets to ignore."
+        },
+        {
+          "title": "Sustainable impact",
+          "description": "We reinvest in training and scholarships so every learner can access a trusted journey to certification."
+        }
+      ],
+      "cta": "Discover our solutions"
+    },
+    "quaet": {
+      "title": "QuAET: quality assurance for English teaching",
+      "intro": "QuAET is our benchmark for English programmes in Italian schools. It provides a shared language for teachers, coordinators, and leadership teams to monitor progress across the academic year.",
+      "pillars": [
+        "Initial placement tests to map every learner's starting point.",
+        "Modular checks that connect day-to-day practice with measurable KPIs.",
+        "Summative assessments aligned with CEFR descriptors and INVALSI expectations."
+      ],
+      "outcomes": [
+        "Evidence that supports inspections and accreditation.",
+        "Coaching recommendations personalised for each department.",
+        "A pathway that prepares students for Cambridge and Trinity certifications."
+      ]
+    },
+    "solutions": {
+      "title": "Solutions",
+      "intro": "From placement to certification, EVALUA Education delivers a single platform where schools onboard students, manage training, and monitor results.",
+      "cards": [
+        {
+          "title": "Testing platform",
+          "description": "Digital placement and formative tests built with adaptive delivery and instant insights.",
+          "href": "/solutions/testing-platform"
+        },
+        {
+          "title": "Certification support",
+          "description": "Turnkey preparation resources and exam-day logistics for Cambridge and Trinity.",
+          "href": "/solutions/certification"
+        },
+        {
+          "title": "Partnership programmes",
+          "description": "Custom initiatives for school networks, municipalities, and regional projects.",
+          "href": "/solutions/partnerships"
+        }
+      ]
+    },
+    "testingPlatform": {
+      "title": "Testing platform",
+      "intro": "The EVALUA testing platform combines psychometrics with delightful UX. Schools launch digital placement, progress, and mock exams without leaving the browser.",
+      "sections": [
+        {
+          "title": "Adaptive delivery",
+          "description": "Smart routing keeps students engaged and produces CEFR-aligned scores with fewer questions."
+        },
+        {
+          "title": "Instant dashboards",
+          "description": "Leaders view performance by class, teacher, or campus and export actionable summaries."
+        },
+        {
+          "title": "Accessible anywhere",
+          "description": "Students test on laptops or tablets with built-in support for accommodations."
+        }
+      ],
+      "cta": "Request a walkthrough"
+    },
+    "certification": {
+      "title": "Certification",
+      "intro": "We prepare students for Cambridge and Trinity certifications with scaffolded resources, live workshops, and administration support.",
+      "highlights": [
+        "Diagnostic reports identify the right exam session for every learner.",
+        "Teachers access lesson plans, mock papers, and speaking prompts on demand.",
+        "Families receive clear timelines, expectations, and practice tips."
+      ]
+    },
+    "partnerships": {
+      "title": "Partnerships",
+      "intro": "Local authorities and school networks choose EVALUA Education to activate bilingual programmes, STEM pathways in English, and scholarship funds.",
+      "initiatives": [
+        {
+          "title": "Regional programmes",
+          "description": "Deploy QuAET across districts to guarantee consistent evaluation standards."
+        },
+        {
+          "title": "Teacher development",
+          "description": "Blended CPD experiences combining micro-learning, coaching, and classroom observation."
+        },
+        {
+          "title": "Scholarships",
+          "description": "We help design bursary schemes that remove financial barriers for motivated students."
+        }
+      ]
+    },
+    "recognition": {
+      "title": "Recognition",
+      "intro": "Our programmes are accredited by British Institutes and align with national education objectives. Explore the milestones that shaped our approach.",
+      "timeline": [
+        {
+          "year": "2019",
+          "description": "Launch of QuAET pilot across 12 campuses with the British Institutes academic board."
+        },
+        {
+          "year": "2021",
+          "description": "National expansion of the BI Next platform supporting hybrid delivery during remote learning."
+        },
+        {
+          "year": "2023",
+          "description": "First region-wide partnership delivering scholarships for 3,200 students."
+        },
+        {
+          "year": "2024",
+          "description": "Rebrand to EVALUA Education with a renewed focus on inclusive certification pathways."
+        }
+      ]
+    },
+    "resources": {
+      "title": "Resources",
+      "intro": "Curated insights, templates, and playbooks to help your teams plan the next academic cycle.",
+      "items": [
+        {
+          "title": "Implementation guides",
+          "description": "Download checklists for onboarding teachers, running placement weeks, and communicating with families."
+        },
+        {
+          "title": "Assessment blueprints",
+          "description": "Understand how QuAET maps to CEFR descriptors and Italian national priorities."
+        },
+        {
+          "title": "Leadership briefings",
+          "description": "Presentations and talking points to bring the programme to your school board."
+        }
+      ]
+    },
+    "contact": {
+      "title": "Talk with our team",
+      "intro": "Share a few details and we will schedule a discovery call within two working days.",
+      "success": "Thanks! Our team will reply shortly.",
+      "error": "We could not submit the form. Please try again or email hello@evalua.education.",
+      "fields": {
+        "name": "Full name",
+        "email": "Work email",
+        "organisation": "School or organisation",
+        "message": "How can we help?"
+      }
+    },
+    "privacy": {
+      "title": "Privacy policy",
+      "intro": "We respect your data. This summary outlines how we collect, process, and store personal information.",
+      "sections": [
+        {
+          "title": "Data controllers",
+          "description": "EVALUA Education operates as the data controller for our digital services and assessments."
+        },
+        {
+          "title": "Information we collect",
+          "description": "We process contact details, assessment results, and usage analytics strictly to deliver our services."
+        },
+        {
+          "title": "Your rights",
+          "description": "You can request access, correction, or deletion at any time by contacting privacy@evalua.education."
+        }
+      ]
+    },
+    "terms": {
+      "title": "Terms of service",
+      "intro": "By using EVALUA Education you agree to comply with our acceptable use policy and confidentiality obligations.",
+      "sections": [
+        {
+          "title": "Accountability",
+          "description": "Administrators ensure student data is accurate and shared only with authorised staff."
+        },
+        {
+          "title": "Acceptable use",
+          "description": "Do not attempt to copy, resell, or interfere with the platform infrastructure."
+        },
+        {
+          "title": "Service updates",
+          "description": "We will notify partners of material changes and provide rollout guidance."
+        }
+      ]
+    }
+  }
+}

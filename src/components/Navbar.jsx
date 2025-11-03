@@ -1,109 +1,200 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ChevronDown, LayoutDashboard } from "lucide-react";
-import ThemeToggle from "./ThemeToggle";
-import { getStoredSession, getDashboardPath } from "../api";
+import React, { useEffect, useRef, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { ChevronDown, LayoutDashboard, Menu, X } from 'lucide-react'
+import ThemeToggle from './ThemeToggle'
+import { getStoredSession, getDashboardPath } from '../api'
+import { marketingContent } from '../lib/marketingContent'
+
+const nav = marketingContent.navigation
+
+const primaryLinks = [
+  { label: nav.about, to: '/about' },
+  { label: nav.quaet, to: '/quaet' },
+  {
+    label: nav.solutions,
+    to: '/solutions',
+    children: [
+      { label: nav.solutionsTesting, to: '/solutions/testing-platform' },
+      { label: nav.solutionsCertification, to: '/solutions/certification' },
+      { label: nav.solutionsPartnerships, to: '/solutions/partnerships' }
+    ]
+  },
+  { label: nav.recognition, to: '/recognition' },
+  { label: nav.resources, to: '/resources' },
+  { label: nav.contact, to: '/contact' }
+]
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
-  const [session, setSession] = useState(null);
-  const menuRef = useRef(null);
-  const navigate = useNavigate();
+  const [authMenuOpen, setAuthMenuOpen] = useState(false)
+  const [solutionsOpen, setSolutionsOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [session, setSession] = useState(null)
+  const authMenuRef = useRef(null)
+  const solutionsRef = useRef(null)
+  const mobileMenuRef = useRef(null)
+  const navigate = useNavigate()
+  const location = useLocation()
 
-  // Load session
   useEffect(() => {
-    const s = getStoredSession?.();
-    setSession(s || null);
-  }, []);
+    const s = getStoredSession?.()
+    setSession(s || null)
+  }, [])
 
-  // Close dropdown when clicking outside
   useEffect(() => {
-    function onClickOutside(e) {
-      if (open && menuRef.current && !menuRef.current.contains(e.target)) {
-        setOpen(false);
+    setAuthMenuOpen(false)
+    setSolutionsOpen(false)
+    setMobileMenuOpen(false)
+  }, [location.pathname])
+
+  useEffect(() => {
+    function onClickOutside(event) {
+      if (authMenuOpen && authMenuRef.current && !authMenuRef.current.contains(event.target)) {
+        setAuthMenuOpen(false)
+      }
+      if (solutionsOpen && solutionsRef.current && !solutionsRef.current.contains(event.target)) {
+        setSolutionsOpen(false)
+      }
+      if (mobileMenuOpen && mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
+        setMobileMenuOpen(false)
       }
     }
-    document.addEventListener("mousedown", onClickOutside);
-    return () => document.removeEventListener("mousedown", onClickOutside);
-  }, [open]);
+
+    document.addEventListener('mousedown', onClickOutside)
+    return () => document.removeEventListener('mousedown', onClickOutside)
+  }, [authMenuOpen, mobileMenuOpen, solutionsOpen])
 
   const handleDashboard = () => {
     try {
-      const path = getDashboardPath?.(session?.role) || "/dashboard";
-      navigate(path);
+      const path = getDashboardPath?.(session?.role) || '/dashboard'
+      navigate(path)
     } catch {
-      navigate("/dashboard");
+      navigate('/dashboard')
     }
-  };
+  }
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur dark:bg-slate-900/70">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
-        {/* Logo / Brand */}
-        <Link
-          to="/"
-          className="font-semibold tracking-wide text-[#00247D] dark:text-white"
-        >
-          BI NEXT
-        </Link>
+    <header className="sticky top-0 z-50 border-b border-[var(--border-subtle)] bg-[var(--surface-elevated)] backdrop-blur">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
+        <div className="flex items-center gap-6">
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-lg font-semibold tracking-wide text-[var(--brand-primary)]"
+          >
+            <span className="rounded-md bg-[var(--brand-muted)] px-2 py-1 text-sm uppercase text-[var(--brand-primary)]">EE</span>
+            <span className="font-semibold tracking-wide">EVALUA Education</span>
+          </Link>
 
-        {/* Right side actions */}
+          <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
+            {primaryLinks.map((link) =>
+              link.children ? (
+                <div key={link.label} className="relative" ref={solutionsRef}>
+                  <button
+                    type="button"
+                    onClick={() => setSolutionsOpen((prev) => !prev)}
+                    className="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium text-[var(--text-muted)] transition hover:text-[var(--text-primary)] focus-visible:outline-none"
+                    aria-expanded={solutionsOpen}
+                    aria-haspopup="menu"
+                  >
+                    {link.label}
+                    <ChevronDown className={`h-4 w-4 transition-transform ${solutionsOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  {solutionsOpen && (
+                    <div
+                      role="menu"
+                      className="absolute left-0 mt-2 min-w-[220px] rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-2 shadow-soft"
+                    >
+                      <Link
+                        to={link.to}
+                        role="menuitem"
+                        className="block rounded-xl px-3 py-2 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--brand-muted)]"
+                      >
+                        {link.label} overview
+                      </Link>
+                      {link.children.map((child) => (
+                        <Link
+                          key={child.to}
+                          to={child.to}
+                          role="menuitem"
+                          className="block rounded-xl px-3 py-2 text-sm text-[var(--text-muted)] transition hover:bg-[var(--brand-muted)] hover:text-[var(--text-primary)]"
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className="rounded-full px-3 py-2 text-sm font-medium text-[var(--text-muted)] transition hover:text-[var(--text-primary)]"
+                >
+                  {link.label}
+                </Link>
+              )
+            )}
+          </nav>
+        </div>
+
         <div className="flex items-center gap-2">
-          {/* If logged in: show Dashboard button */}
+          <div className="lg:hidden">
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              aria-label="Toggle navigation"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-menu"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-subtle)] text-[var(--text-primary)]"
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+
           {session ? (
             <button
               type="button"
               onClick={handleDashboard}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#00247D] px-3 py-1.5 text-sm font-semibold text-white shadow hover:bg-[#001c5e] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 dark:focus-visible:ring-white/60"
+              className="hidden items-center gap-2 rounded-full bg-[var(--brand-primary)] px-4 py-2 text-sm font-semibold text-[var(--brand-primary-contrast)] shadow-soft transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-base)] lg:inline-flex"
             >
               <LayoutDashboard size={18} />
               Dashboard
             </button>
           ) : (
-            /* If NOT logged in: show Sign-up/Login dropdown */
-            <div className="relative" ref={menuRef}>
+            <div className="relative hidden lg:block" ref={authMenuRef}>
               <button
                 type="button"
-                onClick={() => setOpen((v) => !v)}
+                onClick={() => setAuthMenuOpen((v) => !v)}
                 aria-haspopup="menu"
-                aria-expanded={open}
-                className="inline-flex items-center gap-1 rounded-xl border px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 dark:border-white/10 dark:text-slate-100 dark:hover:bg-slate-800"
+                aria-expanded={authMenuOpen}
+                className="inline-flex items-center gap-1 rounded-full border border-[var(--border-subtle)] px-4 py-2 text-sm font-medium text-[var(--text-muted)] transition hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]"
               >
                 Log in / Sign up
-                <ChevronDown
-                  className={`transition-transform ${open ? "rotate-180" : ""}`}
-                  size={16}
-                />
+                <ChevronDown className={`h-4 w-4 transition-transform ${authMenuOpen ? 'rotate-180' : ''}`} />
               </button>
-
-              {/* Menu */}
-              {open && (
+              {authMenuOpen && (
                 <div
                   role="menu"
                   aria-label="Access menu"
-                  className="absolute right-0 mt-2 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-white/10 dark:bg-slate-900/90"
+                  className="absolute right-0 mt-2 w-60 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-2 shadow-soft"
                 >
                   <Link
                     to="/signup-school"
                     role="menuitem"
-                    className="block rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 focus:bg-slate-50 dark:text-slate-100 dark:hover:bg-slate-800"
-                    onClick={() => setOpen(false)}
+                    className="block rounded-xl px-3 py-2 text-sm text-[var(--text-muted)] transition hover:bg-[var(--brand-muted)] hover:text-[var(--text-primary)]"
                   >
                     School sign-up
                   </Link>
                   <Link
                     to="/signup-student"
                     role="menuitem"
-                    className="block rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 focus:bg-slate-50 dark:text-slate-100 dark:hover:bg-slate-800"
-                    onClick={() => setOpen(false)}
+                    className="block rounded-xl px-3 py-2 text-sm text-[var(--text-muted)] transition hover:bg-[var(--brand-muted)] hover:text-[var(--text-primary)]"
                   >
                     Student sign-up
                   </Link>
                   <Link
                     to="/login"
                     role="menuitem"
-                    className="block rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 focus:bg-slate-50 dark:text-slate-100 dark:hover:bg-slate-800"
-                    onClick={() => setOpen(false)}
+                    className="block rounded-xl px-3 py-2 text-sm text-[var(--text-muted)] transition hover:bg-[var(--brand-muted)] hover:text-[var(--text-primary)]"
                   >
                     Login
                   </Link>
@@ -112,10 +203,75 @@ export default function Navbar() {
             </div>
           )}
 
-          {/* Toggle Tema */}
           <ThemeToggle />
         </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div id="mobile-menu" ref={mobileMenuRef} className="lg:hidden">
+          <div className="border-t border-[var(--border-subtle)] bg-[var(--surface-base)] px-4 py-4">
+            <nav className="space-y-3" aria-label="Mobile">
+              {primaryLinks.map((link) => (
+                <div key={link.label} className="space-y-2">
+                  <Link
+                    to={link.to}
+                    className="flex items-center justify-between rounded-xl bg-[var(--surface-alt)] px-4 py-3 text-sm font-semibold text-[var(--text-primary)]"
+                  >
+                    <span>{link.label}</span>
+                    {link.children && <ChevronDown className="h-4 w-4" />}
+                  </Link>
+                  {link.children && (
+                    <div className="space-y-2 pl-3">
+                      {link.children.map((child) => (
+                        <Link
+                          key={child.to}
+                          to={child.to}
+                          className="block rounded-lg px-3 py-2 text-sm text-[var(--text-muted)] transition hover:bg-[var(--brand-muted)] hover:text-[var(--text-primary)]"
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </nav>
+
+            <div className="mt-6 space-y-3">
+              {session ? (
+                <button
+                  type="button"
+                  onClick={handleDashboard}
+                  className="flex w-full items-center justify-center gap-2 rounded-full bg-[var(--brand-primary)] px-4 py-3 text-sm font-semibold text-[var(--brand-primary-contrast)]"
+                >
+                  <LayoutDashboard size={18} /> Dashboard
+                </button>
+              ) : (
+                <div className="space-y-2">
+                  <Link
+                    to="/signup-school"
+                    className="block rounded-full border border-[var(--border-subtle)] px-4 py-3 text-center text-sm font-semibold text-[var(--text-primary)]"
+                  >
+                    School sign-up
+                  </Link>
+                  <Link
+                    to="/signup-student"
+                    className="block rounded-full border border-[var(--border-subtle)] px-4 py-3 text-center text-sm font-semibold text-[var(--text-primary)]"
+                  >
+                    Student sign-up
+                  </Link>
+                  <Link
+                    to="/login"
+                    className="block rounded-full bg-[var(--brand-primary)] px-4 py-3 text-center text-sm font-semibold text-[var(--brand-primary-contrast)]"
+                  >
+                    Login
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </header>
-  );
+  )
 }

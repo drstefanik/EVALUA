@@ -3,10 +3,6 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Particles from '../components/Particles.jsx'
 import SEO from '../components/SEO.jsx'
-import { marketingContent } from '../lib/marketingContent.js'
-
-const brand = marketingContent.brand
-const solutions = marketingContent.pages.solutions.cards
 
 const cardAnimation = (delay = 0) => ({
   initial: { opacity: 0, y: 16 },
@@ -20,7 +16,7 @@ export default function Home() {
     <main className="relative overflow-hidden">
       <SEO
         title="Home"
-        description="EVALUA Education partners with Italian schools to deliver QuAET benchmarks, digital assessments, and trusted certification pathways."
+        description="Evalua Education is an international awarding body based in the UAE. Through QUAET and future assessments, we advance English certification across the Arab world."
         path="/"
       />
       <div className="absolute inset-0 -z-20 bg-hero-sheen" />
@@ -34,24 +30,31 @@ export default function Home() {
           transition={{ duration: 0.9 }}
           className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-base)] px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--text-muted)]"
         >
-          {brand.tagline}
+          Credibility • Innovation • Impact
         </motion.div>
+
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.1 }}
           className="max-w-4xl text-4xl font-semibold leading-tight text-[var(--text-primary)] md:text-6xl"
         >
-          Accelerate English programmes with evidence, empathy, and inclusive certification journeys.
+          Advancing English certification across the Arab world.
         </motion.h1>
+
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
           className="max-w-2xl text-base text-[var(--text-secondary)] md:text-lg"
         >
-          {brand.mission}
+          Evalua Education is an international awarding body based in the United Arab Emirates.
+          Through <strong>QUAET — the Qualification UAE Adaptive English Test</strong> — and other future
+          assessments, we set new benchmarks that are globally aligned and regionally grounded.
+          Our mission is to deliver assessments that inspire confidence, foster opportunity, and
+          strengthen educational excellence.
         </motion.p>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -79,58 +82,29 @@ export default function Home() {
           className="grid gap-6 rounded-3xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-8 shadow-soft md:grid-cols-3"
         >
           <div className="space-y-2">
-            <span className="text-2xl" aria-hidden>
-              🧭
-            </span>
-            <h2 className="text-xl font-semibold text-[var(--text-primary)]">One platform, three journeys</h2>
+            <span className="text-2xl" aria-hidden>🧭</span>
+            <h2 className="text-xl font-semibold text-[var(--text-primary)]">One ecosystem, multiple pathways</h2>
             <p className="text-sm text-[var(--text-secondary)]">
-              Placement, formative assessment, and certification support working together for leadership teams, teachers, and families.
+              Placement, formative assessment, and certification combine in a unified, data-driven experience for institutions, teachers, and learners.
             </p>
           </div>
+
           <div className="space-y-2">
-            <span className="text-2xl" aria-hidden>
-              🔐
-            </span>
-            <h2 className="text-xl font-semibold text-[var(--text-primary)]">Trusted access</h2>
+            <span className="text-2xl" aria-hidden>🔐</span>
+            <h2 className="text-xl font-semibold text-[var(--text-primary)]">Secure and transparent certification</h2>
             <p className="text-sm text-[var(--text-secondary)]">
-              Dedicated dashboards for schools and students with secure sign-ins, role-based permissions, and downloadable resources.
+              Verified delivery, adaptive scoring, and authentic digital credentials ensure integrity from registration to recognition.
             </p>
           </div>
+
           <div className="space-y-2">
-            <span className="text-2xl" aria-hidden>
-              📣
-            </span>
-            <h2 className="text-xl font-semibold text-[var(--text-primary)]">Support that scales</h2>
+            <span className="text-2xl" aria-hidden>🌍</span>
+            <h2 className="text-xl font-semibold text-[var(--text-primary)]">Global standards, regional impact</h2>
             <p className="text-sm text-[var(--text-secondary)]">
-              Implementation templates, stakeholder communication packs, and live coaching during the academic year.
+              Aligned with CEFR, ACTFL, and GSE, Evalua pairs international quality with cultural relevance and accessibility.
             </p>
           </div>
         </motion.div>
-
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {solutions.map((solution, index) => (
-            <motion.article
-              key={solution.title}
-              {...cardAnimation(0.2 + index * 0.05)}
-              className="flex h-full flex-col justify-between rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-6 shadow-soft"
-            >
-              <div className="space-y-3">
-                <span className="text-2xl" aria-hidden>
-                  {index === 0 ? '🧪' : index === 1 ? '🎓' : '🤝'}
-                </span>
-                <h3 className="text-lg font-semibold text-[var(--text-primary)]">{solution.title}</h3>
-                <p className="text-sm text-[var(--text-secondary)]">{solution.description}</p>
-              </div>
-              <Link
-                to={solution.href}
-                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[var(--brand-primary)] transition hover:opacity-80"
-              >
-                Learn more
-                <span aria-hidden>→</span>
-              </Link>
-            </motion.article>
-          ))}
-        </div>
       </section>
     </main>
   )

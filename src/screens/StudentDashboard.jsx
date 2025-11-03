@@ -51,7 +51,7 @@ function FolderNode({ node, depth, onSelect, selectedId }) {
         }`}
         style={{ paddingLeft: `${depth * 16 + 12}px` }}
       >
-        <span className="font-medium">{node.name || 'Cartella senza nome'}</span>
+        <span className="font-medium">{node.name || 'Untitled folder'}</span>
         <span className="text-xs text-slate-400">{node.children.length}</span>
       </button>
       {node.children.length > 0 && (
@@ -183,9 +183,9 @@ export default function StudentDashboard() {
 
         if (!response.ok) {
           console.error('Content tree request failed', response.status, payload)
-          const message = payload?.error || 'Impossibile recuperare i contenuti.'
+          const message = payload?.error || 'Unable to retrieve the content.'
           if (response.status >= 500) {
-            setToast({ message: 'Errore del server. Riprova più tardi.', tone: 'error' })
+            setToast({ message: 'Server error. Please try again later.', tone: 'error' })
           }
           if (active) {
             setError(message)
@@ -204,10 +204,10 @@ export default function StudentDashboard() {
       } catch (error) {
         console.error('Unable to load student content tree', error)
         if (active) {
-          setError('Connessione non disponibile. Riprova più tardi.')
+          setError('Connection unavailable. Try again later.')
           setFolders([])
           setFiles([])
-          setToast({ message: 'Connessione non disponibile.', tone: 'error' })
+          setToast({ message: 'Connection unavailable.', tone: 'error' })
         }
       } finally {
         if (active) {
@@ -273,7 +273,7 @@ export default function StudentDashboard() {
       .catch((error) => {
         console.error('Unable to fetch school information', error)
         if (!active) return
-        const message = error?.message || 'Impossibile recuperare le informazioni della scuola.'
+        const message = error?.message || 'Unable to fetch the school information.'
         setSchoolError(message)
         setSchool(null)
       })
@@ -314,11 +314,11 @@ export default function StudentDashboard() {
           setCopiedFileId(file.id)
           copyTimeoutRef.current = setTimeout(() => setCopiedFileId(null), 1500)
         } else {
-          throw new Error('Clipboard API non disponibile')
-        }
-      } catch (error) {
-        console.error('Copy file link failed', error)
-        setToast({ message: 'Impossibile copiare il link. Copia manualmente.', tone: 'error', duration: 4000 })
+          throw new Error('Clipboard API not available')
+      }
+    } catch (error) {
+      console.error('Copy file link failed', error)
+        setToast({ message: 'Unable to copy the link. Please copy it manually.', tone: 'error', duration: 4000 })
       }
     },
     [],
@@ -331,14 +331,14 @@ export default function StudentDashboard() {
       <Toast toast={toast} onClose={closeToast} />
       <div className="mx-auto max-w-6xl px-4 py-12">
         <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-          <h1 className="text-3xl font-semibold text-binavy dark:text-white">Area Studente</h1>
+          <h1 className="text-3xl font-semibold text-binavy dark:text-white">Student area</h1>
           <p className="mt-3 text-slate-600 dark:text-slate-300">
             {studentName
-              ? `Ciao ${studentName}, esplora i materiali condivisi con te dalla tua scuola.`
-              : 'Accedi ai materiali condivisi con gli studenti della tua scuola.'}
+              ? `Hi ${studentName}, explore the materials shared with you by your school.`
+              : "Access the materials shared with your school's students."}
           </p>
           <div className="mt-6 inline-flex items-center gap-2 text-sm text-binavy dark:text-slate-200">
-            <span>Vuoi uscire?</span>
+            <span>Want to sign out?</span>
             <Link to="/logout" className="font-semibold text-binavy underline-offset-4 hover:text-bireg dark:text-white dark:hover:text-bireg">
               Logout
             </Link>
@@ -346,7 +346,7 @@ export default function StudentDashboard() {
         </div>
 
         <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-          <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">La mia scuola</h2>
+          <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">My school</h2>
           {schoolError && (
             <div
               role="alert"
@@ -356,11 +356,11 @@ export default function StudentDashboard() {
             </div>
           )}
           {loadingSchool && !schoolError && (
-            <p className="mt-3 text-sm text-slate-500">Caricamento informazioni...</p>
+            <p className="mt-3 text-sm text-slate-500">Loading information...</p>
           )}
           {!loadingSchool && !schoolError && !school && (
             <p className="mt-3 text-sm text-slate-500">
-              Nessuna scuola associata. Assicurati di aver inserito il Codice Scuola durante la registrazione.
+              No school associated. Make sure you entered the School Code during sign-up.
             </p>
           )}
           {!loadingSchool && school && (
@@ -374,7 +374,7 @@ export default function StudentDashboard() {
         <div className="mt-8 grid gap-6 lg:grid-cols-[260px,1fr]">
           <aside className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
             <h2 className="px-2 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-300">
-              Cartelle
+              Folders
             </h2>
             {loading ? (
               <div className="mt-4 space-y-2 px-2">
@@ -384,7 +384,7 @@ export default function StudentDashboard() {
               </div>
             ) : folders.length === 0 ? (
               <p className="mt-4 px-2 text-sm text-slate-600 dark:text-slate-400">
-                Nessuna cartella disponibile al momento.
+                No folders available right now.
               </p>
             ) : (
               <div className="mt-3 space-y-1">
@@ -406,7 +406,7 @@ export default function StudentDashboard() {
               <div>
                 <nav className="flex flex-wrap items-center gap-2 text-sm text-slate-500 dark:text-slate-300" aria-label="Percorso cartella">
                   {breadcrumb.length === 0 ? (
-                    <span className="font-medium text-slate-700 dark:text-slate-200">Seleziona una cartella</span>
+                    <span className="font-medium text-slate-700 dark:text-slate-200">Select a folder</span>
                   ) : (
                     breadcrumb.map((folder, index) => (
                       <React.Fragment key={folder.id}>
@@ -419,7 +419,7 @@ export default function StudentDashboard() {
                               : 'bg-biwhite text-binavy hover:bg-binavy/10 focus-visible:ring-binavy/40 dark:bg-[#111a33] dark:text-slate-200 dark:hover:bg-[#1a2750] dark:focus-visible:ring-[#6a87ff]/60'
                           }`}
                         >
-                          {folder.name || 'Cartella'}
+                          {folder.name || 'Folder'}
                         </button>
                         {index !== breadcrumb.length - 1 && <span className="text-slate-300 dark:text-slate-600">/</span>}
                       </React.Fragment>
@@ -434,7 +434,7 @@ export default function StudentDashboard() {
               </div>
               <div className="text-xs uppercase tracking-widest text-slate-400 dark:text-slate-500">
                 {filteredFiles.length}{' '}
-                {filteredFiles.length === 1 ? 'file disponibile' : 'file disponibili'}
+                {filteredFiles.length === 1 ? 'file available' : 'files available'}
               </div>
             </div>
 
@@ -468,10 +468,10 @@ export default function StudentDashboard() {
               </div>
             ) : !selectedFolderId ? (
               <p className="mt-6 text-sm text-slate-600 dark:text-slate-400">
-                Seleziona una cartella dalla barra laterale per vedere i file disponibili.
+                Select a folder from the sidebar to see the available files.
               </p>
             ) : filteredFiles.length === 0 ? (
-              <p className="mt-6 text-sm text-slate-600 dark:text-slate-400">Nessun file disponibile in questa cartella.</p>
+              <p className="mt-6 text-sm text-slate-600 dark:text-slate-400">No files available in this folder.</p>
             ) : (
               <ul className="mt-6 space-y-4">
                 {filteredFiles.map((file) => (

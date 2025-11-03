@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     body = await parseJsonBody(req);
   } catch (error) {
     console.error("Invalid JSON body", error);
-    return sendError(res, 400, "Payload non valido");
+    return sendError(res, 400, "Invalid payload");
   }
 
   const name = typeof body?.name === "string" ? body.name.trim() : "";
@@ -44,18 +44,18 @@ export default async function handler(req, res) {
   const otp_code = typeof body?.otp_code === "string" ? body.otp_code.trim() : "";
 
   if (!name || !email || !password || !otp_code) {
-    return sendError(res, 400, "Dati di registrazione scuola incompleti");
+    return sendError(res, 400, "Incomplete school registration data");
   }
 
   try {
     const existing = await findSchoolByEmail(email);
     if (existing) {
-      return sendError(res, 409, "Email scuola già registrata");
+      return sendError(res, 409, "School email already registered");
     }
 
     const otp = await findOTP(otp_code);
     if (!otp || otp.used === true) {
-      return sendError(res, 400, "OTP non valido o già usato");
+      return sendError(res, 400, "OTP not valid or already used");
     }
 
     const password_hash = await hashPassword(password);
@@ -70,7 +70,7 @@ export default async function handler(req, res) {
     const schoolId = created[0]?.id;
     if (!schoolId) {
       console.error("School creation failed", created);
-      return sendError(res, 500, "Impossibile creare la scuola");
+      return sendError(res, 500, "Unable to create the school");
     }
 
     await tbl.SCHOOL_OTP.update([

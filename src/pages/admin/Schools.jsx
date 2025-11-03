@@ -1,1 +1,64 @@
-import React,{useEffect,useState}from'react';import{at}from'../../lib/airtable.js';function genOTP(){return Math.floor(100000+Math.random()*900000).toString();}export default function AdminSchools(){const[schools,setSchools]=useState([]);const[otps,setOtps]=useState([]);const load=async()=>{const s=await at.list(import.meta.env.VITE_AT_TABLE_SCHOOLS);const o=await at.list(import.meta.env.VITE_AT_TABLE_SCHOOL_OTPS);setSchools(s.records||[]);setOtps(o.records||[]);};useEffect(()=>{load();},[]);const createOtp=async()=>{const code=genOTP();await at.create(import.meta.env.VITE_AT_TABLE_SCHOOL_OTPS,{otp_code:code,used:false});load();};return(<div className='space-y-4'><div className='rounded-2xl border bg-white p-4'><div className='flex items-center justify-between mb-3'><h2 className='font-semibold'>OTP per registrazione Scuole</h2><button onClick={createOtp} className='px-3 py-1 rounded-xl bg-binavy text-white shadow-soft'>Genera OTP</button></div><ul className='text-sm grid md:grid-cols-3 gap-2'>{otps.map(o=>(<li key={o.id} className='rounded-lg border p-2'>{o.fields.otp_code} {o.fields.used?'(usato)':''}</li>))}</ul></div><div className='rounded-2xl border bg-white p-4'><h2 className='font-semibold mb-3'>Scuole</h2><ul className='text-sm grid md:grid-cols-2 gap-2'>{schools.map(s=>(<li key={s.id} className='rounded-lg border p-2 flex items-center justify-between'><span>{s.fields.name} — <b>{s.fields.code}</b></span><span className='opacity-60'>{s.fields.email}</span></li>))}</ul></div></div>)}
+import React, { useEffect, useState } from 'react'
+import { at } from '../../lib/airtable.js'
+
+function genOTP() {
+  return Math.floor(100000 + Math.random() * 900000).toString()
+}
+
+export default function AdminSchools() {
+  const [schools, setSchools] = useState([])
+  const [otps, setOtps] = useState([])
+
+  const load = async () => {
+    const s = await at.list(import.meta.env.VITE_AT_TABLE_SCHOOLS)
+    const o = await at.list(import.meta.env.VITE_AT_TABLE_SCHOOL_OTPS)
+    setSchools(s.records || [])
+    setOtps(o.records || [])
+  }
+
+  useEffect(() => {
+    load()
+  }, [])
+
+  const createOtp = async () => {
+    const code = genOTP()
+    await at.create(import.meta.env.VITE_AT_TABLE_SCHOOL_OTPS, {
+      otp_code: code,
+      used: false,
+    })
+    load()
+  }
+
+  return (
+    <div className='space-y-4'>
+      <div className='rounded-2xl border bg-white p-4'>
+        <div className='flex items-center justify-between mb-3'>
+          <h2 className='font-semibold'>OTPs for school registration</h2>
+          <button onClick={createOtp} className='px-3 py-1 rounded-xl bg-binavy text-white shadow-soft'>
+            Generate OTP
+          </button>
+        </div>
+        <ul className='text-sm grid md:grid-cols-3 gap-2'>
+          {otps.map((o) => (
+            <li key={o.id} className='rounded-lg border p-2'>
+              {o.fields.otp_code} {o.fields.used ? '(used)' : ''}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className='rounded-2xl border bg-white p-4'>
+        <h2 className='font-semibold mb-3'>Schools</h2>
+        <ul className='text-sm grid md:grid-cols-2 gap-2'>
+          {schools.map((s) => (
+            <li key={s.id} className='rounded-lg border p-2 flex items-center justify-between'>
+              <span>
+                {s.fields.name} — <b>{s.fields.code}</b>
+              </span>
+              <span className='opacity-60'>{s.fields.email}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}

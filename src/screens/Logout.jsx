@@ -15,7 +15,7 @@ export default function Logout() {
 
   return (
     <div className="flex min-h-[50vh] items-center justify-center px-4">
-      <p className="rounded-2xl bg-white px-4 py-3 text-sm text-slate-500 shadow">Disconnessione in corso…</p>
+      <p className="rounded-2xl bg-white px-4 py-3 text-sm text-slate-500 shadow">Signing you out…</p>
     </div>
   )
 }

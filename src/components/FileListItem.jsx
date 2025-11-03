@@ -74,7 +74,7 @@ export function getFileIcon(type) {
 }
 
 export default function FileListItem({ file, onOpen, onCopy, isCopied }) {
-  const title = file?.title || 'File senza titolo'
+  const title = file?.title || 'Untitled file'
   const icon = getFileIcon(file?.type)
   const hasUrl = Boolean(file?.url)
   const hasSize = Number.isFinite(Number(file?.size)) && Number(file.size) > 0
@@ -102,18 +102,18 @@ export default function FileListItem({ file, onOpen, onCopy, isCopied }) {
           type="button"
           onClick={hasUrl ? onOpen : undefined}
           disabled={!hasUrl}
-          aria-label={`Apri ${title}`}
+          aria-label={`Open ${title}`}
           className="inline-flex items-center justify-center rounded-lg bg-binavy px-4 py-2 text-sm font-semibold text-white transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-binavy focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Apri
+          Open
         </button>
         <button
           type="button"
           onClick={onCopy}
-          aria-label={`Copia link di ${title}`}
+          aria-label={`Copy link for ${title}`}
           className="inline-flex items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-binavy focus:ring-offset-2"
         >
-          {isCopied ? 'Copiato!' : 'Copia link'}
+          {isCopied ? 'Copied!' : 'Copy link'}
         </button>
       </div>
     </li>

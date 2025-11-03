@@ -39,7 +39,7 @@ export default function SignupStudent() {
     try {
       const normalizedCode = schoolCode.trim().toUpperCase()
       if (!schoolCodeRegex.test(normalizedCode)) {
-        setError('Codice Scuola non valido')
+        setError('Invalid School Code')
         setLoading(false)
         return
       }
@@ -58,7 +58,7 @@ export default function SignupStudent() {
       setSchoolCode('')
       const destination = getDashboardPath(data?.role) || '/student'
       const schoolName = data?.schoolName ? ` ${data.schoolName}` : ''
-      setSuccess(`Registrazione completata per la scuola${schoolName}. Ti reindirizzo…`)
+      setSuccess(`Registration completed for school${schoolName}. Redirecting…`)
       setTimeout(() => {
         navigate(destination, { replace: true })
       }, 600)
@@ -75,9 +75,9 @@ export default function SignupStudent() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-biwhite via-biwhite to-binavy/10 px-4 py-10 dark:from-[#0a0f1f] dark:via-[#0a0f1f] dark:to-[#001c5e]">
       <div className="mx-auto w-full max-w-xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm shadow-soft backdrop-blur dark:border-white/10 dark:bg-slate-900/70">
-        <h1 className="text-3xl font-semibold text-center text-binavy dark:text-white">Crea il tuo account studente</h1>
+        <h1 className="text-3xl font-semibold text-center text-binavy dark:text-white">Create your student account</h1>
         <p className="mt-2 text-center text-sm text-slate-600 dark:text-slate-300">
-          Registrati con la tua email. Inserisci il Codice Scuola se lo hai già.
+          Register with your email. Enter the School Code if you already have it.
         </p>
 
         {error && (
@@ -97,7 +97,7 @@ export default function SignupStudent() {
           >
             <span>{success}</span>
             <Link to="/student" className="font-medium text-emerald-700 underline">
-              Vai all’area studente
+              Go to the student area
             </Link>
           </div>
         )}
@@ -105,7 +105,7 @@ export default function SignupStudent() {
         <form onSubmit={handleSubmit} className="mt-6 space-y-5" noValidate aria-busy={loading} aria-live="polite">
           <div>
             <label htmlFor="student-name" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              Nome e Cognome
+              Full name
             </label>
             <input
               id="student-name"
@@ -131,7 +131,7 @@ export default function SignupStudent() {
               className="mt-1 w-full rounded-xl border border-binavy/30 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-binavy focus:ring-offset-2 focus:ring-offset-white dark:border-white/10 dark:bg-[#111a33] dark:text-slate-200 dark:focus:ring-[#6a87ff] dark:focus:ring-offset-[#0a0f1f]"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              placeholder="nome@example.com"
+              placeholder="name@example.com"
               disabled={loading}
             />
           </div>
@@ -151,12 +151,12 @@ export default function SignupStudent() {
               placeholder="••••••••"
               disabled={loading}
             />
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Minimo 8 caratteri, almeno una lettera e un numero.</p>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">At least 8 characters, including one letter and one number.</p>
           </div>
 
           <div>
             <label htmlFor="student-confirm-password" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              Conferma password
+              Confirm password
             </label>
             <input
               id="student-confirm-password"
@@ -173,7 +173,7 @@ export default function SignupStudent() {
 
           <div>
             <label htmlFor="student-school" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              Codice Scuola
+              School Code
             </label>
             <input
               id="student-school"
@@ -188,11 +188,11 @@ export default function SignupStudent() {
               onChange={(event) =>
                 setSchoolCode(event.target.value.toUpperCase().replace(/[^A-HJ-NP-Z2-9]/g, ''))
               }
-              placeholder="ES. ABCD2345"
+              placeholder="E.g. ABCD2345"
               disabled={loading}
             />
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              Inserisci il codice fornito dalla tua scuola (8 caratteri, lettere maiuscole e numeri).
+              Enter the code provided by your school (8 characters, uppercase letters and numbers).
             </p>
           </div>
 
@@ -201,14 +201,14 @@ export default function SignupStudent() {
             disabled={!isValid || loading}
             className="w-full rounded-full bg-binavy py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-[#001c5e] focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60 dark:hover:bg-[#16348f] dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f]"
           >
-            {loading ? 'Verifica…' : 'Crea account studente'}
+            {loading ? 'Verifying…' : 'Create student account'}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-slate-600 dark:text-slate-300">
-          Hai già un account?{' '}
+          Already have an account?{' '}
           <Link to="/login" className="font-semibold text-binavy hover:text-bireg focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-white dark:hover:text-bireg dark:focus-visible:ring-white/20 dark:focus-visible:ring-offset-[#0a0f1f]">
-            Accedi
+            Log in
           </Link>
         </p>
       </div>
@@ -220,15 +220,15 @@ function mapStudentError(err) {
   if (err instanceof ApiError) {
     const serverMessage = err.payload?.error || err.message
     if (err.status === 409) {
-      return serverMessage || 'Email già registrata.'
+      return serverMessage || 'Email already registered.'
     }
     if (err.status === 400) {
-      return serverMessage || 'Codice Scuola non valido.'
+      return serverMessage || 'Invalid School Code.'
     }
     if (err.status >= 500) {
-      return 'Errore server, riprova più tardi.'
+      return 'Server error, please try again later.'
     }
-    return serverMessage || 'Errore del server. Riprova più tardi.'
+    return serverMessage || 'Server error. Please try again later.'
   }
-  return err?.message || 'Connessione non disponibile.'
+  return err?.message || 'Connection unavailable.'
 }

@@ -20,7 +20,7 @@ app.post("/auth/login", async (req, res) => {
     const tryLogin = async (user, role, nameField, extra = {}) => {
       if (!user) return false;
       if (user.status !== "active") {
-        res.status(423).json({ error: "Utente disabilitato" });
+        res.status(423).json({ error: "User disabled" });
         return true;
       }
       if (!(await comparePassword(password, user.password_hash))) {
@@ -47,7 +47,7 @@ app.post("/auth/login", async (req, res) => {
     const student = await findStudentByEmail(email);
     if (await tryLogin(student, "student", "full_name", { schoolId: student?.school?.[0] })) return;
 
-    return res.status(401).json({ error: "Email o password non valide" });
+    return res.status(401).json({ error: "Invalid email or password" });
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "Server error" });
@@ -61,7 +61,7 @@ app.post("/auth/signup-student", async (req, res) => {
 
     // E-mail unica tra gli studenti
     const exists = await findStudentByEmail(email);
-    if (exists) return res.status(409).json({ error: "Email già registrata" });
+    if (exists) return res.status(409).json({ error: "Email already registered" });
 
     const password_hash = await hashPassword(password);
 
@@ -84,10 +84,10 @@ app.post("/auth/signup-school", async (req, res) => {
     const { name, email, password, otp_code } = req.body;
 
     const already = await findSchoolByEmail(email);
-    if (already) return res.status(409).json({ error: "Email scuola già registrata" });
+    if (already) return res.status(409).json({ error: "School email already registered" });
 
     const otp = await findOTP(otp_code);
-    if (!otp || otp.used === true) return res.status(400).json({ error: "OTP non valido o già usato" });
+    if (!otp || otp.used === true) return res.status(400).json({ error: "OTP not valid or already used" });
 
     const password_hash = await hashPassword(password);
 

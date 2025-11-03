@@ -53,8 +53,8 @@ export default function SignupSchool() {
       setOtp('')
       setSchoolCode(data?.schoolCode || '')
       const destination = getDashboardPath(data?.role) || '/school'
-      const codeMessage = data?.schoolCode ? ` Il tuo Codice Scuola è ${data.schoolCode}.` : ''
-      setSuccess(`Registrazione completata!${codeMessage} Ti reindirizzo…`)
+      const codeMessage = data?.schoolCode ? ` Your School Code is ${data.schoolCode}.` : ''
+      setSuccess(`Registration completed!${codeMessage} Redirecting…`)
       setTimeout(() => {
         navigate(destination, { replace: true })
       }, 1000)
@@ -71,9 +71,9 @@ export default function SignupSchool() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-biwhite via-biwhite to-binavy/10 px-4 py-10 dark:from-[#0a0f1f] dark:via-[#0a0f1f] dark:to-[#001c5e]">
       <div className="mx-auto w-full max-w-xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm shadow-soft backdrop-blur dark:border-white/10 dark:bg-slate-900/70">
-        <h1 className="text-3xl font-semibold text-center text-binavy dark:text-white">Registra la tua scuola</h1>
+        <h1 className="text-3xl font-semibold text-center text-binavy dark:text-white">Register your school</h1>
         <p className="mt-2 text-center text-sm text-slate-600 dark:text-slate-300">
-          Inserisci l’OTP ricevuto e crea l’account della sede BI.
+          Enter the OTP you received and create the BI campus account.
         </p>
 
         {error && (
@@ -94,11 +94,11 @@ export default function SignupSchool() {
             <span>{success}</span>
             {schoolCode && (
               <div className="rounded-lg border border-binavy/20 bg-white px-3 py-2 text-center text-sm font-semibold text-binavy dark:border-white/10 dark:bg-[#152044] dark:text-white">
-                Codice Scuola: {schoolCode}
+                School Code: {schoolCode}
               </div>
             )}
             <Link to="/school" className="font-medium text-emerald-700 underline">
-              Vai alla dashboard scuola
+              Go to the school dashboard
             </Link>
           </div>
         )}
@@ -106,7 +106,7 @@ export default function SignupSchool() {
         <form onSubmit={handleSubmit} className="mt-6 space-y-5" noValidate aria-busy={loading} aria-live="polite">
           <div>
             <label htmlFor="school-name" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              Nome Scuola
+              School name
             </label>
             <input
               id="school-name"
@@ -122,7 +122,7 @@ export default function SignupSchool() {
 
           <div>
             <label htmlFor="school-email" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              Email istituzionale
+              Institutional email
             </label>
             <input
               id="school-email"
@@ -132,7 +132,7 @@ export default function SignupSchool() {
               className="mt-1 w-full rounded-xl border border-binavy/30 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-binavy focus:ring-offset-2 focus:ring-offset-white dark:border-white/10 dark:bg-[#111a33] dark:text-slate-200 dark:focus:ring-[#6a87ff] dark:focus:ring-offset-[#0a0f1f]"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              placeholder="nome@istituto.it"
+              placeholder="name@institution.it"
               disabled={loading}
             />
           </div>
@@ -152,12 +152,12 @@ export default function SignupSchool() {
               placeholder="••••••••"
               disabled={loading}
             />
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Minimo 8 caratteri, almeno una lettera e un numero.</p>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">At least 8 characters, including one letter and one number.</p>
           </div>
 
           <div>
             <label htmlFor="school-confirm-password" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              Conferma password
+              Confirm password
             </label>
             <input
               id="school-confirm-password"
@@ -174,7 +174,7 @@ export default function SignupSchool() {
 
           <div>
             <label htmlFor="school-otp" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              Codice OTP
+              OTP code
             </label>
             <input
               id="school-otp"
@@ -189,7 +189,7 @@ export default function SignupSchool() {
               placeholder="000000"
               disabled={loading}
             />
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Codice fornito dal supporto BI (6 cifre).</p>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Code provided by BI support (6 digits).</p>
           </div>
 
           <button
@@ -197,14 +197,14 @@ export default function SignupSchool() {
             disabled={!isValid || loading}
             className="w-full rounded-full bg-binavy py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-[#001c5e] focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60 dark:hover:bg-[#16348f] dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f]"
           >
-            {loading ? 'Verifica…' : 'Crea account scuola'}
+            {loading ? 'Verifying…' : 'Create school account'}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-slate-600 dark:text-slate-300">
-          Hai già un account?{' '}
+          Already have an account?{' '}
           <Link to="/login" className="font-semibold text-binavy hover:text-bireg focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-white dark:hover:text-bireg dark:focus-visible:ring-white/20 dark:focus-visible:ring-offset-[#0a0f1f]">
-            Accedi
+            Log in
           </Link>
         </p>
       </div>
@@ -216,15 +216,15 @@ function mapSchoolError(err) {
   if (err instanceof ApiError) {
     const serverMessage = err.payload?.error || err.message
     if (err.status === 400) {
-      return serverMessage || 'OTP non valido o già usato.'
+      return serverMessage || 'OTP not valid or already used.'
     }
     if (err.status === 409) {
-      return serverMessage || 'Email scuola già registrata.'
+      return serverMessage || 'School email already registered.'
     }
     if (err.status >= 500) {
-      return 'Errore server, riprova più tardi.'
+      return 'Server error, please try again later.'
     }
-    return serverMessage || 'Errore del server. Riprova più tardi.'
+    return serverMessage || 'Server error. Please try again later.'
   }
-  return err?.message || 'Connessione non disponibile.'
+  return err?.message || 'Connection unavailable.'
 }

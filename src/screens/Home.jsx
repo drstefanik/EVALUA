@@ -16,7 +16,7 @@ const card = (d = 0) => ({
 export default function Home() {
   return (
     <main className="relative overflow-hidden bg-gradient-to-b from-biwhite via-biwhite to-binavy/10 text-center dark:from-[#0a0f1f] dark:via-[#0a0f1f] dark:to-[#001c5e]">
-      {/* === SFONDI === */}
+      {/* === BACKGROUNDS === */}
       <div className="pointer-events-none absolute inset-0 -z-30 animate-gradient-x bg-gradient-to-r from-binavy via-biwhite to-bireg bg-[length:200%_200%] opacity-80 dark:from-[#001c5e] dark:via-[#0a0f1f] dark:to-[#7a0b18] dark:opacity-60" />
       <div className="absolute inset-0 -z-20 bg-hero-gradient" />
       <div className="absolute inset-0 -z-10 bg-network bg-cover bg-center opacity-[0.18] dark:opacity-[0.12]" />
@@ -51,11 +51,11 @@ export default function Home() {
           </motion.div>
 
           <h1 className="max-w-3xl text-3xl font-semibold leading-tight text-binavy md:text-5xl dark:text-white">
-            Il programma di certificazione orizzontale per tutti gli studenti della scuola pubblica italiana
+            The horizontal certification program for every student in Italy's public schools
           </h1>
 
           <p className="max-w-2xl text-base text-slate-600 dark:text-slate-300">
-            Materiali ufficiali sempre aggiornati, area download dedicata alla tua sede e registrazione studenti con Codice Scuola.
+            Official materials always up to date, a download area dedicated to your campus, and student sign-ups with a School Code.
           </p>
 
           <div className="mt-2 flex flex-wrap justify-center gap-3">
@@ -63,13 +63,13 @@ export default function Home() {
               to="/signup-school"
               className="rounded-full bg-binavy px-6 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-[#001c5e] focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:hover:bg-[#16348f] dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f]"
             >
-              Registra la tua scuola
+              Register your school
             </Link>
             <Link
               to="/signup-student"
               className="rounded-full border border-binavy/30 bg-white px-6 py-3 text-sm font-semibold text-binavy shadow-sm transition hover:border-binavy hover:bg-biwhite focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-white/10 dark:bg-[#152044] dark:text-white dark:hover:bg-[#001c5e] dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f]"
             >
-              Sono uno studente
+              I'm a student
             </Link>
           </div>
         </motion.div>
@@ -85,15 +85,15 @@ export default function Home() {
             <img src={logoBI} alt="British Institutes" className="h-full w-full object-contain p-6" />
           </div>
           <div className="mt-5">
-            <h3 className="mb-2 text-xl font-semibold text-binavy dark:text-white">Scuola</h3>
+            <h3 className="mb-2 text-xl font-semibold text-binavy dark:text-white">School</h3>
             <p className="mb-4 text-sm text-slate-600 dark:text-slate-300">
-              Spazio riservato alla sede per condividere i materiali con le proprie classi.
+              A dedicated space for the campus to share materials with its classes.
             </p>
             <Link
               to="/signup-school"
               className="inline-flex items-center text-sm font-semibold text-bireg transition hover:text-bireg/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-[#ff7a88] dark:focus-visible:ring-white/20 dark:focus-visible:ring-offset-[#0a0f1f]"
             >
-              Vai →
+              Open →
             </Link>
           </div>
         </motion.div>
@@ -103,18 +103,18 @@ export default function Home() {
           className="rounded-3xl border border-slate-200 bg-white p-6 text-left shadow-sm shadow-soft transition-shadow hover:shadow-lg dark:border-white/10 dark:bg-slate-900/70"
         >
           <div className="aspect-[21/9] w-full overflow-hidden rounded-2xl bg-binavy/5 dark:bg-white/10">
-            <img src={illStudent} alt="Studente" className="h-full w-full object-contain p-6" />
+            <img src={illStudent} alt="Student" className="h-full w-full object-contain p-6" />
           </div>
           <div className="mt-5">
-            <h3 className="mb-2 text-xl font-semibold text-binavy dark:text-white">Studente</h3>
+            <h3 className="mb-2 text-xl font-semibold text-binavy dark:text-white">Student</h3>
             <p className="mb-4 text-sm text-slate-600 dark:text-slate-300">
-              Registrati con il Codice Scuola e accedi ai download della tua sede.
+              Sign up with your School Code and access the downloads for your campus.
             </p>
             <Link
               to="/signup-student"
               className="inline-flex items-center text-sm font-semibold text-bireg transition hover:text-bireg/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-[#ff7a88] dark:focus-visible:ring-white/20 dark:focus-visible:ring-offset-[#0a0f1f]"
             >
-              Vai →
+              Open →
             </Link>
           </div>
         </motion.div>

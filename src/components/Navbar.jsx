@@ -10,13 +10,13 @@ export default function Navbar() {
   const menuRef = useRef(null);
   const navigate = useNavigate();
 
-  // Carica sessione
+  // Load session
   useEffect(() => {
     const s = getStoredSession?.();
     setSession(s || null);
   }, []);
 
-  // Chiudi dropdown al click fuori
+  // Close dropdown when clicking outside
   useEffect(() => {
     function onClickOutside(e) {
       if (open && menuRef.current && !menuRef.current.contains(e.target)) {
@@ -47,9 +47,9 @@ export default function Navbar() {
           BI NEXT
         </Link>
 
-        {/* Azioni destra */}
+        {/* Right side actions */}
         <div className="flex items-center gap-2">
-          {/* Se loggato: mostra pulsante Dashboard */}
+          {/* If logged in: show Dashboard button */}
           {session ? (
             <button
               type="button"
@@ -60,7 +60,7 @@ export default function Navbar() {
               Dashboard
             </button>
           ) : (
-            /* Se NON loggato: mostra dropdown Signup/Login */
+            /* If NOT logged in: show Sign-up/Login dropdown */
             <div className="relative" ref={menuRef}>
               <button
                 type="button"
@@ -69,7 +69,7 @@ export default function Navbar() {
                 aria-expanded={open}
                 className="inline-flex items-center gap-1 rounded-xl border px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 dark:border-white/10 dark:text-slate-100 dark:hover:bg-slate-800"
               >
-                Accedi / Iscriviti
+                Log in / Sign up
                 <ChevronDown
                   className={`transition-transform ${open ? "rotate-180" : ""}`}
                   size={16}
@@ -80,7 +80,7 @@ export default function Navbar() {
               {open && (
                 <div
                   role="menu"
-                  aria-label="Menu accesso"
+                  aria-label="Access menu"
                   className="absolute right-0 mt-2 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-white/10 dark:bg-slate-900/90"
                 >
                   <Link
@@ -89,7 +89,7 @@ export default function Navbar() {
                     className="block rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 focus:bg-slate-50 dark:text-slate-100 dark:hover:bg-slate-800"
                     onClick={() => setOpen(false)}
                   >
-                    Signup Scuola
+                    School sign-up
                   </Link>
                   <Link
                     to="/signup-student"
@@ -97,7 +97,7 @@ export default function Navbar() {
                     className="block rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 focus:bg-slate-50 dark:text-slate-100 dark:hover:bg-slate-800"
                     onClick={() => setOpen(false)}
                   >
-                    Signup Studente
+                    Student sign-up
                   </Link>
                   <Link
                     to="/login"

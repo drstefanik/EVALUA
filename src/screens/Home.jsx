@@ -31,7 +31,7 @@ export default function Home() {
         src={evaluaLogo}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute -z-10 left-1/2 top-1/2 w-[85vw] max-w-5xl -translate-x-1/2 -translate-y-1/2 opacity-[0.045]"
+        className="pointer-events-none absolute -z-10 left-1/2 top-1/2 w-[85vw] max-w-5xl -translate-x-1/2 -translate-y-1/2 opacity-[0.45]"
         animate={{ rotate: 360 }}
         transition={{ duration: 120, ease: 'linear', repeat: Infinity }}
       />

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import Particles from '../components/Particles.jsx'
 import SEO from '../components/SEO.jsx'
 import { marketingContent } from '../lib/marketingContent.js'
+import evaluaLogo from '../assets/EVALUA.svg' // <-- il tuo file
 
 const cardAnimation = (delay = 0) => ({
   initial: { opacity: 0, y: 16 },
@@ -20,16 +21,39 @@ export default function Home() {
         description="Evalua Education advances English certification across the Arab world through QUAET benchmarking, adaptive testing, and trusted qualification frameworks for institutions and learners."
         path="/"
       />
+
+      {/* background base */}
       <div className="absolute inset-0 -z-20 bg-hero-sheen" />
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,var(--brand-muted),transparent_60%)]" />
+
+      {/* watermark del logo: grande, leggerissimo, che ruota piano */}
+      <motion.img
+        src={evaluaLogo}
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute -z-10 left-1/2 top-1/2 w-[85vw] max-w-5xl -translate-x-1/2 -translate-y-1/2 opacity-[0.045]"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 120, ease: 'linear', repeat: Infinity }}
+      />
+
       <Particles density={120} />
 
       {/* HERO */}
       <section className="relative z-10 mx-auto flex min-h-[80vh] max-w-6xl flex-col items-center justify-center gap-10 px-4 pt-28 text-center md:gap-12">
+        {/* logo in primo piano con reveal */}
+        <motion.img
+          src={evaluaLogo}
+          alt="EVALUA Education"
+          className="w-40 md:w-56 drop-shadow"
+          initial={{ opacity: 0, scale: 0.95, y: 12, filter: 'blur(4px)' }}
+          animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
+          transition={{ duration: 0.9, ease: 'easeOut' }}
+        />
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9 }}
+          transition={{ duration: 0.9, delay: 0.05 }}
           className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-base)] px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--text-muted)]"
         >
           Credibility • Innovation • Impact
@@ -38,7 +62,7 @@ export default function Home() {
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.1 }}
+          transition={{ duration: 1, delay: 0.15 }}
           className="max-w-4xl text-4xl font-semibold leading-tight text-[var(--text-primary)] md:text-6xl"
         >
           Advancing English certification across the Arab world.
@@ -47,7 +71,7 @@ export default function Home() {
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2 }}
+          transition={{ duration: 1, delay: 0.25 }}
           className="max-w-2xl text-base text-[var(--text-secondary)] md:text-lg"
         >
           Evalua Education is an international awarding body based in the United Arab Emirates. Through
@@ -59,8 +83,8 @@ export default function Home() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.3 }}
-          className="flex flex-wrap justify-center gap-4 pt-4"
+          transition={{ duration: 1, delay: 0.35 }}
+          className="flex flex-wrap justify-center gap-4 pt-2"
         >
           <Link
             to="/solutions/testing-platform"
@@ -85,9 +109,7 @@ export default function Home() {
         >
           <div className="space-y-3">
             <span className="text-3xl" aria-hidden>🧭</span>
-            <h2 className="text-xl font-semibold text-[var(--text-primary)]">
-              One ecosystem, multiple pathways
-            </h2>
+            <h2 className="text-xl font-semibold text-[var(--text-primary)]">One ecosystem, multiple pathways</h2>
             <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
               Placement, formative assessment, and certification combine in a unified, data-driven
               experience for institutions, teachers, and learners.
@@ -96,9 +118,7 @@ export default function Home() {
 
           <div className="space-y-3">
             <span className="text-3xl" aria-hidden>🔐</span>
-            <h2 className="text-xl font-semibold text-[var(--text-primary)]">
-              Secure and transparent certification
-            </h2>
+            <h2 className="text-xl font-semibold text-[var(--text-primary)]">Secure and transparent certification</h2>
             <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
               Verified delivery, adaptive scoring, and authentic digital credentials ensure integrity
               from registration to recognition.
@@ -107,9 +127,7 @@ export default function Home() {
 
           <div className="space-y-3">
             <span className="text-3xl" aria-hidden>🌍</span>
-            <h2 className="text-xl font-semibold text-[var(--text-primary)]">
-              Global standards, regional impact
-            </h2>
+            <h2 className="text-xl font-semibold text-[var(--text-primary)]">Global standards, regional impact</h2>
             <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
               Aligned with CEFR, ACTFL, and GSE, Evalua pairs international quality with cultural
               relevance and accessibility.
@@ -131,10 +149,7 @@ export default function Home() {
                 with CEFR and major global frameworks.
               </p>
             </div>
-            <Link
-              to="/solutions/testing-platform"
-              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[var(--brand-primary)] transition hover:opacity-80"
-            >
+            <Link to="/solutions/testing-platform" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[var(--brand-primary)] transition hover:opacity-80">
               Learn more <span aria-hidden>→</span>
             </Link>
           </motion.article>
@@ -151,10 +166,7 @@ export default function Home() {
                 results and authentic digital credentials.
               </p>
             </div>
-            <Link
-              to="/solutions/certification"
-              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[var(--brand-primary)] transition hover:opacity-80"
-            >
+            <Link to="/solutions/certification" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[var(--brand-primary)] transition hover:opacity-80">
               Learn more <span aria-hidden>→</span>
             </Link>
           </motion.article>
@@ -171,10 +183,7 @@ export default function Home() {
                 assessments into national and regional frameworks.
               </p>
             </div>
-            <Link
-              to="/solutions/partnerships"
-              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[var(--brand-primary)] transition hover:opacity-80"
-            >
+            <Link to="/solutions/partnerships" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[var(--brand-primary)] transition hover:opacity-80">
               Learn more <span aria-hidden>→</span>
             </Link>
           </motion.article>

@@ -5,9 +5,6 @@ import Particles from '../components/Particles.jsx'
 import SEO from '../components/SEO.jsx'
 import { marketingContent } from '../lib/marketingContent.js'
 
-const brand = marketingContent.brand
-const solutions = marketingContent.pages.solutions.cards
-
 const cardAnimation = (delay = 0) => ({
   initial: { opacity: 0, y: 16 },
   whileInView: { opacity: 1, y: 0 },
@@ -20,14 +17,14 @@ export default function Home() {
     <main className="relative overflow-hidden">
       <SEO
         title="Home"
-        description="Evalua Education advances English certification across the Arab world through QuAET benchmarking, adaptive assessment, and trusted pathways for institutions and learners."
+        description="Evalua Education advances English certification across the Arab world through QUAET benchmarking, adaptive testing, and trusted qualification frameworks for institutions and learners."
         path="/"
       />
       <div className="absolute inset-0 -z-20 bg-hero-sheen" />
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,var(--brand-muted),transparent_60%)]" />
       <Particles density={120} />
 
-      {/* HERO SECTION */}
+      {/* HERO */}
       <section className="relative z-10 mx-auto flex min-h-[80vh] max-w-6xl flex-col items-center justify-center gap-10 px-4 pt-28 text-center md:gap-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -35,7 +32,7 @@ export default function Home() {
           transition={{ duration: 0.9 }}
           className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-base)] px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--text-muted)]"
         >
-          {brand.tagline}
+          Credibility • Innovation • Impact
         </motion.div>
 
         <motion.h1
@@ -55,7 +52,8 @@ export default function Home() {
         >
           Evalua Education is an international awarding body based in the United Arab Emirates. Through
           <strong> QUAET — the Qualification UAE Adaptive English Test</strong> — and future assessments,
-          we deliver solutions that combine innovation, credibility, and cultural relevance.
+          we deliver solutions that combine innovation, credibility, and cultural relevance for learners
+          and institutions across the region.
         </motion.p>
 
         <motion.div
@@ -79,7 +77,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* FEATURE GRID */}
+      {/* FEATURE CARDS */}
       <section className="relative z-10 mx-auto max-w-6xl px-4 pb-32 pt-10">
         <motion.div
           {...cardAnimation(0.15)}
@@ -119,31 +117,67 @@ export default function Home() {
           </div>
         </motion.div>
 
-        {/* SOLUTIONS SECTION */}
+        {/* SOLUTIONS GRID */}
         <div className="mt-20 grid gap-10 md:grid-cols-3">
-          {solutions.map((solution, index) => (
-            <motion.article
-              key={solution.title}
-              {...cardAnimation(0.25 + index * 0.05)}
-              className="flex h-full flex-col justify-between rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-8 shadow-soft hover:shadow-md transition-shadow"
+          <motion.article
+            {...cardAnimation(0.25)}
+            className="flex h-full flex-col justify-between rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-8 shadow-soft hover:shadow-md transition-shadow"
+          >
+            <div className="space-y-4">
+              <span className="text-3xl" aria-hidden>🧪</span>
+              <h3 className="text-lg font-semibold text-[var(--text-primary)]">Adaptive Testing Platform</h3>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                Deliver secure, computer-based English tests through Evalua’s adaptive system, aligned
+                with CEFR and major global frameworks.
+              </p>
+            </div>
+            <Link
+              to="/solutions/testing-platform"
+              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[var(--brand-primary)] transition hover:opacity-80"
             >
-              <div className="space-y-4">
-                <span className="text-3xl" aria-hidden>
-                  {index === 0 ? '🧪' : index === 1 ? '🎓' : '🤝'}
-                </span>
-                <h3 className="text-lg font-semibold text-[var(--text-primary)]">{solution.title}</h3>
-                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                  {solution.description}
-                </p>
-              </div>
-              <Link
-                to={solution.href}
-                className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[var(--brand-primary)] transition hover:opacity-80"
-              >
-                Learn more <span aria-hidden>→</span>
-              </Link>
-            </motion.article>
-          ))}
+              Learn more <span aria-hidden>→</span>
+            </Link>
+          </motion.article>
+
+          <motion.article
+            {...cardAnimation(0.3)}
+            className="flex h-full flex-col justify-between rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-8 shadow-soft hover:shadow-md transition-shadow"
+          >
+            <div className="space-y-4">
+              <span className="text-3xl" aria-hidden>🎓</span>
+              <h3 className="text-lg font-semibold text-[var(--text-primary)]">Certification and Recognition</h3>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                QUAET – the Qualification UAE Adaptive English Test – provides internationally comparable
+                results and authentic digital credentials.
+              </p>
+            </div>
+            <Link
+              to="/solutions/certification"
+              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[var(--brand-primary)] transition hover:opacity-80"
+            >
+              Learn more <span aria-hidden>→</span>
+            </Link>
+          </motion.article>
+
+          <motion.article
+            {...cardAnimation(0.35)}
+            className="flex h-full flex-col justify-between rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-8 shadow-soft hover:shadow-md transition-shadow"
+          >
+            <div className="space-y-4">
+              <span className="text-3xl" aria-hidden>🤝</span>
+              <h3 className="text-lg font-semibold text-[var(--text-primary)]">Institutional Partnerships</h3>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                Collaborations with ministries, universities, and educational bodies to integrate Evalua
+                assessments into national and regional frameworks.
+              </p>
+            </div>
+            <Link
+              to="/solutions/partnerships"
+              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[var(--brand-primary)] transition hover:opacity-80"
+            >
+              Learn more <span aria-hidden>→</span>
+            </Link>
+          </motion.article>
         </div>
       </section>
     </main>

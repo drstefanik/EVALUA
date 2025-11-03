@@ -1,0 +1,1 @@
+import React from'react';export default function StudentDownloads(){return <div className='rounded-2xl border bg-white p-4'>Sezione Download Studente (albero cartelle + file — placeholder)</div>}

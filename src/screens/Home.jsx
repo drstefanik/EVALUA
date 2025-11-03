@@ -3,14 +3,13 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Particles from '../components/Particles.jsx'
 import SEO from '../components/SEO.jsx'
-import { marketingContent } from '../lib/marketingContent.js'
-import evaluaLogo from '../assets/EVALUA.svg' // <-- il tuo file
+import evaluaLogo from '../assets/EVALUA.svg'
 
 const cardAnimation = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
+  initial: { opacity: 0, y: 18 },
   whileInView: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, delay },
-  viewport: { once: true, amount: 0.4 }
+  transition: { duration: 0.65, delay, ease: 'easeOut' },
+  viewport: { once: true, amount: 0.35 }
 })
 
 export default function Home() {
@@ -18,60 +17,51 @@ export default function Home() {
     <main className="relative overflow-hidden">
       <SEO
         title="Home"
-        description="Evalua Education advances English certification across the world through QUAET benchmarking, adaptive testing, and trusted qualification frameworks for institutions and learners."
+        description="Evalua Education advances English certification through QUAET adaptive testing and internationally benchmarked qualifications."
         path="/"
       />
 
-      {/* background base */}
-      <div className="absolute inset-0 -z-20 bg-hero-sheen" />
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,var(--brand-muted),transparent_60%)]" />
+      {/* --- Animated gradient background (premium UAE palette) --- */}
+      <div className="absolute inset-0 -z-20 evalua-gradient" />
+      {/* soft light sheen for depth */}
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(1200px_500px_at_50%_-200px,rgba(255,255,255,.35),transparent_60%)]" />
 
-      {/* watermark del logo: grande, leggerissimo, che ruota piano */}
-      <motion.img
-        src={evaluaLogo}
-        alt=""
-        aria-hidden="true"
-        className="pointer-events-none absolute -z-10 left-1/2 top-1/2 w-[85vw] max-w-5xl -translate-x-1/2 -translate-y-1/2 opacity-[0.45]"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 120, ease: 'linear', repeat: Infinity }}
-      />
-
-      <Particles density={120} />
+      {/* very subtle decorative particles */}
+      <Particles density={90} />
 
       {/* HERO */}
-      <section className="relative z-10 mx-auto flex min-h-[80vh] max-w-6xl flex-col items-center justify-center gap-10 px-4 pt-28 text-center md:gap-12">
-        {/* logo in primo piano con reveal */}
+      <section className="relative z-10 mx-auto flex min-h-[82vh] max-w-6xl flex-col items-center justify-center gap-9 px-4 pt-28 text-center md:gap-12">
+        {/* floating logo with breathing effect */}
         <motion.img
           src={evaluaLogo}
           alt="EVALUA Education"
-          className="w-40 md:w-56 drop-shadow"
-          initial={{ opacity: 0, scale: 0.95, y: 12, filter: 'blur(4px)' }}
-          animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
-          transition={{ duration: 0.9, ease: 'easeOut' }}
+          className="w-44 md:w-64 drop-shadow-xl"
+          animate={{ y: [0, -10, 0], scale: [1, 1.02, 1] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
         />
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.05 }}
-          className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-base)] px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--text-muted)]"
+          transition={{ duration: 0.9, ease: 'easeOut' }}
+          className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-base)]/80 backdrop-blur px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--text-muted)]"
         >
           Credibility • Innovation • Impact
         </motion.div>
 
         <motion.h1
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.15 }}
+          transition={{ duration: 1.05, delay: 0.05, ease: 'easeOut' }}
           className="max-w-4xl text-4xl font-semibold leading-tight text-[var(--text-primary)] md:text-6xl"
         >
           Advancing English certification across the world.
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.25 }}
+          transition={{ duration: 1.05, delay: 0.12, ease: 'easeOut' }}
           className="max-w-2xl text-base text-[var(--text-secondary)] md:text-lg"
         >
           Evalua Education is an international awarding body based in the United Arab Emirates. Through
@@ -81,9 +71,9 @@ export default function Home() {
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.35 }}
+          transition={{ duration: 0.9, delay: 0.2, ease: 'easeOut' }}
           className="flex flex-wrap justify-center gap-4 pt-2"
         >
           <Link
@@ -102,10 +92,10 @@ export default function Home() {
       </section>
 
       {/* FEATURE CARDS */}
-      <section className="relative z-10 mx-auto max-w-6xl px-4 pb-32 pt-10">
+      <section className="relative z-10 mx-auto max-w-6xl px-4 pb-32 pt-8">
         <motion.div
-          {...cardAnimation(0.15)}
-          className="grid gap-10 rounded-3xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-10 shadow-soft md:grid-cols-3"
+          {...cardAnimation(0.12)}
+          className="grid gap-10 rounded-3xl border border-[var(--border-subtle)] bg-[var(--surface-base)]/90 p-10 shadow-[0_20px_60px_rgba(0,0,0,0.12)] backdrop-blur-sm md:grid-cols-3"
         >
           <div className="space-y-3">
             <span className="text-3xl" aria-hidden>🧭</span>
@@ -138,8 +128,8 @@ export default function Home() {
         {/* SOLUTIONS GRID */}
         <div className="mt-20 grid gap-10 md:grid-cols-3">
           <motion.article
-            {...cardAnimation(0.25)}
-            className="flex h-full flex-col justify-between rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-8 shadow-soft hover:shadow-md transition-shadow"
+            {...cardAnimation(0.2)}
+            className="flex h-full flex-col justify-between rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-base)]/95 p-8 shadow-soft hover:shadow-md transition-shadow"
           >
             <div className="space-y-4">
               <span className="text-3xl" aria-hidden>🧪</span>
@@ -155,8 +145,8 @@ export default function Home() {
           </motion.article>
 
           <motion.article
-            {...cardAnimation(0.3)}
-            className="flex h-full flex-col justify-between rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-8 shadow-soft hover:shadow-md transition-shadow"
+            {...cardAnimation(0.27)}
+            className="flex h-full flex-col justify-between rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-base)]/95 p-8 shadow-soft hover:shadow-md transition-shadow"
           >
             <div className="space-y-4">
               <span className="text-3xl" aria-hidden>🎓</span>
@@ -172,8 +162,8 @@ export default function Home() {
           </motion.article>
 
           <motion.article
-            {...cardAnimation(0.35)}
-            className="flex h-full flex-col justify-between rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-8 shadow-soft hover:shadow-md transition-shadow"
+            {...cardAnimation(0.34)}
+            className="flex h-full flex-col justify-between rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-base)]/95 p-8 shadow-soft hover:shadow-md transition-shadow"
           >
             <div className="space-y-4">
               <span className="text-3xl" aria-hidden>🤝</span>
@@ -189,6 +179,27 @@ export default function Home() {
           </motion.article>
         </div>
       </section>
+
+      {/* local styles for the animated gradient (no external file needed) */}
+      <style>{`
+        :root{
+          /* UAE-inspired premium palette */
+          --evalua-g1:#004C46; /* deep emerald */
+          --evalua-g2:#E03E36; /* UAE red */
+          --evalua-g3:#D4AF37; /* satin gold */
+        }
+        @keyframes gradientMove{
+          0%{background-position:0% 50%}
+          50%{background-position:100% 50%}
+          100%{background-position:0% 50%}
+        }
+        .evalua-gradient{
+          background-image: linear-gradient(135deg,var(--evalua-g1),var(--evalua-g2),var(--evalua-g3));
+          background-size: 400% 400%;
+          animation: gradientMove 18s ease-in-out infinite;
+          opacity: .14; /* elegante, non invasivo */
+        }
+      `}</style>
     </main>
   )
 }

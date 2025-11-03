@@ -34,7 +34,7 @@ export default function SchoolDashboard() {
       } catch (error) {
         if (!active) return
         console.error('Unable to fetch school code', error)
-        const message = error?.message || 'Impossibile recuperare il Codice Scuola.'
+        const message = error?.message || 'Unable to fetch the School Code.'
         setCodeError(message)
       } finally {
         if (active) {
@@ -75,7 +75,7 @@ export default function SchoolDashboard() {
       .catch((error) => {
         console.error('Unable to fetch students', error)
         if (!active) return
-        const message = error?.message || 'Impossibile recuperare gli studenti.'
+        const message = error?.message || 'Unable to fetch the students.'
         setStudentsError(message)
         setStudents([])
       })
@@ -95,13 +95,13 @@ export default function SchoolDashboard() {
     try {
       if (navigator?.clipboard?.writeText) {
         await navigator.clipboard.writeText(code)
-        setCopyMessage('Codice copiato negli appunti!')
+        setCopyMessage('School code copied to clipboard!')
       } else {
-        throw new Error('Clipboard API non disponibile')
+        throw new Error('Clipboard API not available')
       }
     } catch (error) {
       console.error('Copy school code failed', error)
-      setCopyMessage('Copia manuale: seleziona il codice e premi Ctrl+C.')
+      setCopyMessage('Manual copy: select the code and press Ctrl+C.')
     }
 
     setTimeout(() => {
@@ -113,14 +113,14 @@ export default function SchoolDashboard() {
     <div className="min-h-screen bg-gradient-to-b from-biwhite via-biwhite to-binavy/10 px-4 py-12 dark:from-[#0a0f1f] dark:via-[#0a0f1f] dark:to-[#001c5e]">
       <div className="mx-auto flex max-w-4xl flex-col gap-8">
         <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-          <h1 className="text-3xl font-semibold text-binavy dark:text-white">Area Scuola</h1>
+          <h1 className="text-3xl font-semibold text-binavy dark:text-white">School area</h1>
           <p className="mt-3 text-slate-600 dark:text-slate-300">
             {schoolName
-              ? `Benvenuto ${schoolName}! Qui puoi gestire il Codice Scuola da condividere con gli studenti.`
-              : 'Benvenuto nella dashboard della tua scuola. Qui troverai materiali e potrai gestire il tuo Codice Scuola.'}
+              ? `Welcome ${schoolName}! Manage the School Code to share with your students.`
+              : 'Welcome to your school dashboard. Access materials and manage your School Code here.'}
           </p>
           <div className="mt-6 inline-flex items-center gap-2 text-sm text-binavy dark:text-slate-200">
-            <span>Vuoi uscire?</span>
+            <span>Want to sign out?</span>
             <Link to="/logout" className="font-semibold text-binavy underline-offset-4 hover:text-bireg dark:text-white dark:hover:text-bireg">
               Logout
             </Link>
@@ -128,9 +128,9 @@ export default function SchoolDashboard() {
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-          <h2 className="text-2xl font-semibold text-binavy dark:text-white">Codice Scuola</h2>
+          <h2 className="text-2xl font-semibold text-binavy dark:text-white">School Code</h2>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-            Condividi questo codice con gli studenti per permettere la registrazione ai corsi BI Next.
+            Share this code with students so they can register for BI Next courses.
           </p>
 
           {codeError && (
@@ -144,7 +144,7 @@ export default function SchoolDashboard() {
 
           <div className="mt-5 flex flex-col items-start gap-3 rounded-2xl border border-dashed border-binavy/30 bg-binavy/5 px-5 py-6 dark:border-white/10 dark:bg-[#111a33]/60 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">Codice attivo</p>
+              <p className="text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">Active code</p>
               <p className="mt-2 text-3xl font-semibold tracking-[0.2em] text-binavy dark:text-white">
                 {loadingCode ? '••••••••' : code || '— — — — — — — —'}
               </p>
@@ -155,7 +155,7 @@ export default function SchoolDashboard() {
               disabled={!code || loadingCode}
               className="inline-flex items-center gap-2 rounded-full bg-binavy px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#001c5e] focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60 dark:hover:bg-[#16348f] dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f]"
             >
-              Copia Codice
+              Copy code
             </button>
           </div>
 
@@ -167,9 +167,9 @@ export default function SchoolDashboard() {
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-          <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">I miei studenti</h2>
+          <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">My students</h2>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-            Elenco studenti registrati con il tuo Codice Scuola.
+            List of students registered with your School Code.
           </p>
 
           {studentsError && (
@@ -182,11 +182,11 @@ export default function SchoolDashboard() {
           )}
 
           {loadingStudents && !studentsError && (
-            <p className="mt-6 text-sm text-slate-500">Caricamento studenti...</p>
+            <p className="mt-6 text-sm text-slate-500">Loading students…</p>
           )}
 
           {!loadingStudents && !studentsError && students.length === 0 && (
-            <p className="mt-6 text-sm text-slate-500">Nessuno studente registrato al momento.</p>
+            <p className="mt-6 text-sm text-slate-500">No students registered yet.</p>
           )}
 
           {!loadingStudents && students.length > 0 && (
@@ -194,9 +194,9 @@ export default function SchoolDashboard() {
               <table className="min-w-full border-collapse text-left text-sm">
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-700">
-                    <th className="py-2 px-3 font-semibold text-slate-700 dark:text-slate-200">Nome</th>
+                    <th className="py-2 px-3 font-semibold text-slate-700 dark:text-slate-200">Name</th>
                     <th className="py-2 px-3 font-semibold text-slate-700 dark:text-slate-200">Email</th>
-                    <th className="py-2 px-3 font-semibold text-slate-700 dark:text-slate-200">Data registrazione</th>
+                    <th className="py-2 px-3 font-semibold text-slate-700 dark:text-slate-200">Registration date</th>
                   </tr>
                 </thead>
                 <tbody>

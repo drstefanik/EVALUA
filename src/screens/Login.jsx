@@ -28,7 +28,7 @@ export default function Login(){
       persistSession(data)
       setPassword('')
       const destination = getDashboardPath(data?.role)
-      setSuccess('Accesso effettuato, ti reindirizzo…')
+      setSuccess('Logged in successfully, redirecting…')
       setTimeout(() => {
         navigate(destination, { replace: true })
       }, 400)
@@ -44,8 +44,8 @@ export default function Login(){
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-slate-50">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
-        <h1 className="text-3xl font-semibold mb-2 text-center">Accedi</h1>
-        <p className="text-sm text-slate-500 mb-6 text-center">Inserisci le tue credenziali per continuare.</p>
+        <h1 className="text-3xl font-semibold mb-2 text-center">Log in</h1>
+        <p className="text-sm text-slate-500 mb-6 text-center">Enter your credentials to continue.</p>
 
         {error && (
           <div role="alert" className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" aria-live="assertive">
@@ -78,7 +78,7 @@ export default function Login(){
           <div>
             <div className="flex items-center justify-between">
               <label htmlFor="login-password" className="text-sm font-medium text-slate-700">Password</label>
-              <Link to="/forgot" className="text-xs text-binavy hover:underline">Password dimenticata?</Link>
+              <Link to="/forgot" className="text-xs text-binavy hover:underline">Forgot password?</Link>
             </div>
             <input
               id="login-password"
@@ -98,18 +98,18 @@ export default function Login(){
             disabled={!isValid || loading}
             className="w-full rounded-xl bg-binavy py-2 text-sm font-semibold text-white transition focus:outline-none focus:ring-2 focus:ring-binavy focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {loading ? 'Verifica…' : 'Accedi'}
+            {loading ? 'Checking…' : 'Log in'}
           </button>
         </form>
 
         <div className="mt-6 space-y-2 text-center text-sm">
           <p className="text-slate-500">
-            Non hai ancora un account?{' '}
-            <Link to="/signup-school" className="font-medium text-binavy hover:underline">Crea un account scuola</Link>
+            Don't have an account yet?{' '}
+            <Link to="/signup-school" className="font-medium text-binavy hover:underline">Create a school account</Link>
           </p>
           <p className="text-slate-500">
-            Oppure{' '}
-            <Link to="/signup-student" className="font-medium text-binavy hover:underline">crea un account studente</Link>
+            Or{' '}
+            <Link to="/signup-student" className="font-medium text-binavy hover:underline">create a student account</Link>
           </p>
         </div>
       </div>
@@ -121,12 +121,12 @@ function getErrorMessage(err) {
   if (err instanceof ApiError) {
     const serverMessage = err.payload?.error || err.message
     if (err.status === 401) {
-      return serverMessage || 'Email o password non valide.'
+      return serverMessage || 'Invalid email or password.'
     }
     if (err.status === 423) {
-      return serverMessage || 'Utente disabilitato. Contatta il supporto.'
+      return serverMessage || 'User disabled. Contact support.'
     }
-    return serverMessage || 'Errore del server. Riprova più tardi.'
+    return serverMessage || 'Server error. Please try again later.'
   }
-  return err?.message || 'Connessione non disponibile.'
+  return err?.message || 'Connection unavailable.'
 }

@@ -1,1 +1,60 @@
-import React,{useState}from'react';import{at}from'../../lib/airtable.js';export default function SignupStudent(){const[code,setCode]=useState('');const[name,setName]=useState('');const[email,setEmail]=useState('');const[password,setPassword]=useState('');const[res,setRes]=useState(null);const submit=async()=>{const sTbl=import.meta.env.VITE_AT_TABLE_SCHOOLS;const r=await at.list(sTbl,{filterByFormula:`{code} = '${code}'`});const school=r.records?.[0];if(!school)return setRes('Codice scuola non valido');await at.create(import.meta.env.VITE_AT_TABLE_STUDENTS,{full_name:name,email,password_hash:password,school:[school.id],status:'active'});setRes('Account studente creato. Ora puoi fare login.');};return(<div className='max-w-md mx-auto p-6 rounded-2xl border mt-6 bg-white'><h1 className='text-xl font-semibold mb-4'>Registrazione Studente (con Codice Scuola)</h1><input placeholder='Codice Scuola' className='w-full mb-2 border rounded-lg p-2' value={code} onChange={e=>setCode(e.target.value)}/><input placeholder='Nome e cognome' className='w-full mb-2 border rounded-lg p-2' value={name} onChange={e=>setName(e.target.value)}/><input placeholder='Email' className='w-full mb-2 border rounded-lg p-2' value={email} onChange={e=>setEmail(e.target.value)}/><input placeholder='Password' type='password' className='w-full mb-4 border rounded-lg p-2' value={password} onChange={e=>setPassword(e.target.value)}/><button onClick={submit} className='w-full rounded-lg bg-binavy text-white py-2'>Crea account</button>{res&&<p className='text-sm mt-3'>{res}</p>}</div>)}
+import React, { useState } from 'react'
+import { at } from '../../lib/airtable.js'
+
+export default function SignupStudent() {
+  const [code, setCode] = useState('')
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [res, setRes] = useState(null)
+
+  const submit = async () => {
+    const sTbl = import.meta.env.VITE_AT_TABLE_SCHOOLS
+    const r = await at.list(sTbl, { filterByFormula: `{code} = '${code}'` })
+    const school = r.records?.[0]
+    if (!school) return setRes('Invalid School Code')
+    await at.create(import.meta.env.VITE_AT_TABLE_STUDENTS, {
+      full_name: name,
+      email,
+      password_hash: password,
+      school: [school.id],
+      status: 'active',
+    })
+    setRes('Student account created. You can log in now.')
+  }
+
+  return (
+    <div className='max-w-md mx-auto p-6 rounded-2xl border mt-6 bg-white'>
+      <h1 className='text-xl font-semibold mb-4'>Student registration (with School Code)</h1>
+      <input
+        placeholder='School Code'
+        className='w-full mb-2 border rounded-lg p-2'
+        value={code}
+        onChange={(event) => setCode(event.target.value)}
+      />
+      <input
+        placeholder='Full name'
+        className='w-full mb-2 border rounded-lg p-2'
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+      />
+      <input
+        placeholder='Email'
+        className='w-full mb-2 border rounded-lg p-2'
+        value={email}
+        onChange={(event) => setEmail(event.target.value)}
+      />
+      <input
+        placeholder='Password'
+        type='password'
+        className='w-full mb-4 border rounded-lg p-2'
+        value={password}
+        onChange={(event) => setPassword(event.target.value)}
+      />
+      <button onClick={submit} className='w-full rounded-lg bg-binavy text-white py-2'>
+        Create account
+      </button>
+      {res && <p className='text-sm mt-3'>{res}</p>}
+    </div>
+  )
+}

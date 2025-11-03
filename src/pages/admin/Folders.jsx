@@ -1,1 +1,9 @@
-import React from'react';export default function AdminFolders(){return <div className='rounded-2xl border bg-white p-4'>Gestione Cartelle (MVP placeholder)</div>}
+import React from 'react'
+
+export default function AdminFolders() {
+  return (
+    <div className='rounded-2xl border bg-white p-4'>
+      Folder management (MVP placeholder)
+    </div>
+  )
+}

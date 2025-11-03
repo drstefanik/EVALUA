@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     body = await parseJsonBody(req);
   } catch (error) {
     console.error("Invalid JSON body", error);
-    return sendError(res, 400, "Payload non valido");
+    return sendError(res, 400, "Invalid payload");
   }
 
   const full_name = typeof body?.full_name === "string" ? body.full_name.trim() : "";
@@ -22,22 +22,22 @@ export default async function handler(req, res) {
   const school_code = school_code_raw.toUpperCase();
 
   if (!full_name || !email || !password) {
-    return sendError(res, 400, "Dati di registrazione studente incompleti");
+    return sendError(res, 400, "Incomplete student registration data");
   }
 
   if (!school_code) {
-    return sendError(res, 400, "Codice Scuola obbligatorio");
+    return sendError(res, 400, "School Code is required");
   }
 
   try {
     const school = await findSchoolByCode(school_code);
     if (!school) {
-      return sendError(res, 400, "Codice Scuola non valido");
+      return sendError(res, 400, "Invalid School Code");
     }
 
     const existing = await findStudentByEmail(email);
     if (existing) {
-      return sendError(res, 409, "Email già registrata");
+      return sendError(res, 409, "Email already registered");
     }
 
     const password_hash = await hashPassword(password);
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
     const id = created[0]?.id;
     if (!id) {
       console.error("Student creation failed", created);
-      return sendError(res, 500, "Impossibile creare lo studente");
+      return sendError(res, 500, "Unable to create the student");
     }
 
     const payload = {

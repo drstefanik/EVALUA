@@ -21,21 +21,21 @@ export default async function handler(req, res) {
     body = await parseJsonBody(req);
   } catch (error) {
     console.error("Invalid JSON body", error);
-    return sendError(res, 400, "Payload non valido");
+    return sendError(res, 400, "Invalid payload");
   }
 
   const email = typeof body?.email === "string" ? body.email.trim() : "";
   const password = typeof body?.password === "string" ? body.password : "";
 
   if (!email || !password) {
-    return sendError(res, 400, "Email e password sono obbligatorie");
+    return sendError(res, 400, "Email and password are required");
   }
 
   const tryLogin = async (user, role, nameField, extras = {}) => {
     if (!user) return false;
 
     if (user.status !== "active") {
-      sendError(res, 423, "Utente disabilitato");
+      sendError(res, 423, "User disabled");
       return true;
     }
 
@@ -87,7 +87,7 @@ export default async function handler(req, res) {
       }
     }
     if (await tryLogin(student, "student", "full_name", studentExtras)) return;
-    return sendError(res, 401, "Email o password non valide");
+    return sendError(res, 401, "Invalid email or password");
   } catch (error) {
     console.error("Login error", error);
     return sendError(res, 500, "Server error");

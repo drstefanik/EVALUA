@@ -33,7 +33,7 @@ async function request(path, { method = 'GET', body, headers = {}, withAuth = fa
       body: body ? JSON.stringify(body) : undefined,
     })
   } catch (error) {
-    throw new Error('Connessione non disponibile.')
+    throw new Error('Connection unavailable.')
   }
 
   let data = null
@@ -44,7 +44,7 @@ async function request(path, { method = 'GET', body, headers = {}, withAuth = fa
   }
 
   if (!response.ok) {
-    const message = data?.error || 'Errore del server. Riprova più tardi.'
+    const message = data?.error || 'Server error. Please try again later.'
     throw new ApiError(message, response.status, data)
   }
 
@@ -175,7 +175,7 @@ export async function fetchSchoolCode() {
 
 export async function fetchStudentsBySchool(code) {
   if (!code) {
-    throw new Error('Codice scuola mancante')
+    throw new Error('Missing school code')
   }
 
   return request(`/get-students-by-school?code=${encodeURIComponent(code)}`)
@@ -183,7 +183,7 @@ export async function fetchStudentsBySchool(code) {
 
 export async function fetchSchoolByCode(code) {
   if (!code) {
-    throw new Error('Codice scuola mancante')
+    throw new Error('Missing school code')
   }
 
   return request(`/get-school-by-code?code=${encodeURIComponent(code)}`)

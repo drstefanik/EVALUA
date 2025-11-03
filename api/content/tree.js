@@ -75,7 +75,7 @@ export default async function handler(req, res) {
 
   const token = extractToken(req);
   if (!token) {
-    return sendError(res, 401, "Token non fornito");
+    return sendError(res, 401, "Token not provided");
   }
 
   let payload;
@@ -83,11 +83,11 @@ export default async function handler(req, res) {
     payload = verifyJWT(token);
   } catch (error) {
     console.error("Invalid JWT for content tree", error);
-    return sendError(res, 401, "Sessione non valida");
+    return sendError(res, 401, "Invalid session");
   }
 
   if (payload?.role !== "student") {
-    return sendError(res, 403, "Accesso negato");
+    return sendError(res, 403, "Access denied");
   }
 
   try {
@@ -145,6 +145,6 @@ export default async function handler(req, res) {
     res.status(200).json({ folders, files });
   } catch (error) {
     console.error("student tree error", error);
-    return res.status(500).json({ error: "Errore nel recupero dei contenuti" });
+    return res.status(500).json({ error: "Error retrieving content" });
   }
 }

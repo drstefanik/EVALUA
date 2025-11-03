@@ -67,9 +67,9 @@ export default function ThemeToggle() {
       type="button"
       onClick={toggleTheme}
       className="relative flex h-9 w-9 items-center justify-center rounded-full border border-binavy/40 bg-white text-binavy transition hover:border-binavy hover:bg-binavy/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-white/20 dark:bg-[#152044] dark:text-biwhite dark:hover:bg-[#001c5e] dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f]"
-      aria-label={isDark ? 'Attiva tema chiaro' : 'Attiva tema scuro'}
+      aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
     >
-      <span className="sr-only">{isDark ? 'Tema scuro attivo' : 'Tema chiaro attivo'}</span>
+      <span className="sr-only">{isDark ? 'Dark theme active' : 'Light theme active'}</span>
       {isDark ? <Moon className="h-5 w-5" strokeWidth={1.75} /> : <Sun className="h-5 w-5" strokeWidth={1.75} />}
     </button>
   )

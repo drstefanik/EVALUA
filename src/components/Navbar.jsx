@@ -4,7 +4,7 @@ import { ChevronDown, LayoutDashboard, Menu, X } from 'lucide-react'
 import ThemeToggle from './ThemeToggle'
 import { getStoredSession, getDashboardPath } from '../api'
 import { marketingContent } from '../lib/marketingContent'
-import evaluaGlobe from '../assets/EVALUA globe.svg' // nuovo logo
+import evaluaGlobe from '../assets/evalua-globe.svg' // <-- logo (rinominato senza spazi)
 
 const nav = marketingContent.navigation
 
@@ -30,15 +30,16 @@ export default function Navbar() {
   const [solutionsOpen, setSolutionsOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [session, setSession] = useState(null)
+
   const authMenuRef = useRef(null)
   const solutionsRef = useRef(null)
   const mobileMenuRef = useRef(null)
+
   const navigate = useNavigate()
   const location = useLocation()
 
   useEffect(() => {
-    const s = getStoredSession?.()
-    setSession(s || null)
+    setSession(getStoredSession?.() || null)
   }, [])
 
   useEffect(() => {
@@ -59,10 +60,9 @@ export default function Navbar() {
         setMobileMenuOpen(false)
       }
     }
-
     document.addEventListener('mousedown', onClickOutside)
     return () => document.removeEventListener('mousedown', onClickOutside)
-  }, [authMenuOpen, mobileMenuOpen, solutionsOpen])
+  }, [authMenuOpen, solutionsOpen, mobileMenuOpen])
 
   const handleDashboard = () => {
     try {
@@ -74,7 +74,7 @@ export default function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--border-subtle)] bg-[var(--surface-elevated)] backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-[var(--border-subtle)] bg-[var(--surface-elevated)]/80 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         {/* --- LOGO + Brand --- */}
         <div className="flex items-center gap-6">
@@ -90,7 +90,7 @@ export default function Navbar() {
             <span className="font-semibold tracking-wide text-[var(--text-primary)]">EVALUA Education</span>
           </Link>
 
-          {/* --- MAIN NAVIGATION --- */}
+          {/* --- MAIN NAVIGATION (desktop) --- */}
           <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
             {primaryLinks.map((link) =>
               link.children ? (
@@ -143,8 +143,9 @@ export default function Navbar() {
           </nav>
         </div>
 
-        {/* --- RIGHT MENU (LOGIN / DASHBOARD / THEME) --- */}
+        {/* --- RIGHT MENU (LOGIN / SIGN UP / DASHBOARD / THEME) --- */}
         <div className="flex items-center gap-2">
+          {/* mobile burger */}
           <div className="lg:hidden">
             <button
               type="button"
@@ -158,6 +159,7 @@ export default function Navbar() {
             </button>
           </div>
 
+          {/* desktop auth controls */}
           {session ? (
             <button
               type="button"
@@ -168,34 +170,19 @@ export default function Navbar() {
               Dashboard
             </button>
           ) : (
-            <div className="relative hidden lg:block" ref={authMenuRef}>
-              <button
-                type="button"
-                onClick={() => setAuthMenuOpen((v) => !v)}
-                aria-haspopup="menu"
-                aria-expanded={authMenuOpen}
-                className="inline-flex items-center gap-1 rounded-full border border-[var(--border-subtle)] px-4 py-2 text-sm font-medium text-[var(--text-muted)] transition hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]"
+            <div className="hidden items-center gap-2 lg:flex">
+              <Link
+                to="/login"
+                className="rounded-full border border-[var(--border-subtle)] px-4 py-2 text-sm font-semibold text-[var(--text-primary)] hover:border-[var(--border-strong)]"
               >
-                Log in / Sign up
-                <ChevronDown className={`h-4 w-4 transition-transform ${authMenuOpen ? 'rotate-180' : ''}`} />
-              </button>
-              {authMenuOpen && (
-                <div
-                  role="menu"
-                  aria-label="Access menu"
-                  className="absolute right-0 mt-2 w-60 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-2 shadow-soft"
-                >
-                  <Link to="/signup-school" className="block rounded-xl px-3 py-2 text-sm text-[var(--text-muted)] transition hover:bg-[var(--brand-muted)] hover:text-[var(--text-primary)]">
-                    School sign-up
-                  </Link>
-                  <Link to="/signup-student" className="block rounded-xl px-3 py-2 text-sm text-[var(--text-muted)] transition hover:bg-[var(--brand-muted)] hover:text-[var(--text-primary)]">
-                    Student sign-up
-                  </Link>
-                  <Link to="/login" className="block rounded-xl px-3 py-2 text-sm text-[var(--text-muted)] transition hover:bg-[var(--brand-muted)] hover:text-[var(--text-primary)]">
-                    Login
-                  </Link>
-                </div>
-              )}
+                Log in
+              </Link>
+              <Link
+                to="/signup-school"
+                className="rounded-full bg-[var(--brand-primary)] px-4 py-2 text-sm font-semibold text-[var(--brand-primary-contrast)] shadow-soft hover:opacity-90"
+              >
+                Sign up
+              </Link>
             </div>
           )}
 
@@ -203,7 +190,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* MOBILE MENU */}
+      {/* --- MOBILE MENU --- */}
       {mobileMenuOpen && (
         <div id="mobile-menu" ref={mobileMenuRef} className="lg:hidden">
           <div className="border-t border-[var(--border-subtle)] bg-[var(--surface-base)] px-4 py-4">
@@ -245,14 +232,17 @@ export default function Navbar() {
                 </button>
               ) : (
                 <div className="space-y-2">
-                  <Link to="/signup-school" className="block rounded-full border border-[var(--border-subtle)] px-4 py-3 text-center text-sm font-semibold text-[var(--text-primary)]">
-                    School sign-up
+                  <Link
+                    to="/signup-school"
+                    className="block rounded-full bg-[var(--brand-primary)] px-4 py-3 text-center text-sm font-semibold text-[var(--brand-primary-contrast)]"
+                  >
+                    Sign up
                   </Link>
-                  <Link to="/signup-student" className="block rounded-full border border-[var(--border-subtle)] px-4 py-3 text-center text-sm font-semibold text-[var(--text-primary)]">
-                    Student sign-up
-                  </Link>
-                  <Link to="/login" className="block rounded-full bg-[var(--brand-primary)] px-4 py-3 text-center text-sm font-semibold text-[var(--brand-primary-contrast)]">
-                    Login
+                  <Link
+                    to="/login"
+                    className="block rounded-full border border-[var(--border-subtle)] px-4 py-3 text-center text-sm font-semibold text-[var(--text-primary)]"
+                  >
+                    Log in
                   </Link>
                 </div>
               )}

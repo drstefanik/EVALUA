@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Particles from '../components/Particles.jsx'
 import SEO from '../components/SEO.jsx'
-import evaluaLogo from '../assets/EVALUA.svg'
+import evaluaDarkmodeLogo from '../assets/EVALUA DARKMODE.svg'
 
 const cardAnimation = (delay = 0) => ({
   initial: { opacity: 0, y: 18 },
@@ -33,7 +33,7 @@ export default function Home() {
       <section className="relative z-10 mx-auto flex min-h-[82vh] max-w-6xl flex-col items-center justify-center gap-9 px-4 pt-28 text-center md:gap-12">
         {/* floating logo with breathing effect */}
         <motion.img
-          src={evaluaLogo}
+          src={evaluaDarkmodeLogo}
           alt="EVALUA Education"
           className="w-44 md:w-64 drop-shadow-xl"
           animate={{ y: [0, -10, 0], scale: [1, 1.02, 1] }}

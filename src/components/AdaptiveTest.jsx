@@ -1,14 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Suspense, lazy } from "react";
 import { initState, pickNextItem, gradeAnswer, computeResult } from "../engine/adaptive";
 import { useItems } from "../hooks/useItems";
-import {
-  Radar,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
+
+// 🔸 Lazy import del radar (caricato solo quando finished === true)
+const RadarBreakdown = lazy(() => import("./RadarBreakdown.jsx"));
 
 export default function AdaptiveTest() {
   const { items, error } = useItems(); // carica A1..C2
@@ -65,7 +60,7 @@ export default function AdaptiveTest() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
-    }).catch(() => {/* silenzioso: non blocca la UI */});
+    }).catch(() => {});
   }, [finished, result]);
 
   if (error) return <div className="p-6 text-red-600">Errore nel caricare i dati.</div>;
@@ -100,17 +95,10 @@ export default function AdaptiveTest() {
           </p>
         </div>
 
-        {/* Radar */}
-        <div className="h-80 w-full">
-          <ResponsiveContainer>
-            <RadarChart data={breakdown}>
-              <PolarGrid />
-              <PolarAngleAxis dataKey="level" />
-              <Tooltip />
-              <Radar name="Items" dataKey="count" fillOpacity={0.35} />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
+        {/* Radar lazy-loaded */}
+        <Suspense fallback={<div className="h-80 flex items-center justify-center">Loading chart…</div>}>
+          <RadarBreakdown data={breakdown} />
+        </Suspense>
 
         {/* (Opzionale) JSON raw */}
         <pre className="text-xs bg-gray-50 p-3 rounded">

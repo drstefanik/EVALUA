@@ -10,24 +10,31 @@ export default async function handler(req, res) {
   }
 
   try {
-    const body = await req.json?.() || req.body; // Vercel edge/node compat
-    const {
-      userId, userEmail,
-      estimatedLevel, confidence,
-      askedByLevel, totalItems,
-      startedAt, durationSec
-    } = body || {};
+    // Edge (req.json) o Node (req.body)
+    const body = (typeof req.json === "function") ? await req.json() : req.body || {};
+
+    // Fallback multipli: body -> header -> cookie
+    const header = (name) => req.headers[name]?.toString() || "";
+    const cookie = (name) =>
+      (req.headers.cookie || "")
+        .split(";")
+        .map(s => s.trim())
+        .find(c => c.startsWith(name + "="))
+        ?.split("=")[1] || "";
+
+    let userId = body.userId || header("x-user-id") || cookie("userId") || null;
+    let userEmail = body.userEmail || header("x-user-email") || header("x-user") || cookie("userEmail") || null;
 
     const rec = {
       fields: {
-        UserId: userId || "",
-        UserEmail: userEmail || "",
-        EstimatedLevel: estimatedLevel || "",
-        Confidence: confidence ?? null,
-        AskedByLevel: JSON.stringify(askedByLevel || {}),
-        TotalItems: totalItems ?? null,
-        StartedAt: startedAt || new Date().toISOString(),
-        DurationSec: durationSec ?? null,
+        UserId: userId || null,
+        UserEmail: userEmail || null,
+        EstimatedLevel: body.estimatedLevel || null,
+        Confidence: body.confidence ?? null,
+        AskedByLevel: JSON.stringify(body.askedByLevel || {}),
+        TotalItems: body.totalItems ?? null,
+        StartedAt: body.startedAt || new Date().toISOString(),
+        DurationSec: body.durationSec ?? null,
       }
     };
 

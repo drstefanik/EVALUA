@@ -34,13 +34,18 @@ function getCurrentUserFromStorage() {
   return fallback;
 }
 
+function getToken() {
+  // salvato dopo /api/auth/login
+  return localStorage.getItem("authToken") || "";
+}
+
 export default function AdaptiveTest() {
   const { items, error } = useItems();
   const [st] = useState(initState);
   const [item, setItem] = useState(null);
   const [finished, setFinished] = useState(false);
   const [result, setResult] = useState(null);
-  const [pendingNext, setPendingNext] = useState(false); // piccolo feedback UI
+  const [pendingNext, setPendingNext] = useState(false);
 
   const startedAtIsoRef = useRef(new Date().toISOString());
   const startedAtTsRef = useRef(Date.now());
@@ -80,7 +85,6 @@ export default function AdaptiveTest() {
     if (!items || !item || pendingNext) return;
     setPendingNext(true);
     gradeAnswer(st, item, idx);
-    // mini delay per dare feedback visivo
     setTimeout(() => {
       setPendingNext(false);
       goNext();
@@ -92,6 +96,7 @@ export default function AdaptiveTest() {
     if (!finished || !result) return;
 
     const { id, email } = getCurrentUserFromStorage();
+    const token = getToken();
 
     const payload = {
       userId: id || null,
@@ -111,7 +116,8 @@ export default function AdaptiveTest() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            // Fallback sicuro: li legge anche se non sono nel body
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            // Fallback: l’API li legge anche se non sono nel body
             "x-user-id": payload.userId ?? "",
             "x-user-email": payload.userEmail ?? "",
           },

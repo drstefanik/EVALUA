@@ -19,7 +19,11 @@ function buildHeaders(base = {}) {
 async function request(path, { method = 'GET', body, headers = {}, withAuth = false } = {}) {
   const finalHeaders = buildHeaders(headers)
   if (withAuth) {
-    const token = localStorage.getItem('token')
+    // 🔄 Usa sempre authToken (nuovo) come priorità
+    const token =
+      localStorage.getItem('authToken') ||
+      localStorage.getItem('token') ||
+      null
     if (token) {
       finalHeaders.Authorization = `Bearer ${token}`
     }
@@ -39,7 +43,7 @@ async function request(path, { method = 'GET', body, headers = {}, withAuth = fa
   let data = null
   try {
     data = await response.json()
-  } catch (error) {
+  } catch {
     data = null
   }
 
@@ -50,6 +54,8 @@ async function request(path, { method = 'GET', body, headers = {}, withAuth = fa
 
   return data
 }
+
+// -------- AUTH --------
 
 export async function login({ email, password }) {
   return request('/auth/login', {
@@ -73,6 +79,8 @@ export async function signupStudent({ full_name, email, password, school_code })
   })
 }
 
+// -------- SESSION --------
+
 export function persistSession({
   token,
   role,
@@ -82,46 +90,26 @@ export function persistSession({
   schoolName,
   schoolCode,
 }) {
-  if (token) {
-    localStorage.setItem('token', token)
-  } else {
-    localStorage.removeItem('token')
-  }
-  if (role) {
-    localStorage.setItem('role', role)
-  } else {
-    localStorage.removeItem('role')
-  }
+  if (token) localStorage.setItem('token', token)
+  else localStorage.removeItem('token')
 
-  if (name) {
-    localStorage.setItem('name', name)
-  } else {
-    localStorage.removeItem('name')
-  }
+  if (role) localStorage.setItem('role', role)
+  else localStorage.removeItem('role')
 
-  if (id) {
-    localStorage.setItem('id', id)
-  } else {
-    localStorage.removeItem('id')
-  }
+  if (name) localStorage.setItem('name', name)
+  else localStorage.removeItem('name')
 
-  if (schoolId !== undefined && schoolId !== null) {
-    localStorage.setItem('schoolId', schoolId)
-  } else {
-    localStorage.removeItem('schoolId')
-  }
+  if (id) localStorage.setItem('id', id)
+  else localStorage.removeItem('id')
 
-  if (schoolName) {
-    localStorage.setItem('schoolName', schoolName)
-  } else {
-    localStorage.removeItem('schoolName')
-  }
+  if (schoolId) localStorage.setItem('schoolId', schoolId)
+  else localStorage.removeItem('schoolId')
 
-  if (schoolCode) {
-    localStorage.setItem('schoolCode', schoolCode)
-  } else {
-    localStorage.removeItem('schoolCode')
-  }
+  if (schoolName) localStorage.setItem('schoolName', schoolName)
+  else localStorage.removeItem('schoolName')
+
+  if (schoolCode) localStorage.setItem('schoolCode', schoolCode)
+  else localStorage.removeItem('schoolCode')
 }
 
 export function clearSession() {
@@ -132,31 +120,46 @@ export function clearSession() {
   localStorage.removeItem('schoolId')
   localStorage.removeItem('schoolName')
   localStorage.removeItem('schoolCode')
+
+  // 🧹 Rimuovi anche i nuovi key introdotti da useAuth
+  localStorage.removeItem('authToken')
+  localStorage.removeItem('userId')
+  localStorage.removeItem('userEmail')
+  localStorage.removeItem('binext_user')
+  localStorage.removeItem('binext_role')
 }
 
+/**
+ * 🔍 Unified session getter
+ * Supporta:
+ *  - vecchi key (`token`, `role`, `id`, `name`, ecc.)
+ *  - nuovi key (`authToken`, `binext_user`, `binext_role`)
+ */
 export function getStoredSession() {
-  let stored = null
-
   try {
-    const raw = localStorage.getItem('session')
-    if (raw) {
-      stored = JSON.parse(raw)
-    }
-  } catch {
-    stored = null
-  }
+    // ✅ Prima prova con i nuovi key
+    const fakeUserRaw = localStorage.getItem('binext_user')
+    const fakeRole = localStorage.getItem('binext_role')
+    const fakeToken = localStorage.getItem('authToken')
 
-  if (stored && typeof stored === 'object') {
-    if (stored?.role && typeof stored.role === 'string') {
-      stored.role = stored.role.toLowerCase()
+    if (fakeUserRaw && fakeToken) {
+      const user = JSON.parse(fakeUserRaw)
+      return {
+        token: fakeToken,
+        role: fakeRole || user?.role || null,
+        id: user?.id || localStorage.getItem('userId') || null,
+        email: user?.email || localStorage.getItem('userEmail') || null,
+        name: user?.name || null,
+      }
     }
-    return stored
-  }
 
-  try {
-    const token = localStorage.getItem('token')
-    const role = localStorage.getItem('role')
-    const id = localStorage.getItem('id')
+    // 🔙 Altrimenti fallback al formato classico
+    const token =
+      localStorage.getItem('token') || localStorage.getItem('authToken')
+    const role =
+      localStorage.getItem('role') || localStorage.getItem('binext_role')
+    const id =
+      localStorage.getItem('id') || localStorage.getItem('userId')
     const name = localStorage.getItem('name')
     const schoolId = localStorage.getItem('schoolId')
     const schoolName = localStorage.getItem('schoolName')
@@ -176,6 +179,8 @@ export function getStoredSession() {
   }
 }
 
+// -------- UTILITIES --------
+
 export function getDashboardPath(role) {
   const r = String(role || '').toLowerCase()
   switch (r) {
@@ -194,7 +199,9 @@ export function getDashboardPath(role) {
 
 export function routeExists(pathname) {
   try {
-    const links = Array.from(document.querySelectorAll('a[href]')).map((a) => a.getAttribute('href'))
+    const links = Array.from(document.querySelectorAll('a[href]')).map((a) =>
+      a.getAttribute('href')
+    )
     return links.includes(pathname)
   } catch {
     return false
@@ -202,7 +209,8 @@ export function routeExists(pathname) {
 }
 
 export function buildAuthHeaders(headers = {}) {
-  const token = localStorage.getItem('token')
+  const token =
+    localStorage.getItem('authToken') || localStorage.getItem('token')
   if (token) {
     return {
       ...headers,

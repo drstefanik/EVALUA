@@ -218,7 +218,7 @@ export default function StudentDashboard() {
         <div className="grid gap-6 lg:grid-cols-[260px,1fr]">
           {/* Sidebar: tree dei folder */}
           <aside className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-            <h2 className="px-2 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-300">Folders</h2>
+            <h2 className="px-2 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-300">Learning Hub</h2>
             <div className="mt-2 space-y-1">
               {tree.length ? (
                 tree.map((node) => (

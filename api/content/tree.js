@@ -27,9 +27,12 @@ function sanitizeFolder(record) {
   const f = record?.fields ?? {};
   const parentId = extractRelationId(f.parent || f.parent_folder || f.folder_parent);
   const order = Number(f.order ?? f.sort_order);
+  const name = f.name ?? f.title ?? "";
   return {
     id: record.id,
-    name: f.name ?? f.title ?? "",
+    // 🔑 alias per compatibilità col frontend
+    name,
+    title: name,
     slug: f.slug ?? f.identifier ?? null,
     parent: typeof parentId === "string" ? parentId : null,
     visibility: f.visibility ?? "student",
@@ -71,7 +74,6 @@ export default async function handler(req, res) {
   if (!ensureMethod(req, res, "GET")) return;
   res.setHeader("Cache-Control", "no-store");
 
-  // auth
   const token = extractToken(req);
   if (!token) return sendError(res, 401, "Token not provided");
 
@@ -85,7 +87,7 @@ export default async function handler(req, res) {
   if (payload?.role !== "student") return sendError(res, 403, "Access denied");
 
   try {
-    // ---- FOLDERS (qui 'visibility' ESISTE) ----
+    // Folders (visibility esiste qui)
     const folderRecords = await tbl.FOLDERS.select({
       filterByFormula: '{visibility} = "student"',
       sort: [{ field: "order", direction: "asc" }],
@@ -97,17 +99,16 @@ export default async function handler(req, res) {
       .sort(
         (a, b) =>
           (a.order ?? 999) - (b.order ?? 999) ||
-          (a.name || "").localeCompare(b.name || "")
+          (a.title || "").localeCompare(b.title || "")
       );
 
     const folderIds = folders.map((f) => f.id);
     const folderIdSet = new Set(folderIds);
 
-    // ---- FILES (NO filterByFormula: filtriamo in memoria sugli ID cartella) ----
+    // Files (niente filtro Airtable: filtriamo in memoria sugli ID cartella)
     let files = [];
     if (folderIdSet.size > 0) {
       const fileRecords = await tbl.FILES.select({
-        // niente filtro lato Airtable sui LinkToRecord (comportamento poco affidabile)
         fields: ["title", "type", "url", "size", "folder", "order", "duration", "thumb", "prereq"],
         sort: [{ field: "order", direction: "asc" }],
       }).all();

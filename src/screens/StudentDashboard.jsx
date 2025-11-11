@@ -208,7 +208,7 @@ export default function StudentDashboard() {
         <div className="mb-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
           <h1 className="text-3xl font-semibold text-binavy dark:text-white">Student area</h1>
           <p className="mt-2 text-slate-600 dark:text-slate-300">
-            {studentName ? `Hi ${studentName}, your learning library is below.` : 'Explore your learning library.'}
+            {studentName ? `Hi ${studentName}, welcome to your learning environment` : 'Explore your learning contents.'}
           </p>
           <div className="mt-3 text-sm">
             <Link to="/logout" className="font-semibold underline-offset-4 text-binavy hover:text-bireg dark:text-white">Logout</Link>

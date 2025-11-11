@@ -105,7 +105,26 @@ export default function AdaptiveTest() {
       durationSec: Math.round((Date.now() - startedAtTsRef.current) / 1000),
     };
 
-    fetch("/api/save-placement", {
+    fetch("/api/await fetch("/api/save-placement", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    // Fallback sicuro: li legge anche se non sono nel body
+    "x-user-id": session?.user?.id || currentUser?.id || "",
+    "x-user-email": session?.user?.email || currentUser?.email || ""
+  },
+  body: JSON.stringify({
+    userId: session?.user?.id || currentUser?.id || null,
+    userEmail: session?.user?.email || currentUser?.email || null,
+    estimatedLevel,
+    confidence,
+    askedByLevel,
+    totalItems,
+    startedAt,
+    durationSec
+  })
+});
+placement", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

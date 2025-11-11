@@ -1,8 +1,8 @@
 // api/save-placement.js
-import { verifyJWT } from "../../src/util.js"; // stesso file dove hai signJWT
-
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
   const { AIRTABLE_API_KEY, AIRTABLE_BASE_ID, AIRTABLE_TABLE_PLACEMENTS } = process.env;
   if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID || !AIRTABLE_TABLE_PLACEMENTS) {
@@ -10,6 +10,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Supporto sia a edge (req.json) che a node (req.body)
     const body = (typeof req.json === "function") ? await req.json() : (req.body || {});
     const header = (n) => req.headers[n]?.toString() || "";
     const cookie = (name) =>
@@ -17,33 +18,45 @@ export default async function handler(req, res) {
         .split(";").map(s => s.trim())
         .find(c => c.startsWith(name + "="))?.split("=")[1] || "";
 
-    // 1) prova a leggere il JWT
-    let claims = null;
-    const auth = header("authorization");
-    if (auth?.startsWith("Bearer ")) {
-      const token = auth.slice(7);
-      try { claims = verifyJWT(token); } catch { /* token non valido, ignora */ }
-    }
+    // 🔹 Sorgenti identità (no JWT): header → body → cookie
+    const userIdRaw =
+      header("x-user-id") || body.userId || cookie("userId") || "";
+    const userEmailRaw =
+      header("x-user-email") || header("x-user") || body.userEmail || cookie("userEmail") || "";
 
-    // 2) Fallback chain
-    const userId =
-      body.userId || header("x-user-id") || cookie("userId") || claims?.id || null;
+    const userId = userIdRaw || null;
+    const userEmail = userEmailRaw || null;
 
-    const userEmail =
-      body.userEmail || header("x-user-email") || header("x-user") || cookie("userEmail") || claims?.email || null;
+    // 🔹 Normalizza campi payload
+    const estimatedLevel = body.estimatedLevel || null;
+    const confidence = (body.confidence ?? null);
+    const totalItems = (body.totalItems ?? null);
+    const startedAt = body.startedAt || new Date().toISOString();
+    const durationSec = (body.durationSec ?? null);
 
-    const rec = {
-      fields: {
-        UserId: userId || null,
-        UserEmail: userEmail || null,
-        EstimatedLevel: body.estimatedLevel || null,
-        Confidence: body.confidence ?? null,
-        AskedByLevel: JSON.stringify(body.askedByLevel || {}),
-        TotalItems: body.totalItems ?? null,
-        StartedAt: body.startedAt || new Date().toISOString(),
-        DurationSec: body.durationSec ?? null,
-      }
+    // Serializza in modo sicuro gli oggetti
+    const askedByLevel =
+      typeof body.askedByLevel === "string"
+        ? body.askedByLevel
+        : JSON.stringify(body.askedByLevel || {});
+    const askedBySkill =
+      typeof body.askedBySkill === "string"
+        ? body.askedBySkill
+        : (body.askedBySkill ? JSON.stringify(body.askedBySkill) : undefined);
+
+    const fields = {
+      UserId: userId,
+      UserEmail: userEmail,
+      EstimatedLevel: estimatedLevel,
+      Confidence: confidence,
+      AskedByLevel: askedByLevel,
+      TotalItems: totalItems,
+      StartedAt: startedAt,
+      DurationSec: durationSec,
     };
+    if (askedBySkill !== undefined) fields.AskedBySkill = askedBySkill;
+
+    const rec = { fields };
 
     const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_PLACEMENTS)}`;
     const resp = await fetch(url, {

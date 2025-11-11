@@ -2,6 +2,7 @@ import { ensureMethod, sendError } from "../_lib/http.js";
 import { verifyJWT } from "../../src/util.js";
 import { tbl } from "../../src/airtable.js";
 
+// ---- helpers ---------------------------------------------------------------
 function extractToken(req) {
   const header = req.headers?.authorization || req.headers?.Authorization;
   if (!header || typeof header !== "string") return null;
@@ -17,7 +18,7 @@ function extractRelationId(value) {
     if (first && typeof first === "object") return first.id || first.value || null;
     return null;
   }
-  if (typeof value === "object") return value.id || value.value || null;
+  if (typeof value === "object" && value !== null) return value.id || value.value || null;
   if (typeof value === "string") return value;
   return null;
 }
@@ -65,10 +66,12 @@ function extractFolderId(record) {
   return typeof folderId === "string" ? folderId : null;
 }
 
+// ---- handler ---------------------------------------------------------------
 export default async function handler(req, res) {
   if (!ensureMethod(req, res, "GET")) return;
   res.setHeader("Cache-Control", "no-store");
 
+  // auth
   const token = extractToken(req);
   if (!token) return sendError(res, 401, "Token not provided");
 
@@ -86,37 +89,38 @@ export default async function handler(req, res) {
     const folderRecords = await tbl.FOLDERS.select({
       filterByFormula: '{visibility} = "student"',
       sort: [{ field: "order", direction: "asc" }],
-      // prendi solo i campi reali della tabella
       fields: ["name", "slug", "visibility", "parent", "order"],
     }).all();
 
     const folders = folderRecords
       .map(sanitizeFolder)
-      .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || (a.name || "").localeCompare(b.name || ""));
+      .sort(
+        (a, b) =>
+          (a.order ?? 999) - (b.order ?? 999) ||
+          (a.name || "").localeCompare(b.name || "")
+      );
 
     const folderIds = folders.map((f) => f.id);
     const folderIdSet = new Set(folderIds);
 
-    // ---- FILES (NON c'è 'visibility' qui) ----
+    // ---- FILES (NO filterByFormula: filtriamo in memoria sugli ID cartella) ----
     let files = [];
     if (folderIdSet.size > 0) {
-const orOnFolder =
-  "OR(" +
-  folderIds.map((id) => `{folder} = '${id}'`).join(",") +
-  ")";
-
-
       const fileRecords = await tbl.FILES.select({
-        filterByFormula: orOnFolder,
-        // prendi solo campi REALI in Files
+        // niente filtro lato Airtable sui LinkToRecord (comportamento poco affidabile)
         fields: ["title", "type", "url", "size", "folder", "order", "duration", "thumb", "prereq"],
+        sort: [{ field: "order", direction: "asc" }],
       }).all();
 
       files = fileRecords
         .map((record) => ({ record, folderId: extractFolderId(record) }))
         .filter(({ folderId }) => folderId && folderIdSet.has(folderId))
         .map(({ record }) => sanitizeFile(record))
-        .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || (a.title || "").localeCompare(b.title || ""));
+        .sort(
+          (a, b) =>
+            (a.order ?? 999) - (b.order ?? 999) ||
+            (a.title || "").localeCompare(b.title || "")
+        );
     }
 
     console.log("student tree folders", folders.length);

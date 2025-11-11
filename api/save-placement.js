@@ -1,8 +1,8 @@
 // api/save-placement.js
+import { verifyJWT } from "../../src/util.js"; // stesso file dove hai signJWT
+
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
   const { AIRTABLE_API_KEY, AIRTABLE_BASE_ID, AIRTABLE_TABLE_PLACEMENTS } = process.env;
   if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID || !AIRTABLE_TABLE_PLACEMENTS) {
@@ -10,20 +10,27 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Edge (req.json) o Node (req.body)
-    const body = (typeof req.json === "function") ? await req.json() : req.body || {};
-
-    // Fallback multipli: body -> header -> cookie
-    const header = (name) => req.headers[name]?.toString() || "";
+    const body = (typeof req.json === "function") ? await req.json() : (req.body || {});
+    const header = (n) => req.headers[n]?.toString() || "";
     const cookie = (name) =>
       (req.headers.cookie || "")
-        .split(";")
-        .map(s => s.trim())
-        .find(c => c.startsWith(name + "="))
-        ?.split("=")[1] || "";
+        .split(";").map(s => s.trim())
+        .find(c => c.startsWith(name + "="))?.split("=")[1] || "";
 
-    let userId = body.userId || header("x-user-id") || cookie("userId") || null;
-    let userEmail = body.userEmail || header("x-user-email") || header("x-user") || cookie("userEmail") || null;
+    // 1) prova a leggere il JWT
+    let claims = null;
+    const auth = header("authorization");
+    if (auth?.startsWith("Bearer ")) {
+      const token = auth.slice(7);
+      try { claims = verifyJWT(token); } catch { /* token non valido, ignora */ }
+    }
+
+    // 2) Fallback chain
+    const userId =
+      body.userId || header("x-user-id") || cookie("userId") || claims?.id || null;
+
+    const userEmail =
+      body.userEmail || header("x-user-email") || header("x-user") || cookie("userEmail") || claims?.email || null;
 
     const rec = {
       fields: {
@@ -43,9 +50,9 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         Authorization: `Bearer ${AIRTABLE_API_KEY}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ records: [rec] })
+      body: JSON.stringify({ records: [rec] }),
     });
 
     if (!resp.ok) {

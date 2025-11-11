@@ -126,8 +126,7 @@ export default function AdaptiveTest() {
             The adaptive assessment established the candidate’s proficiency at{" "}
             <strong>CEFR {result.estimatedLevel}</strong>. The test concluded after{" "}
             <strong>{total}</strong> items. Distribution of administered items by pool → {used || "n/a"}.
-            Decision rule: last stable level (start B1; +1 after two consecutive correct; −1 after any error;
-            stop if a level reaches 7 items).
+            Decision rule: last stable level.
           </p>
         </div>
 

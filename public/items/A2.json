@@ -1,0 +1,472 @@
+[
+  {
+    "id": "A2-L-0001",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "The man can use the digital copies to finalise the agreement",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/ZWWH67lj_A2-1-_A2_test_118_part_A.mp3"
+  },
+  {
+    "id": "A2-L-0002",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "The man has forgotten to bring the contracts to the meeting.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/ZWWH67lj_A2-1-_A2_test_118_part_A.mp3"
+  },
+  {
+    "id": "A2-L-0003",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "Jane Sanders has called the office once to speak to the man.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/LBwwbVZO_A2-2-A2_test_118_part_A_bis.mp3"
+  },
+  {
+    "id": "A2-L-0004",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "The lady will organise some transport for the man from the airport",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/LBwwbVZO_A2-2-A2_test_118_part_A_bis.mp3"
+  },
+  {
+    "id": "A2-L-0005",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "Passengers with children are being asked to wait until the end to board the plane",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/6qKu6x8x_A2-3-A2_test_118_part_B.mp3"
+  },
+  {
+    "id": "A2-L-0006",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "The remaining passengers will board when they have been instructed to do so",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/6qKu6x8x_A2-3-A2_test_118_part_B.mp3"
+  },
+  {
+    "id": "A2-L-0007",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "Passengers have the option to smoke outside the airport",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/bzXnYP9T_A2-4-_A2_test_118_part_B_bis.mp3"
+  },
+  {
+    "id": "A2-L-0008",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "Passengers have to make a request to the staff to smoke inside the airport",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/bzXnYP9T_A2-4-_A2_test_118_part_B_bis.mp3"
+  },
+  {
+    "id": "A2-L-0009",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "Passengers are instructed to board from the ________ carriages only.",
+    "options": [
+      "first three",
+      "first five"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/FzQoqS8y_A2-5-_A2_test_118_part_B_tris.mp3"
+  },
+  {
+    "id": "A2-L-0010",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "The train will leave from platform ______",
+    "options": [
+      "8",
+      "3"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/FzQoqS8y_A2-5-_A2_test_118_part_B_tris.mp3"
+  },
+  {
+    "id": "A2-L-0011",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "Any bags taken on board the plane should have the passenger’s ____________",
+    "options": [
+      "flight number",
+      "personal details"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/ELwcUVy2_A2-6_A2_test_118_part_B_four.mp3"
+  },
+  {
+    "id": "A2-L-0012",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "Suitcases should always be _______ the passengers",
+    "options": [
+      "far from",
+      "near"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/ELwcUVy2_A2-6_A2_test_118_part_B_four.mp3"
+  },
+  {
+    "id": "A2-R-0013",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": ".……… the answer to this question?",
+    "options": [
+      "Knows she",
+      "Does she know",
+      "Does she knows"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A2-R-0014",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "……….. no fault of her own, Liz missed the connecting flight.",
+    "options": [
+      "Through",
+      "At",
+      "By",
+      "For"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-R-0015",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "At school: Listen carefully, and when the teacher finishes her presentation, she …....... your questions.",
+    "options": [
+      "will answer",
+      "answers",
+      "is answering"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-R-0016",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Derek: “I like your offices. Everything looks new.” Simon: “Thank you. All the offices ……… last year. Before, they were very dark and old.”",
+    "options": [
+      "were decorating",
+      "were decorated",
+      "decorated"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A2-R-0017",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Gemma ….. a book when she fell asleep.",
+    "options": [
+      "was reading",
+      "read",
+      "reads"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-R-0018",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Her _____ response to the complex question showed her deep understanding of the subject.",
+    "options": [
+      "thoughtful",
+      "quick",
+      "careless",
+      "vague"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-R-0019",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Here is your enrolment form. Please ..................... your personal details.",
+    "options": [
+      "hang up",
+      "look out",
+      "fill in"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "A2-R-0020",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "I can phone you when I .................. at the airport.",
+    "options": [
+      "will arrive",
+      "arrive",
+      "arriving"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A2-R-0021",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "I can smell gas! We …… leave the building immediately!",
+    "options": [
+      "must",
+      "may",
+      "could"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-R-0022",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "I didn’t catch a bus. I came here …….",
+    "options": [
+      "on foot",
+      "by feet",
+      "with feet"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-R-0023",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "I forgot _____ my homework, so I got a bad grade.",
+    "options": [
+      "doing",
+      "to do",
+      "do"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A2-R-0024",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "It isn’t necessary to get a taxi. I can pick you up ………. the station.",
+    "options": [
+      "in",
+      "at",
+      "on"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A2-R-0025",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "It’s cold, wet and windy. There are only …….. people in the streets.",
+    "options": [
+      "a little",
+      "a few",
+      "many"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A2-R-0026",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Jim: “Look at that car! ……… car is it?” Mike: “It’s Jane’s. Her parents are rich!”",
+    "options": [
+      "Whose",
+      "What",
+      "Who"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-R-0027",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "London is ……….. city I have ever visited!",
+    "options": [
+      "expensive",
+      "the expensive",
+      "the most expensive"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "A2-R-0028",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "London isn’t ........................ people say.",
+    "options": [
+      "as cloudy than",
+      "cloudier as",
+      "as cloudy as"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "A2-R-0029",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Man: “…… swimming?” Woman: “Usually three times a week if I’m not too busy at work.”",
+    "options": [
+      "Shall we go",
+      "How often do you go",
+      "Where do you go"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A2-R-0030",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Man: “………... tickets to Paris for the New Year?” Woman: “Paris! That would be wonderful!”",
+    "options": [
+      "Shall I to book",
+      "Shall I book",
+      "Would I buy"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A2-R-0031",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Man: “……………………… to make the cake yesterday?” Woman: “Yes, plenty! We made an omelette too!”",
+    "options": [
+      "What did you need",
+      "Were there enough eggs",
+      "How much time"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A2-R-0032",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "That beautiful old building ...................... in the eighteenth century.",
+    "options": [
+      "built",
+      "is built",
+      "was built"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "A2-R-0033",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "The children were very ….. when we cancelled the trip to the aquarium.",
+    "options": [
+      "disappoint",
+      "disappointing",
+      "disappointed"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "A2-R-0034",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "The lesson was so long and it was really ......................",
+    "options": [
+      "boring",
+      "bored",
+      "bore"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-R-0035",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "This is delicious. This is the first time I ……… paella!",
+    "options": [
+      "have eaten",
+      "eat",
+      "ate"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-R-0036",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Tom is a ______ singer. He sings better than anyone I know.",
+    "options": [
+      "good",
+      "well",
+      "friendly"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-R-0037",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "We have a lot of ________ today to do for Chemistry, don't we?",
+    "options": [
+      "subjects",
+      "homework",
+      "housework"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A2-R-0038",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Why _____ to the party yesterday? I didn’t see you.",
+    "options": [
+      "didn\\'t you go",
+      "don\\'t you go",
+      "you didn\\'t go"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-R-0039",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Woman: “Excuse me, where is the railway station, please?” Man: “Go down this road, ……the bridge and the station is on your right.”",
+    "options": [
+      "into",
+      "above",
+      "over"
+    ],
+    "correctIndex": 2
+  }
+]

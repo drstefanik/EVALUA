@@ -1,0 +1,533 @@
+[
+  {
+    "id": "B1-L-0001",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "New neighbours have recently moved in.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/U8A5sa31_B1.1_test_58_part_A.mp3"
+  },
+  {
+    "id": "B1-L-0002",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The man is feeling sleepy because of his partying lifestyle.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/U8A5sa31_B1.1_test_58_part_A.mp3"
+  },
+  {
+    "id": "B1-L-0003",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The man is paying attention to the woman talking",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/OqfQezu1_B1.1_test_58_part_A.mp3"
+  },
+  {
+    "id": "B1-L-0004",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The man is seeing someone during the week",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/OqfQezu1_B1.1_test_58_part_A.mp3"
+  },
+  {
+    "id": "B1-L-0005",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The man has already spoken to the police.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/8jPvtBI1_B1.2_test_58_part_A.mp3"
+  },
+  {
+    "id": "B1-L-0006",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The neighbour’s child makes a lot of noise at night",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/8jPvtBI1_B1.2_test_58_part_A.mp3"
+  },
+  {
+    "id": "B1-L-0007",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The man hasn't gotten much sleep since the neighbours moved in.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/IAyEtb7e_B1.2_test_58_part_A.mp3"
+  },
+  {
+    "id": "B1-L-0008",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The neighbours kept their promise to be quieter",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/IAyEtb7e_B1.2_test_58_part_A.mp3"
+  },
+  {
+    "id": "B1-L-0009",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The man was very upset when the neighbours had a party",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/L8eWXUVo_B1.2_test_58_part_A.mp3"
+  },
+  {
+    "id": "B1-L-0010",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The noise and banging does not stop at midnight",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/L8eWXUVo_B1.2_test_58_part_A.mp3"
+  },
+  {
+    "id": "B1-L-0011",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "Pete has booked a hotel room for __________.",
+    "options": [
+      "Saturday night",
+      "the weekend"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/qZtdxy3A_B1.3_test_58_part_C.mp3"
+  },
+  {
+    "id": "B1-L-0012",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "Tim owes Pete ____________ for the return ticket",
+    "options": [
+      "forty-five pounds",
+      "fourteen pounds"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/qZtdxy3A_B1.3_test_58_part_C.mp3"
+  },
+  {
+    "id": "B1-L-0013",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "Pete tells Tim not to forget to bring __________",
+    "options": [
+      "something to eat",
+      "his phone"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/7OHs1Gr2_B1.3_test_58_part_C_2.mp3"
+  },
+  {
+    "id": "B1-L-0014",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "Pete wants to meet Tim __________.",
+    "options": [
+      "inside the station.",
+      "at 6am"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/7OHs1Gr2_B1.3_test_58_part_C_2.mp3"
+  },
+  {
+    "id": "B1-R-0015",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "…. his apology, she hasn’t forgiven him yet.",
+    "options": [
+      "However",
+      "In spite",
+      "Despite",
+      "Although"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "B1-R-0016",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "……… various problems, he managed to finish the work in time.",
+    "options": [
+      "Although",
+      "However",
+      "Despite",
+      "Even though"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "B1-R-0017",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "Boss: \"Remember to close that project by the end of next week, please!\" Employee:\" Are you sure this work ........ to be finished by Monday?\"",
+    "options": [
+      "mustn\\'t",
+      "can\\'t",
+      "shouldn\\'t",
+      "doesn\\'t have"
+    ],
+    "correctIndex": 3
+  },
+  {
+    "id": "B1-R-0018",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "By this time _______ week, I will have finished my final exam.",
+    "options": [
+      "following",
+      "next",
+      "last",
+      "this"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B1-R-0019",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "Derek: \"I really love my car. Apparently it's an Asian brand.\" Brenda: \" Yes, I know that brand. The cars ……….. in Japan.",
+    "options": [
+      "have made",
+      "are made",
+      "make",
+      "made"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B1-R-0020",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "Gavin: “…… your video camera? It looks new!” Dylan: “For five years, but I don’t use it very often.”",
+    "options": [
+      "How long are you having",
+      "How long have you had",
+      "Where did you have",
+      "When did you buy"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B1-R-0021",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "He ……… go to work yesterday because it was a holiday.",
+    "options": [
+      "hadn’t",
+      "mustn’t",
+      "didn’t have to",
+      "can’t"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "B1-R-0022",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "He brought her a big bunch of flowers to compensate for being late. He brought her a big bunch of flowers to make ….. for being late.",
+    "options": [
+      "on",
+      "off",
+      "up",
+      "away"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "B1-R-0023",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "He didn’t want to go to the party because he _____ anyone there.",
+    "options": [
+      "didn’t know",
+      "hasn’t known",
+      "knows",
+      "isn\\'t knowing"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "B1-R-0024",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "He’s the person _____ helped me with my project last week.",
+    "options": [
+      "whose",
+      "who",
+      "which",
+      "where"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B1-R-0025",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "I wish I ........ richer! I’m fed up with not having enough money to go on holiday.",
+    "options": [
+      "am",
+      "had",
+      "have been",
+      "were"
+    ],
+    "correctIndex": 3
+  },
+  {
+    "id": "B1-R-0026",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "I’m not sure what time the movie starts. I _____ check online.",
+    "options": [
+      "will",
+      "might",
+      "have",
+      "am"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "B1-R-0027",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "I’m not sure yet, but I have to go to the post office. I ……… arrive a bit late at the office tomorrow morning.",
+    "options": [
+      "will",
+      "may",
+      "would",
+      "need"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B1-R-0028",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "If I had more time, I _____ learn how to play the guitar.",
+    "options": [
+      "wish",
+      "would",
+      "want",
+      "will"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B1-R-0029",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "If it _______ tomorrow, we will move the picnic indoors.",
+    "options": [
+      "rains",
+      "shines",
+      "hot",
+      "cold"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "B1-R-0030",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "It’s not certain but Pete …… be able to come to work tomorrow. He wasn’t feeling very well today.",
+    "options": [
+      "can’t",
+      "won’t",
+      "mustn’t",
+      "may not"
+    ],
+    "correctIndex": 3
+  },
+  {
+    "id": "B1-R-0031",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "John: “What’s wrong with Michelle?” Sarah: “Her bag ……… at lunchtime in the new restaurant opposite the office.”",
+    "options": [
+      "is stolen",
+      "was stolen",
+      "stole"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B1-R-0032",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "Let’s meet at the station at six: our train ……. at ten past.",
+    "options": [
+      "has left",
+      "leaving",
+      "left",
+      "leaves"
+    ],
+    "correctIndex": 3
+  },
+  {
+    "id": "B1-R-0033",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "Pete: “Why is your leg in plaster?” Kate: “What a silly question! I ……….. it, of course.”",
+    "options": [
+      "was breaking",
+      "have broken",
+      "was broken",
+      "break"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B1-R-0034",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "She _____ for her lost keys all morning but still hasn’t found them.",
+    "options": [
+      "will look",
+      "has been looking",
+      "was looked",
+      "looks"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B1-R-0035",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "She said she would call me as soon ______ she gets home.",
+    "options": [
+      "as",
+      "than",
+      "so",
+      "when"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "B1-R-0036",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "The book was so interesting that I couldn’t _____ reading it.",
+    "options": [
+      "stop",
+      "stopped",
+      "stopping",
+      "to stop"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "B1-R-0037",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "The girl ……. dog bit the man had to pay a heavy fine.",
+    "options": [
+      "that",
+      "who",
+      "whose",
+      "which"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "B1-R-0038",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "They didn’t send her an invitation. She …… an invitation.",
+    "options": [
+      "wasn’t been sent",
+      "isn’t sent",
+      "wasn’t sent",
+      "hasn’t sent"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "B1-R-0039",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "They were really _______ because they had been walking for hours.",
+    "options": [
+      "interested",
+      "tired",
+      "bored",
+      "ill"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B1-R-0040",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "When Kyle met his wife back in the days, he …….. in Paris as a consultant.",
+    "options": [
+      "has worked",
+      "was working",
+      "has been working",
+      "is working"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B1-R-0041",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "You …. tired after such a long journey.",
+    "options": [
+      "may to be",
+      "need be",
+      "must be",
+      "can have"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "B1-R-0042",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "You can borrow my book ……….. you’re careful with it.",
+    "options": [
+      "as far as",
+      "expecting",
+      "unless",
+      "as long as"
+    ],
+    "correctIndex": 3
+  }
+]

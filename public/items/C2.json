@@ -1,0 +1,353 @@
+[
+  {
+    "id": "C2-R-0001",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Although it’s a small business, its annual ………. is surprisingly high.",
+    "options": [
+      "outcome",
+      "turnover",
+      "outlook",
+      "turnabout"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "C2-R-0002",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Although the negotiations were tough, both sides remained _____ and avoided conflict.",
+    "options": [
+      "diplomatic",
+      "stubborn",
+      "aggressive",
+      "impatient"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "C2-R-0003",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Can you give me a rough …….. of what the job could cost?",
+    "options": [
+      "estimate",
+      "worth",
+      "value",
+      "account"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "C2-R-0004",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Cheer up! Why are you always ……....? Look on the bright side of life for a change.",
+    "options": [
+      "in the dark",
+      "on the blink",
+      "down in the dumps",
+      "watching your step"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C2-R-0005",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Despite several _____ setbacks, the project was finished successfully.",
+    "options": [
+      "significant",
+      "minor",
+      "occasional",
+      "expected"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "C2-R-0006",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Don’t feel guilty. You have no reason …….. yourself.",
+    "options": [
+      "to blame",
+      "to be guilty",
+      "to be faulted",
+      "to mind"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "C2-R-0007",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "He fell deeper and deeper into the ………., and then went bankrupt.",
+    "options": [
+      "blue",
+      "red",
+      "green",
+      "black"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "C2-R-0008",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Her presentation was _____, capturing the audience’s full attention from start to finish.",
+    "options": [
+      "captivating",
+      "average",
+      "forgettable",
+      "distracting"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "C2-R-0009",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "His _____ attitude towards deadlines frustrated his colleagues.",
+    "options": [
+      "casual",
+      "dedicated",
+      "punctual",
+      "meticulous"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "C2-R-0010",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "His explanation was _____, leaving no room for misunderstanding.",
+    "options": [
+      "confusing",
+      "tentative",
+      "clear-cut",
+      "ambiguous"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C2-R-0011",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "I’m …….. about going on holiday with Jane. I’m not sure I can put up with her for two weeks.",
+    "options": [
+      "in seventh heaven",
+      "second to none",
+      "having second thoughts",
+      "bringing to mind"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C2-R-0012",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "I’m afraid that book has been out of ……… for years. You may find it in some second–hand shop.",
+    "options": [
+      "date",
+      "turn",
+      "print",
+      "reach"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C2-R-0013",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "I’m in two ……….. whether to accept the offer or not.",
+    "options": [
+      "brains",
+      "minds",
+      "heads",
+      "ideas"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "C2-R-0014",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Milly didn’t ……….. looking after her baby brother, as she didn't want to go out anyway that night.",
+    "options": [
+      "object",
+      "matter",
+      "mind",
+      "care for"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C2-R-0015",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "My sister bought some goldfish from the shop but we now we have to buy a ....... to put them in.",
+    "options": [
+      "tank",
+      "nest",
+      "cage",
+      "kennel"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "C2-R-0016",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "The artist’s latest exhibition was _____, offering new perspectives on contemporary art.",
+    "options": [
+      "predictable",
+      "uninspired",
+      "groundbreaking",
+      "ordinary"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C2-R-0017",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "The bus drivers have decided to come out ……… with the other transport workers.",
+    "options": [
+      "in relation",
+      "in sympathy",
+      "in accordance",
+      "by consent"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "C2-R-0018",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "The driver slammed on the brakes and there was a ....... sound.",
+    "options": [
+      "creaking",
+      "hissing",
+      "screeching",
+      "slamming"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C2-R-0019",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "The goods will be sent on ………. for thirty days.",
+    "options": [
+      "credit",
+      "sale",
+      "condition",
+      "approval"
+    ],
+    "correctIndex": 3
+  },
+  {
+    "id": "C2-R-0020",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "The new CEO's decision to expand globally was _____, considering the company's current success.",
+    "options": [
+      "unexpected",
+      "reckless",
+      "logical",
+      "risky"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C2-R-0021",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "The policeman ……….. the details of the accident.",
+    "options": [
+      "saw off",
+      "gave up",
+      "wrote off",
+      "took down"
+    ],
+    "correctIndex": 3
+  },
+  {
+    "id": "C2-R-0022",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "The report was praised for its _____ analysis of the data, offering deep insights into the issue.",
+    "options": [
+      "brief",
+      "incomplete",
+      "thorough",
+      "shallow"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C2-R-0023",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "The view from the top of the skyscraper is ......... Now, I understand why so many people want to come and visit it.",
+    "options": [
+      "iconic",
+      "spoilt",
+      "breathtaking",
+      "tacky"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C2-R-0024",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "This picture is a fake. It’s absolutely ……….. .",
+    "options": [
+      "worthless",
+      "unworthy",
+      "priceless",
+      "invaluable"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "C2-R-0025",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "When he asked Tom's new girlfriend, if she was his mother, he really put his ……. .",
+    "options": [
+      "shoulder to the wheel",
+      "foot in it",
+      "cat in the bag",
+      "mind to it"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "C2-R-0026",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "When he made that incredible proposal, I was so surprised that I was ……… for words.",
+    "options": [
+      "missing",
+      "wanting",
+      "at a loss",
+      "in need"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C2-R-0027",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Whenever they go out anywhere, she expects him to ……….. It’s not fair because he earns less than she does.",
+    "options": [
+      "pay out of hand",
+      "pay through the nose",
+      "foot the bill",
+      "pull up his socks"
+    ],
+    "correctIndex": 2
+  }
+]

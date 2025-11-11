@@ -1,0 +1,484 @@
+[
+  {
+    "id": "B2-L-0001",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "The man feels that taking supplements will reduce the number of times you feel sick",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/2bK9YXsY_B2-1_-B1__194_PART_A.mp3"
+  },
+  {
+    "id": "B2-L-0002",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "The woman feels the article is not correctly reporting the benefits of Vitamin C.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/2bK9YXsY_B2-1_-B1__194_PART_A.mp3"
+  },
+  {
+    "id": "B2-L-0003",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "The woman doesn’t feel confident about using her money for investing",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/8ZuPAUZp_B2-2_B1__194_PART_A.mp3"
+  },
+  {
+    "id": "B2-L-0004",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "The woman has ruled out the option of investing her money in property",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/8ZuPAUZp_B2-2_B1__194_PART_A.mp3"
+  },
+  {
+    "id": "B2-L-0005",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "Most adults surveyed felt they should make the retirement age optional",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/yt230VuF_B2-3-_B1__194_PART_B.mp3"
+  },
+  {
+    "id": "B2-L-0006",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "The survey involved adults based in Britain",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/yt230VuF_B2-3-_B1__194_PART_B.mp3"
+  },
+  {
+    "id": "B2-L-0007",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "The fine will be applied to passengers who don't have a ticket for public transportation",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/eG1J4oqU_B2-3-_B1__194_PART_B_bis.mp3"
+  },
+  {
+    "id": "B2-L-0008",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "The penalty applied to passengers without tickets is now twice as much as it is currently",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/eG1J4oqU_B2-3-_B1__194_PART_B_bis.mp3"
+  },
+  {
+    "id": "B2-L-0009",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "British workers can now work more than 48 hours",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/d9tmrm8a_B2-4-B1__194_PART_B_tiris.mp3"
+  },
+  {
+    "id": "B2-L-0010",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "Up to now employees have been able to choose whether to work longer hours",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/d9tmrm8a_B2-4-B1__194_PART_B_tiris.mp3"
+  },
+  {
+    "id": "B2-L-0011",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "The price of fuel is _____________",
+    "options": [
+      "the highest its ever been",
+      "the highest in that month"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/DIH4PWND_B2-4-B1__194_PART_B_quad.mp3"
+  },
+  {
+    "id": "B2-L-0012",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "There has been discontent in the past due to the government's plans to _________ charges on fuel.",
+    "options": [
+      "drop",
+      "raise"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/DIH4PWND_B2-4-B1__194_PART_B_quad.mp3"
+  },
+  {
+    "id": "B2-R-0013",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "......... he’s happy, his parents don’t care what job he does.",
+    "options": [
+      "In case",
+      "As far as",
+      "As long as",
+      "Although"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "B2-R-0014",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "……….. the economic crisis, people seem to be spending a lot on holidays.",
+    "options": [
+      "Although",
+      "Despite",
+      "However",
+      "Nevertheless"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B2-R-0015",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "He said, 'I am leaving tomorrow.'",
+    "options": [
+      "He said he was leaving tomorrow.",
+      "He said he is leaving tomorrow.",
+      "He said he was leaving the next day.",
+      "He said he leaves tomorrow."
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "B2-R-0016",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "He was so tired that he could hardly _____ his eyes open.",
+    "options": [
+      "had kept",
+      "keeping",
+      "keep",
+      "to keep"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "B2-R-0017",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "I don’t know why she didn’t say ‘hello’. She ....... her contact lenses and so didn’t even see me!",
+    "options": [
+      "mustn’t have been wearing",
+      "might not have been wearing",
+      "can’t wear",
+      "can’t be wearing"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B2-R-0018",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "I will call you if I _____ home before 8 p.m.",
+    "options": [
+      "get",
+      "got",
+      "will get",
+      "am getting"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "B2-R-0019",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "I wish I ……….. a new car. My old one keeps breaking down.",
+    "options": [
+      "could afford",
+      "afforded",
+      "would afford",
+      "had afforded"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "B2-R-0020",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "If he …… his train, he would be here by now.",
+    "options": [
+      "hasn’t missed",
+      "didn’t miss",
+      "hadn’t missed",
+      "wouldn’t have missed"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "B2-R-0021",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "If I _____ enough money, I would travel around the world.",
+    "options": [
+      "would have",
+      "have",
+      "had had",
+      "had"
+    ],
+    "correctIndex": 3
+  },
+  {
+    "id": "B2-R-0022",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "I'm really looking forward _____ my holiday next month.",
+    "options": [
+      "for",
+      "on",
+      "to",
+      "at"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "B2-R-0023",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "Isn’t it just like him to ........ at the party without being invited?",
+    "options": [
+      "head for",
+      "turn up",
+      "go to",
+      "catch on"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B2-R-0024",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "It’s not ....... going in now. We’ve missed half the film.",
+    "options": [
+      "use",
+      "point",
+      "good",
+      "worth"
+    ],
+    "correctIndex": 3
+  },
+  {
+    "id": "B2-R-0025",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "Please speak clearly! When you ......, I can't understand a word you're saying.",
+    "options": [
+      "yell",
+      "giggle",
+      "sob",
+      "mumble"
+    ],
+    "correctIndex": 3
+  },
+  {
+    "id": "B2-R-0026",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "She didn’t fancy ......... out alone at that time of the evening.",
+    "options": [
+      "to go",
+      "she would go",
+      "that she had to go",
+      "going"
+    ],
+    "correctIndex": 3
+  },
+  {
+    "id": "B2-R-0027",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "She followed the recipe to the letter ......... the meal perfectly.",
+    "options": [
+      "so to prepare",
+      "to be preparing",
+      "so as to prepare",
+      "for to prepare"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "B2-R-0028",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "She has a strong _____ of responsibility.",
+    "options": [
+      "opinion",
+      "idea",
+      "thought",
+      "sense"
+    ],
+    "correctIndex": 3
+  },
+  {
+    "id": "B2-R-0029",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "She won't pass her exams ..... she starts studying hard!",
+    "options": [
+      "whether",
+      "unless",
+      "when",
+      "if"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B2-R-0030",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "The documents _____ by the manager while the team was waiting in the meeting room.",
+    "options": [
+      "were be checked",
+      "were being checked",
+      "have checked",
+      "checked"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B2-R-0031",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "The movie was so _____ that I couldn't stop thinking about it for days.",
+    "options": [
+      "thoughtless",
+      "thought-provoking",
+      "uninteresting",
+      "confusing"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B2-R-0032",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "The person _____ gave me the book is my teacher.",
+    "options": [
+      "who",
+      "which",
+      "whom",
+      "whose"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "B2-R-0033",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "They set off at night, ……. the heavy holiday traffic.",
+    "options": [
+      "to avoiding",
+      "for avoiding",
+      "for to avoid",
+      "so as to avoid"
+    ],
+    "correctIndex": 3
+  },
+  {
+    "id": "B2-R-0034",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "We can’t phone him now. At this time of night, he ………...",
+    "options": [
+      "sleep",
+      "will be sleeping",
+      "slept",
+      "will sleep"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "B2-R-0035",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "When did you …… golf?",
+    "options": [
+      "go down with",
+      "come off",
+      "take up",
+      "set up"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "B2-R-0036",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "When she was a teenager, she was made ........ after her baby sister.",
+    "options": [
+      "look",
+      "looking",
+      "to look",
+      "that she looked"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "B2-R-0037",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "When your alarm clock rings tomorrow morning, I ........ a late dinner on the other side of the world!",
+    "options": [
+      "have been having",
+      "would be having",
+      "will be having",
+      "have"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "B2-R-0038",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "You _____ study harder if you want to pass the exam.",
+    "options": [
+      "can",
+      "might",
+      "must",
+      "should"
+    ],
+    "correctIndex": 2
+  }
+]

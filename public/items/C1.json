@@ -1,0 +1,449 @@
+[
+  {
+    "id": "C1-L-0001",
+    "skill": "listening",
+    "level": "C1",
+    "prompt": "The man advised the woman to wear her newly purchased boots.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/jbaVgjXJ_C1-1_MOCK_LISTENING_003.mp3"
+  },
+  {
+    "id": "C1-L-0002",
+    "skill": "listening",
+    "level": "C1",
+    "prompt": "The woman already feels comfortable in her new boots",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/jbaVgjXJ_C1-1_MOCK_LISTENING_003.mp3"
+  },
+  {
+    "id": "C1-L-0003",
+    "skill": "listening",
+    "level": "C1",
+    "prompt": "The man is reluctant to drink any coffee.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/ukdPw0VE_C1-1_MOCK_LISTENING_003_bis.mp3"
+  },
+  {
+    "id": "C1-L-0004",
+    "skill": "listening",
+    "level": "C1",
+    "prompt": "The woman looks at her watch and sees that it's lunchtime",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/ukdPw0VE_C1-1_MOCK_LISTENING_003_bis.mp3"
+  },
+  {
+    "id": "C1-L-0005",
+    "skill": "listening",
+    "level": "C1",
+    "prompt": "The new manager is experienced and fantastic",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/n24DJu9G_C1-2_MOCK_LISTENING_003_TRIS.mp3"
+  },
+  {
+    "id": "C1-L-0006",
+    "skill": "listening",
+    "level": "C1",
+    "prompt": "The woman is a little sceptical about her new boss.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/n24DJu9G_C1-2_MOCK_LISTENING_003_TRIS.mp3"
+  },
+  {
+    "id": "C1-L-0007",
+    "skill": "listening",
+    "level": "C1",
+    "prompt": "The woman proposes a meal based predominantly on _____",
+    "options": [
+      "meat",
+      "fish"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/Jz7OFqKb_C1-2_MOCK_LISTENING_003_QUAD.mp3"
+  },
+  {
+    "id": "C1-L-0008",
+    "skill": "listening",
+    "level": "C1",
+    "prompt": "The woman would rather have a drink _______",
+    "options": [
+      "outdoors",
+      "with her meal"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/Jz7OFqKb_C1-2_MOCK_LISTENING_003_QUAD.mp3"
+  },
+  {
+    "id": "C1-R-0009",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "…….., we wouldn’t have known what to do.",
+    "options": [
+      "But for his help",
+      "Unless he helped",
+      "Regardless he helped",
+      "If he helped"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "C1-R-0010",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "ben's remarks were seen as _____, sparking controversy and much talk among the audience.",
+    "options": [
+      "harmless",
+      "provocative",
+      "bland",
+      "neutral"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "C1-R-0011",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "Derek's argument was so _____ that it completely undermined her credibility and nobody voted for him.",
+    "options": [
+      "persuasive",
+      "valid",
+      "convincing",
+      "flawed"
+    ],
+    "correctIndex": 3
+  },
+  {
+    "id": "C1-R-0012",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "Has Damian decided to take ……… in the competition?",
+    "options": [
+      "off",
+      "part",
+      "up",
+      "in"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "C1-R-0013",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "He agreed to sign the form but he looked extremely ill–at– ……..",
+    "options": [
+      "sorts",
+      "ease",
+      "mind",
+      "heart"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "C1-R-0014",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "He had been travelling all day so he was ............ when he finally arrived. All he wanted to do was put his feet up.",
+    "options": [
+      "charismatic",
+      "lively",
+      "exhausted",
+      "starving"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C1-R-0015",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "I caught that train by the skin of ……. They were already closing the doors when I rushed onto the platform.",
+    "options": [
+      "my teeth",
+      "my nose",
+      "my lip",
+      "my hair"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "C1-R-0016",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "I was nervous about staying the night there. I imagined ………..",
+    "options": [
+      "haunted the old house",
+      "being haunted the old house",
+      "to be haunted the old house",
+      "the old house to be haunted"
+    ],
+    "correctIndex": 3
+  },
+  {
+    "id": "C1-R-0017",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "I’d let ………. if I were you. What he doesn’t know, won’t hurt him.",
+    "options": [
+      "the cat out of the bag",
+      "sleeping dogs lie",
+      "the wolf out",
+      "a bee in his bonnet"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "C1-R-0018",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "I’m feeling a bit ……… I think I’ll take an aspirin and go to bed.",
+    "options": [
+      "under the weather",
+      "up the creek",
+      "on cloud nine",
+      "under a cloud"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "C1-R-0019",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "It is by …….. certain that the plan will be approved. The new legislation is very strict.",
+    "options": [
+      "far",
+      "rights",
+      "the way",
+      "no means"
+    ],
+    "correctIndex": 3
+  },
+  {
+    "id": "C1-R-0020",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "It’s high time he ……… a flat of his own. He can’t live with his parents forever.",
+    "options": [
+      "will find",
+      "found",
+      "has found",
+      "finds"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "C1-R-0021",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "I've been blowing my ........ nose all day. I wonder if I’m coming down with a cold.",
+    "options": [
+      "liquidy",
+      "trickly",
+      "runny",
+      "shifty"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C1-R-0022",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "I've never seen anyhting like this before. This artist’s work is known for its _____ use of color and texture.",
+    "options": [
+      "repetitive",
+      "monotonous",
+      "innovative",
+      "predictable"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C1-R-0023",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "Thank you for a lovely evening but it’s time we ........ home.",
+    "options": [
+      "are going",
+      "were to go",
+      "went",
+      "have gone"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C1-R-0024",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "The book provides an _____ analysis of the global economic crisis, it is indeed very thorough.",
+    "options": [
+      "in-depth",
+      "perfunctory",
+      "ordinary",
+      "unbiased"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "C1-R-0025",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "The CEO’s speech was _____ and left the audience motivated for the future.",
+    "options": [
+      "mediocre",
+      "inspirational",
+      "tedious",
+      "irrelevant"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "C1-R-0026",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "The findings of the research were _____, causing the team to reconsider their initial hypothesis.",
+    "options": [
+      "predictable",
+      "routine",
+      "unexpected",
+      "foreseen"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C1-R-0027",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "The lawyer's argument was so _____ that no one could challenge it.",
+    "options": [
+      "convincing",
+      "vague",
+      "uncertain",
+      "biased"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "C1-R-0028",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "The new policy was implemented to _____ the growing concerns over data privacy.",
+    "options": [
+      "ignore",
+      "address",
+      "avoid",
+      "eliminate"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "C1-R-0029",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "The politician made a _____ effort to repair his public image after the scandal.",
+    "options": [
+      "clumsy",
+      "concerted",
+      "reluctant",
+      "impulsive"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "C1-R-0030",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "The scientist made a _____ breakthrough that changed the course of medical history.",
+    "options": [
+      "trivial",
+      "groundbreaking",
+      "moderate",
+      "controversial"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "C1-R-0031",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "The witness’s testimony was _____, leaving no room for doubt about the suspect’s guilt.",
+    "options": [
+      "compelling",
+      "ambiguous",
+      "irrelevant",
+      "indecisive"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "C1-R-0032",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "They promised to do everything within their ……….. to help us.",
+    "options": [
+      "hands",
+      "reach",
+      "power",
+      "reason"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C1-R-0033",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "This time next week, he …….. to America.",
+    "options": [
+      "travels",
+      "is travelled",
+      "will be travelling",
+      "has travelled"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C1-R-0034",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "Those children look guilty. What have they …….. up to since I left the room?",
+    "options": [
+      "put",
+      "taken",
+      "been",
+      "done"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "C1-R-0035",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "We're not making any progress by arguing like this. We're just going round and round ………",
+    "options": [
+      "the curve",
+      "in circles",
+      "and about",
+      "the wall"
+    ],
+    "correctIndex": 1
+  }
+]

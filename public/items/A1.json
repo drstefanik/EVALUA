@@ -1,0 +1,518 @@
+[
+  {
+    "id": "A1-L-0001",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "The cupboard is next to the fridge",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/8kN2pJFo_A1-1_MOCK_A_part_A.mp3"
+  },
+  {
+    "id": "A1-L-0002",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "The cupboard is red in colour",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/8kN2pJFo_A1-1_MOCK_A_part_A.mp3"
+  },
+  {
+    "id": "A1-L-0003",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "The man is interrupted while he is resting",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/6SBvoH2n_A1-2_MOCK_A_part_A_bis.mp3"
+  },
+  {
+    "id": "A1-L-0004",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "The woman would like to connect the modem to the computer",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/6SBvoH2n_A1-2_MOCK_A_part_A_bis.mp3"
+  },
+  {
+    "id": "A1-L-0005",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "The woman prefers shopping for clothes than food",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/2jj1yAQh_A1-3_MOCK_A_part_A_tris.mp3"
+  },
+  {
+    "id": "A1-L-0006",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "The woman wants to buy a present for the man",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/2jj1yAQh_A1-3_MOCK_A_part_A_tris.mp3"
+  },
+  {
+    "id": "A1-L-0007",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "Passengers should go to platform _________to board the train to Cardiff.",
+    "options": [
+      "14",
+      "13"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/237aa9AE_A1-4_MOCK_A_part_B.mp3"
+  },
+  {
+    "id": "A1-L-0008",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "The train to Cardiff is scheduled at _________",
+    "options": [
+      "6.05",
+      "6.55"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/237aa9AE_A1-4_MOCK_A_part_B.mp3"
+  },
+  {
+    "id": "A1-L-0009",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "Passengers should board the flight from gate _____.",
+    "options": [
+      "45",
+      "35"
+    ],
+    "correctIndex": 1,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/W5z63vVR_A1-5_MOCK_A_part_B_bis_.mp3"
+  },
+  {
+    "id": "A1-L-0010",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "The flight number for Sydney is ___________",
+    "options": [
+      "BA8379",
+      "BE8379"
+    ],
+    "correctIndex": 0,
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/W5z63vVR_A1-5_MOCK_A_part_B_bis_.mp3"
+  },
+  {
+    "id": "A1-R-0011",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "\"I have two pets. One is a dog and the other is a cat. _____ are very cute!\"",
+    "options": [
+      "It",
+      "Them",
+      "They"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "A1-R-0012",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "\"My brother and I love playing soccer. We play every weekend at the ______.\"",
+    "options": [
+      "house",
+      "park",
+      "car"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-R-0013",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "\"My friends are coming to visit me tomorrow. I _____ to clean the house today.\"",
+    "options": [
+      "needs",
+      "need",
+      "needing"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-R-0014",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "At a shop. Customer: \"How much does that sweater cost, please?\" Shop assistant : \"It's not too expensive, it's .........\"",
+    "options": [
+      "over £20",
+      "only £20.",
+      "cost £20"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-R-0015",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "At the train station. Passenger: \"I would like a single train ticket to Cardiff, please.\" Ticket agent: \"Yes of course, …......",
+    "options": [
+      "Where did you get off the train?",
+      "Here you are. That will be £33.",
+      "The next flight is at six."
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-R-0016",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Ben goes to the beach everyday in summer and he goes …....... in winter too; he loves walking on the sand when it's cold.",
+    "options": [
+      "never",
+      "sometimes",
+      "ever"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-R-0017",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Emma:_ \"Is this your book?\" Tom: \"No, it’s not mine. It belongs _____ Sarah.\"",
+    "options": [
+      "to",
+      "from",
+      "for"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-R-0018",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Every morning, I drink a cup of ______ before going to work.\"",
+    "options": [
+      "toast",
+      "coffee",
+      "bread"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-R-0019",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "He ….. his car and went into the house.",
+    "options": [
+      "took off",
+      "got up",
+      "got out of"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "A1-R-0020",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "He ………. television every evening.",
+    "options": [
+      "watch",
+      "watches",
+      "watching"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-R-0021",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "He got …… his car and drove away.",
+    "options": [
+      "up",
+      "at",
+      "into"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "A1-R-0022",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "He’s ….. man I know!",
+    "options": [
+      "the funniest",
+      "the funnier than",
+      "funnier"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "A1-R-0023",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Howard: \"….... often do you go to the gym, Diane?\" Diane: \"I try to go 3 times a week, I love it.\"",
+    "options": [
+      "which",
+      "what",
+      "how"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "A1-R-0024",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "I always go to my parents’ house ….. Christmas Day.",
+    "options": [
+      "on",
+      "in",
+      "at"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "A1-R-0025",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "I finished the report last night. It was ………. I thought.",
+    "options": [
+      "easy",
+      "easier than",
+      "easier that"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-R-0026",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "I’m meeting Sarah at the airport tomorrow. Her _______ arrives at 9:00 PM.",
+    "options": [
+      "train",
+      "bus",
+      "flight"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "A1-R-0027",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Jenny and Camille ………. a big breakfast every morning. They only drink a coffee.",
+    "options": [
+      "doesn’t have",
+      "not have",
+      "don’t have"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "A1-R-0028",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Jill: “……… a glass of cola?” Bob: “No, thanks. I’m not thirsty.”",
+    "options": [
+      "Do you liking",
+      "Would you like",
+      "Would like you"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-R-0029",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Jill: “When do you have the interview for the job?” Bob: “…… Monday. I’m nervous!”",
+    "options": [
+      "In",
+      "On",
+      "To"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-R-0030",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Joe ………. engineering at university.",
+    "options": [
+      "studying",
+      "is studying",
+      "study"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-R-0031",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "John has been very tired lately. He _____ to bed late every night.",
+    "options": [
+      "goes",
+      "going",
+      "go"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "A1-R-0032",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "John: \"Where are you going, Anna?\" Anna: \"I’m going _____ the supermarket.\"",
+    "options": [
+      "to",
+      "on",
+      "in"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "A1-R-0033",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Jonathan: \"What do you usually have for breakfast?\" Bill: \"It depends on the day, really; but I often have ...........\"",
+    "options": [
+      "breakfast at half past seven.",
+      "toast, marmalade and tea.",
+      "like breakfast."
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-R-0034",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Lisa usually enjoys movies, but she _____ like horror films.",
+    "options": [
+      "doesn\\'t",
+      "don\\'t",
+      "isn\\'t"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "A1-R-0035",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Man: \"Did you have a good flight?\" Woman: \".........\"",
+    "options": [
+      "I always fly business.",
+      "I never drive.",
+      "It wasn’t bad, but it was very long."
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "A1-R-0036",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Mark: \"Do you like pizza?\" Lisa: \"Yes, I _____ pizza. It’s my favourite!\"",
+    "options": [
+      "likes",
+      "like",
+      "liking"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-R-0037",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Paul ………. on Saturdays.",
+    "options": [
+      "doesn’t work",
+      "don’t work",
+      "doesn’t works"
+    ],
+    "correctIndex": 0
+  },
+  {
+    "id": "A1-R-0038",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Teacher: \"What’s the ________ like today?\" Student: \"It’s very hot and sunny.\"",
+    "options": [
+      "time",
+      "weather",
+      "night"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-R-0039",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "They moved to Spain a year ago, but they _____ speak Spanish fluently yet.",
+    "options": [
+      "aren\\'t",
+      "haven\\'t",
+      "can\\'t"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "A1-R-0040",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "This isn’t my book. I think it’s …..",
+    "options": [
+      "the Mark’s book",
+      "book’s Mark",
+      "Mark’s book"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "A1-R-0041",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "We’d like to send some photos to you. Can you give ….. your address?",
+    "options": [
+      "our",
+      "ours",
+      "us"
+    ],
+    "correctIndex": 2
+  },
+  {
+    "id": "A1-R-0042",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "What time does he get ……. in the morning?",
+    "options": [
+      "from bed",
+      "up",
+      "on"
+    ],
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-R-0043",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Where is ………?",
+    "options": [
+      "John’s sister",
+      "sister’s John",
+      "the John’s sister"
+    ],
+    "correctIndex": 0
+  }
+]

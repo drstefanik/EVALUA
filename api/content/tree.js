@@ -100,10 +100,11 @@ export default async function handler(req, res) {
     // ---- FILES (NON c'è 'visibility' qui) ----
     let files = [];
     if (folderIdSet.size > 0) {
-      const orOnFolder =
-        "OR(" +
-        folderIds.map((id) => `FIND('${id}', ARRAYJOIN({folder}))`).join(",") +
-        ")";
+const orOnFolder =
+  "OR(" +
+  folderIds.map((id) => `{folder} = '${id}'`).join(",") +
+  ")";
+
 
       const fileRecords = await tbl.FILES.select({
         filterByFormula: orOnFolder,

@@ -1,0 +1,3135 @@
+[
+  {
+    "id": "A1-L-0001",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "The cupboard is next to the fridge",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/8kN2pJFo_A1-1_MOCK_A_part_A.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "A1-L-0002",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "The cupboard is red in colour",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/8kN2pJFo_A1-1_MOCK_A_part_A.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "A2-L-0001",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "The man can use the digital copies to finalise the agreement",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/ZWWH67lj_A2-1-_A2_test_118_part_A.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "A2-L-0002",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "The man has forgotten to bring the contracts to the meeting.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/ZWWH67lj_A2-1-_A2_test_118_part_A.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "B1-L-0001",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "New neighbours have recently moved in.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/U8A5sa31_B1.1_test_58_part_A.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "B1-L-0002",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The man is feeling sleepy because of his partying lifestyle.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/U8A5sa31_B1.1_test_58_part_A.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "B2-L-0001",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "The man feels that taking supplements will reduce the number of times you feel sick",
+    "options": [
+      "true",
+      "false"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/2bK9YXsY_B2-1_-B1__194_PART_A.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "B2-L-0002",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "The woman feels the article is not correctly reporting the benefits of Vitamin C.",
+    "options": [
+      "true",
+      "false"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/2bK9YXsY_B2-1_-B1__194_PART_A.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "C1-L-0001",
+    "skill": "listening",
+    "level": "C1",
+    "prompt": "The man advised the woman to wear her newly purchased boots.",
+    "options": [
+      "true",
+      "false"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/jbaVgjXJ_C1-1_MOCK_LISTENING_003.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "C1-L-0002",
+    "skill": "listening",
+    "level": "C1",
+    "prompt": "The woman already feels comfortable in her new boots",
+    "options": [
+      "true",
+      "false"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/jbaVgjXJ_C1-1_MOCK_LISTENING_003.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-L-0003",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "The man is interrupted while he is resting",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/6SBvoH2n_A1-2_MOCK_A_part_A_bis.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-L-0004",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "The woman would like to connect the modem to the computer",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/6SBvoH2n_A1-2_MOCK_A_part_A_bis.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "A2-L-0003",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "Jane Sanders has called the office once to speak to the man.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/LBwwbVZO_A2-2-A2_test_118_part_A_bis.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-L-0004",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "The lady will organise some transport for the man from the airport",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/LBwwbVZO_A2-2-A2_test_118_part_A_bis.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "B1-L-0003",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The man is paying attention to the woman talking",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/OqfQezu1_B1.1_test_58_part_A.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "B1-L-0004",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The man is seeing someone during the week",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/OqfQezu1_B1.1_test_58_part_A.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "B2-L-0003",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "The woman doesn’t feel confident about using her money for investing",
+    "options": [
+      "false",
+      "true"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/8ZuPAUZp_B2-2_B1__194_PART_A.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "B2-L-0004",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "The woman has ruled out the option of investing her money in property",
+    "options": [
+      "false",
+      "true"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/8ZuPAUZp_B2-2_B1__194_PART_A.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "C1-L-0003",
+    "skill": "listening",
+    "level": "C1",
+    "prompt": "The man is reluctant to drink any coffee.",
+    "options": [
+      "true",
+      "false"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/ukdPw0VE_C1-1_MOCK_LISTENING_003_bis.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "C1-L-0004",
+    "skill": "listening",
+    "level": "C1",
+    "prompt": "The woman looks at her watch and sees that it's lunchtime",
+    "options": [
+      "true",
+      "false"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/ukdPw0VE_C1-1_MOCK_LISTENING_003_bis.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-L-0005",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "The woman prefers shopping for clothes than food",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/2jj1yAQh_A1-3_MOCK_A_part_A_tris.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "A1-L-0006",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "The woman wants to buy a present for the man",
+    "options": [
+      "False",
+      "True"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/2jj1yAQh_A1-3_MOCK_A_part_A_tris.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-L-0005",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "Passengers with children are being asked to wait until the end to board the plane",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/6qKu6x8x_A2-3-A2_test_118_part_B.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "A2-L-0006",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "The remaining passengers will board when they have been instructed to do so",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/6qKu6x8x_A2-3-A2_test_118_part_B.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "B1-L-0005",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The man has already spoken to the police.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/8jPvtBI1_B1.2_test_58_part_A.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "B1-L-0006",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The neighbour’s child makes a lot of noise at night",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/8jPvtBI1_B1.2_test_58_part_A.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "B2-L-0005",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "Most adults surveyed felt they should make the retirement age optional",
+    "options": [
+      "true",
+      "false"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/yt230VuF_B2-3-_B1__194_PART_B.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "B2-L-0006",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "The survey involved adults based in Britain",
+    "options": [
+      "false",
+      "true"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/yt230VuF_B2-3-_B1__194_PART_B.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "C1-L-0005",
+    "skill": "listening",
+    "level": "C1",
+    "prompt": "The new manager is experienced and fantastic",
+    "options": [
+      "true",
+      "false"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/n24DJu9G_C1-2_MOCK_LISTENING_003_TRIS.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "C1-L-0006",
+    "skill": "listening",
+    "level": "C1",
+    "prompt": "The woman is a little sceptical about her new boss.",
+    "options": [
+      "true",
+      "false"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/n24DJu9G_C1-2_MOCK_LISTENING_003_TRIS.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "A1-L-0007",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "Passengers should go to platform _________to board the train to Cardiff.",
+    "options": [
+      "14",
+      "13"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/237aa9AE_A1-4_MOCK_A_part_B.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-L-0008",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "The train to Cardiff is scheduled at _________",
+    "options": [
+      "6.05",
+      "6.55"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/237aa9AE_A1-4_MOCK_A_part_B.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-L-0007",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "Passengers have the option to smoke outside the airport",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/bzXnYP9T_A2-4-_A2_test_118_part_B_bis.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-L-0008",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "Passengers have to make a request to the staff to smoke inside the airport",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/bzXnYP9T_A2-4-_A2_test_118_part_B_bis.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "B1-L-0007",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The man hasn't gotten much sleep since the neighbours moved in.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/IAyEtb7e_B1.2_test_58_part_A.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "B1-L-0008",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The neighbours kept their promise to be quieter",
+    "options": [
+      "False",
+      "True"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/IAyEtb7e_B1.2_test_58_part_A.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "B2-L-0007",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "The fine will be applied to passengers who don't have a ticket for public transportation",
+    "options": [
+      "true",
+      "false"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/eG1J4oqU_B2-3-_B1__194_PART_B_bis.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "B2-L-0008",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "The penalty applied to passengers without tickets is now twice as much as it is currently",
+    "options": [
+      "false",
+      "true"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/eG1J4oqU_B2-3-_B1__194_PART_B_bis.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "C1-L-0007",
+    "skill": "listening",
+    "level": "C1",
+    "prompt": "The woman proposes a meal based predominantly on _____",
+    "options": [
+      "meat",
+      "fish"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/Jz7OFqKb_C1-2_MOCK_LISTENING_003_QUAD.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "C1-L-0008",
+    "skill": "listening",
+    "level": "C1",
+    "prompt": "The woman would rather have a drink _______",
+    "options": [
+      "outdoors",
+      "with her meal"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/Jz7OFqKb_C1-2_MOCK_LISTENING_003_QUAD.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-L-0009",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "Passengers should board the flight from gate _____.",
+    "options": [
+      "45",
+      "35"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/W5z63vVR_A1-5_MOCK_A_part_B_bis_.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-L-0010",
+    "skill": "listening",
+    "level": "A1",
+    "prompt": "The flight number for Sydney is ___________",
+    "options": [
+      "BA8379",
+      "BE8379"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/W5z63vVR_A1-5_MOCK_A_part_B_bis_.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-L-0009",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "Passengers are instructed to board from the ________ carriages only.",
+    "options": [
+      "first three",
+      "first five"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/FzQoqS8y_A2-5-_A2_test_118_part_B_tris.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-L-0010",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "The train will leave from platform ______",
+    "options": [
+      "8",
+      "3"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/FzQoqS8y_A2-5-_A2_test_118_part_B_tris.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "B1-L-0009",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The man was very upset when the neighbours had a party",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/L8eWXUVo_B1.2_test_58_part_A.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "B1-L-0010",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "The noise and banging does not stop at midnight",
+    "options": [
+      "True",
+      "False"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/L8eWXUVo_B1.2_test_58_part_A.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "B2-L-0009",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "British workers can now work more than 48 hours",
+    "options": [
+      "true",
+      "false"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/d9tmrm8a_B2-4-B1__194_PART_B_tiris.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "B2-L-0010",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "Up to now employees have been able to choose whether to work longer hours",
+    "options": [
+      "true",
+      "false"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/d9tmrm8a_B2-4-B1__194_PART_B_tiris.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "A2-L-0011",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "Any bags taken on board the plane should have the passenger’s ____________",
+    "options": [
+      "flight number",
+      "personal details"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/ELwcUVy2_A2-6_A2_test_118_part_B_four.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "A2-L-0012",
+    "skill": "listening",
+    "level": "A2",
+    "prompt": "Suitcases should always be _______ the passengers",
+    "options": [
+      "far from",
+      "near"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/ELwcUVy2_A2-6_A2_test_118_part_B_four.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "B1-L-0011",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "Pete has booked a hotel room for __________.",
+    "options": [
+      "Saturday night",
+      "the weekend"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/qZtdxy3A_B1.3_test_58_part_C.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "B1-L-0012",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "Tim owes Pete ____________ for the return ticket",
+    "options": [
+      "forty-five pounds",
+      "fourteen pounds"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/qZtdxy3A_B1.3_test_58_part_C.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "B2-L-0011",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "The price of fuel is _____________",
+    "options": [
+      "the highest its ever been",
+      "the highest in that month"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/DIH4PWND_B2-4-B1__194_PART_B_quad.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "B2-L-0012",
+    "skill": "listening",
+    "level": "B2",
+    "prompt": "There has been discontent in the past due to the government's plans to _________ charges on fuel.",
+    "options": [
+      "drop",
+      "raise"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/DIH4PWND_B2-4-B1__194_PART_B_quad.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "B1-L-0013",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "Pete tells Tim not to forget to bring __________",
+    "options": [
+      "something to eat",
+      "his phone"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/7OHs1Gr2_B1.3_test_58_part_C_2.mp3",
+    "correctIndex": 0
+  },
+  {
+    "id": "B1-L-0014",
+    "skill": "listening",
+    "level": "B1",
+    "prompt": "Pete wants to meet Tim __________.",
+    "options": [
+      "inside the station.",
+      "at 6am"
+    ],
+    "audioUrl": "https://biebadmin.britishinstitutes.org/tests_media/520/7OHs1Gr2_B1.3_test_58_part_C_2.mp3",
+    "correctIndex": 1
+  },
+  {
+    "id": "A1-R-0011",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "\"I have two pets. One is a dog and the other is a cat. _____ are very cute!\"",
+    "options": [
+      "It",
+      "Them",
+      "They"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "A1-R-0012",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "\"My brother and I love playing soccer. We play every weekend at the ______.\"",
+    "options": [
+      "house",
+      "park",
+      "car"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A1-R-0013",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "\"My friends are coming to visit me tomorrow. I _____ to clean the house today.\"",
+    "options": [
+      "needs",
+      "need",
+      "needing"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A1-R-0014",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "At a shop. Customer: \"How much does that sweater cost, please?\" Shop assistant : \"It's not too expensive, it's .........\"",
+    "options": [
+      "over £20",
+      "only £20.",
+      "cost £20"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A1-R-0015",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "At the train station. Passenger: \"I would like a single train ticket to Cardiff, please.\" Ticket agent: \"Yes of course, …......",
+    "options": [
+      "Where did you get off the train?",
+      "Here you are. That will be £33.",
+      "The next flight is at six."
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A1-R-0016",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Ben goes to the beach everyday in summer and he goes …....... in winter too; he loves walking on the sand when it's cold.",
+    "options": [
+      "never",
+      "sometimes",
+      "ever"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A1-R-0017",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Emma:_ \"Is this your book?\" Tom: \"No, it’s not mine. It belongs _____ Sarah.\"",
+    "options": [
+      "to",
+      "from",
+      "for"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A1-R-0018",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Every morning, I drink a cup of ______ before going to work.\"",
+    "options": [
+      "toast",
+      "coffee",
+      "bread"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A1-R-0019",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "He ….. his car and went into the house.",
+    "options": [
+      "took off",
+      "got up",
+      "got out of"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "A1-R-0020",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "He ………. television every evening.",
+    "options": [
+      "watch",
+      "watches",
+      "watching"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A1-R-0021",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "He got …… his car and drove away.",
+    "options": [
+      "up",
+      "at",
+      "into"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "A1-R-0022",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "He’s ….. man I know!",
+    "options": [
+      "the funniest",
+      "the funnier than",
+      "funnier"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A1-R-0023",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Howard: \"….... often do you go to the gym, Diane?\" Diane: \"I try to go 3 times a week, I love it.\"",
+    "options": [
+      "which",
+      "what",
+      "how"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "A1-R-0024",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "I always go to my parents’ house ….. Christmas Day.",
+    "options": [
+      "on",
+      "in",
+      "at"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A1-R-0025",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "I finished the report last night. It was ………. I thought.",
+    "options": [
+      "easy",
+      "easier than",
+      "easier that"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A1-R-0026",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "I’m meeting Sarah at the airport tomorrow. Her _______ arrives at 9:00 PM.",
+    "options": [
+      "train",
+      "bus",
+      "flight"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "A1-R-0027",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Jenny and Camille ………. a big breakfast every morning. They only drink a coffee.",
+    "options": [
+      "doesn’t have",
+      "not have",
+      "don’t have"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "A1-R-0028",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Jill: “……… a glass of cola?” Bob: “No, thanks. I’m not thirsty.”",
+    "options": [
+      "Do you liking",
+      "Would you like",
+      "Would like you"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A1-R-0029",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Jill: “When do you have the interview for the job?” Bob: “…… Monday. I’m nervous!”",
+    "options": [
+      "In",
+      "On",
+      "To"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A1-R-0030",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Joe ………. engineering at university.",
+    "options": [
+      "studying",
+      "is studying",
+      "study"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A1-R-0031",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "John has been very tired lately. He _____ to bed late every night.",
+    "options": [
+      "goes",
+      "going",
+      "go"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A1-R-0032",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "John: \"Where are you going, Anna?\" Anna: \"I’m going _____ the supermarket.\"",
+    "options": [
+      "to",
+      "on",
+      "in"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A1-R-0033",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Jonathan: \"What do you usually have for breakfast?\" Bill: \"It depends on the day, really; but I often have ...........\"",
+    "options": [
+      "breakfast at half past seven.",
+      "toast, marmalade and tea.",
+      "like breakfast."
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A1-R-0034",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Lisa usually enjoys movies, but she _____ like horror films.",
+    "options": [
+      "doesn\\'t",
+      "don\\'t",
+      "isn\\'t"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A1-R-0035",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Man: \"Did you have a good flight?\" Woman: \".........\"",
+    "options": [
+      "I always fly business.",
+      "I never drive.",
+      "It wasn’t bad, but it was very long."
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "A1-R-0036",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Mark: \"Do you like pizza?\" Lisa: \"Yes, I _____ pizza. It’s my favourite!\"",
+    "options": [
+      "likes",
+      "like",
+      "liking"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A1-R-0037",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Paul ………. on Saturdays.",
+    "options": [
+      "doesn’t work",
+      "don’t work",
+      "doesn’t works"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A1-R-0038",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Teacher: \"What’s the ________ like today?\" Student: \"It’s very hot and sunny.\"",
+    "options": [
+      "time",
+      "weather",
+      "night"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A1-R-0039",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "They moved to Spain a year ago, but they _____ speak Spanish fluently yet.",
+    "options": [
+      "aren\\'t",
+      "haven\\'t",
+      "can\\'t"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "A1-R-0040",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "This isn’t my book. I think it’s …..",
+    "options": [
+      "the Mark’s book",
+      "book’s Mark",
+      "Mark’s book"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "A1-R-0041",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "We’d like to send some photos to you. Can you give ….. your address?",
+    "options": [
+      "our",
+      "ours",
+      "us"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "A1-R-0042",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "What time does he get ……. in the morning?",
+    "options": [
+      "from bed",
+      "up",
+      "on"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A1-R-0043",
+    "skill": "reading",
+    "level": "A1",
+    "prompt": "Where is ………?",
+    "options": [
+      "John’s sister",
+      "sister’s John",
+      "the John’s sister"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A2-R-0013",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": ".……… the answer to this question?",
+    "options": [
+      "Knows she",
+      "Does she know",
+      "Does she knows"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A2-R-0014",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "……….. no fault of her own, Liz missed the connecting flight.",
+    "options": [
+      "Through",
+      "At",
+      "By",
+      "For"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A2-R-0015",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "At school: Listen carefully, and when the teacher finishes her presentation, she …....... your questions.",
+    "options": [
+      "will answer",
+      "answers",
+      "is answering"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A2-R-0016",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Derek: “I like your offices. Everything looks new.” Simon: “Thank you. All the offices ……… last year. Before, they were very dark and old.”",
+    "options": [
+      "were decorating",
+      "were decorated",
+      "decorated"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A2-R-0017",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Gemma ….. a book when she fell asleep.",
+    "options": [
+      "was reading",
+      "read",
+      "reads"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A2-R-0018",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Her _____ response to the complex question showed her deep understanding of the subject.",
+    "options": [
+      "thoughtful",
+      "quick",
+      "careless",
+      "vague"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A2-R-0019",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Here is your enrolment form. Please ..................... your personal details.",
+    "options": [
+      "hang up",
+      "look out",
+      "fill in"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "A2-R-0020",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "I can phone you when I .................. at the airport.",
+    "options": [
+      "will arrive",
+      "arrive",
+      "arriving"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A2-R-0021",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "I can smell gas! We …… leave the building immediately!",
+    "options": [
+      "must",
+      "may",
+      "could"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A2-R-0022",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "I didn’t catch a bus. I came here …….",
+    "options": [
+      "on foot",
+      "by feet",
+      "with feet"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A2-R-0023",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "I forgot _____ my homework, so I got a bad grade.",
+    "options": [
+      "doing",
+      "to do",
+      "do"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A2-R-0024",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "It isn’t necessary to get a taxi. I can pick you up ………. the station.",
+    "options": [
+      "in",
+      "at",
+      "on"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A2-R-0025",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "It’s cold, wet and windy. There are only …….. people in the streets.",
+    "options": [
+      "a little",
+      "a few",
+      "many"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A2-R-0026",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Jim: “Look at that car! ……… car is it?” Mike: “It’s Jane’s. Her parents are rich!”",
+    "options": [
+      "Whose",
+      "What",
+      "Who"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A2-R-0027",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "London is ……….. city I have ever visited!",
+    "options": [
+      "expensive",
+      "the expensive",
+      "the most expensive"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "A2-R-0028",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "London isn’t ........................ people say.",
+    "options": [
+      "as cloudy than",
+      "cloudier as",
+      "as cloudy as"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "A2-R-0029",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Man: “…… swimming?” Woman: “Usually three times a week if I’m not too busy at work.”",
+    "options": [
+      "Shall we go",
+      "How often do you go",
+      "Where do you go"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A2-R-0030",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Man: “………... tickets to Paris for the New Year?” Woman: “Paris! That would be wonderful!”",
+    "options": [
+      "Shall I to book",
+      "Shall I book",
+      "Would I buy"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A2-R-0031",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Man: “……………………… to make the cake yesterday?” Woman: “Yes, plenty! We made an omelette too!”",
+    "options": [
+      "What did you need",
+      "Were there enough eggs",
+      "How much time"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A2-R-0032",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "That beautiful old building ...................... in the eighteenth century.",
+    "options": [
+      "built",
+      "is built",
+      "was built"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "A2-R-0033",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "The children were very ….. when we cancelled the trip to the aquarium.",
+    "options": [
+      "disappoint",
+      "disappointing",
+      "disappointed"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "A2-R-0034",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "The lesson was so long and it was really ......................",
+    "options": [
+      "boring",
+      "bored",
+      "bore"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A2-R-0035",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "This is delicious. This is the first time I ……… paella!",
+    "options": [
+      "have eaten",
+      "eat",
+      "ate"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A2-R-0036",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Tom is a ______ singer. He sings better than anyone I know.",
+    "options": [
+      "good",
+      "well",
+      "friendly"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A2-R-0037",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "We have a lot of ________ today to do for Chemistry, don't we?",
+    "options": [
+      "subjects",
+      "homework",
+      "housework"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "A2-R-0038",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Why _____ to the party yesterday? I didn’t see you.",
+    "options": [
+      "didn\\'t you go",
+      "don\\'t you go",
+      "you didn\\'t go"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "A2-R-0039",
+    "skill": "reading",
+    "level": "A2",
+    "prompt": "Woman: “Excuse me, where is the railway station, please?” Man: “Go down this road, ……the bridge and the station is on your right.”",
+    "options": [
+      "into",
+      "above",
+      "over"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "B1-R-0015",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "…. his apology, she hasn’t forgiven him yet.",
+    "options": [
+      "However",
+      "In spite",
+      "Despite",
+      "Although"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "B1-R-0016",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "……… various problems, he managed to finish the work in time.",
+    "options": [
+      "Although",
+      "However",
+      "Despite",
+      "Even though"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "B1-R-0017",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "Boss: \"Remember to close that project by the end of next week, please!\" Employee:\" Are you sure this work ........ to be finished by Monday?\"",
+    "options": [
+      "mustn\\'t",
+      "can\\'t",
+      "shouldn\\'t",
+      "doesn\\'t have"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 3.0
+  },
+  {
+    "id": "B1-R-0018",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "By this time _______ week, I will have finished my final exam.",
+    "options": [
+      "following",
+      "next",
+      "last",
+      "this"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B1-R-0019",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "Derek: \"I really love my car. Apparently it's an Asian brand.\" Brenda: \" Yes, I know that brand. The cars ……….. in Japan.",
+    "options": [
+      "have made",
+      "are made",
+      "make",
+      "made"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B1-R-0020",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "Gavin: “…… your video camera? It looks new!” Dylan: “For five years, but I don’t use it very often.”",
+    "options": [
+      "How long are you having",
+      "How long have you had",
+      "Where did you have",
+      "When did you buy"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B1-R-0021",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "He ……… go to work yesterday because it was a holiday.",
+    "options": [
+      "hadn’t",
+      "mustn’t",
+      "didn’t have to",
+      "can’t"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "B1-R-0022",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "He brought her a big bunch of flowers to compensate for being late. He brought her a big bunch of flowers to make ….. for being late.",
+    "options": [
+      "on",
+      "off",
+      "up",
+      "away"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "B1-R-0023",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "He didn’t want to go to the party because he _____ anyone there.",
+    "options": [
+      "didn’t know",
+      "hasn’t known",
+      "knows",
+      "isn\\'t knowing"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "B1-R-0024",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "He’s the person _____ helped me with my project last week.",
+    "options": [
+      "whose",
+      "who",
+      "which",
+      "where"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B1-R-0025",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "I wish I ........ richer! I’m fed up with not having enough money to go on holiday.",
+    "options": [
+      "am",
+      "had",
+      "have been",
+      "were"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 3.0
+  },
+  {
+    "id": "B1-R-0026",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "I’m not sure what time the movie starts. I _____ check online.",
+    "options": [
+      "will",
+      "might",
+      "have",
+      "am"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "B1-R-0027",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "I’m not sure yet, but I have to go to the post office. I ……… arrive a bit late at the office tomorrow morning.",
+    "options": [
+      "will",
+      "may",
+      "would",
+      "need"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B1-R-0028",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "If I had more time, I _____ learn how to play the guitar.",
+    "options": [
+      "wish",
+      "would",
+      "want",
+      "will"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B1-R-0029",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "If it _______ tomorrow, we will move the picnic indoors.",
+    "options": [
+      "rains",
+      "shines",
+      "hot",
+      "cold"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "B1-R-0030",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "It’s not certain but Pete …… be able to come to work tomorrow. He wasn’t feeling very well today.",
+    "options": [
+      "can’t",
+      "won’t",
+      "mustn’t",
+      "may not"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 3.0
+  },
+  {
+    "id": "B1-R-0031",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "John: “What’s wrong with Michelle?” Sarah: “Her bag ……… at lunchtime in the new restaurant opposite the office.”",
+    "options": [
+      "is stolen",
+      "was stolen",
+      "stole"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B1-R-0032",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "Let’s meet at the station at six: our train ……. at ten past.",
+    "options": [
+      "has left",
+      "leaving",
+      "left",
+      "leaves"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 3.0
+  },
+  {
+    "id": "B1-R-0033",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "Pete: “Why is your leg in plaster?” Kate: “What a silly question! I ……….. it, of course.”",
+    "options": [
+      "was breaking",
+      "have broken",
+      "was broken",
+      "break"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B1-R-0034",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "She _____ for her lost keys all morning but still hasn’t found them.",
+    "options": [
+      "will look",
+      "has been looking",
+      "was looked",
+      "looks"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B1-R-0035",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "She said she would call me as soon ______ she gets home.",
+    "options": [
+      "as",
+      "than",
+      "so",
+      "when"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "B1-R-0036",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "The book was so interesting that I couldn’t _____ reading it.",
+    "options": [
+      "stop",
+      "stopped",
+      "stopping",
+      "to stop"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "B1-R-0037",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "The girl ……. dog bit the man had to pay a heavy fine.",
+    "options": [
+      "that",
+      "who",
+      "whose",
+      "which"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "B1-R-0038",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "They didn’t send her an invitation. She …… an invitation.",
+    "options": [
+      "wasn’t been sent",
+      "isn’t sent",
+      "wasn’t sent",
+      "hasn’t sent"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "B1-R-0039",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "They were really _______ because they had been walking for hours.",
+    "options": [
+      "interested",
+      "tired",
+      "bored",
+      "ill"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B1-R-0040",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "When Kyle met his wife back in the days, he …….. in Paris as a consultant.",
+    "options": [
+      "has worked",
+      "was working",
+      "has been working",
+      "is working"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B1-R-0041",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "You …. tired after such a long journey.",
+    "options": [
+      "may to be",
+      "need be",
+      "must be",
+      "can have"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "B1-R-0042",
+    "skill": "reading",
+    "level": "B1",
+    "prompt": "You can borrow my book ……….. you’re careful with it.",
+    "options": [
+      "as far as",
+      "expecting",
+      "unless",
+      "as long as"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 3.0
+  },
+  {
+    "id": "B2-R-0013",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "......... he’s happy, his parents don’t care what job he does.",
+    "options": [
+      "In case",
+      "As far as",
+      "As long as",
+      "Although"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "B2-R-0014",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "……….. the economic crisis, people seem to be spending a lot on holidays.",
+    "options": [
+      "Although",
+      "Despite",
+      "However",
+      "Nevertheless"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B2-R-0015",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "He said, 'I am leaving tomorrow.'",
+    "options": [
+      "He said he was leaving tomorrow.",
+      "He said he is leaving tomorrow.",
+      "He said he was leaving the next day.",
+      "He said he leaves tomorrow."
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "B2-R-0016",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "He was so tired that he could hardly _____ his eyes open.",
+    "options": [
+      "had kept",
+      "keeping",
+      "keep",
+      "to keep"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "B2-R-0017",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "I don’t know why she didn’t say ‘hello’. She ....... her contact lenses and so didn’t even see me!",
+    "options": [
+      "mustn’t have been wearing",
+      "might not have been wearing",
+      "can’t wear",
+      "can’t be wearing"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B2-R-0018",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "I will call you if I _____ home before 8 p.m.",
+    "options": [
+      "get",
+      "got",
+      "will get",
+      "am getting"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "B2-R-0019",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "I wish I ……….. a new car. My old one keeps breaking down.",
+    "options": [
+      "could afford",
+      "afforded",
+      "would afford",
+      "had afforded"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "B2-R-0020",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "If he …… his train, he would be here by now.",
+    "options": [
+      "hasn’t missed",
+      "didn’t miss",
+      "hadn’t missed",
+      "wouldn’t have missed"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "B2-R-0021",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "If I _____ enough money, I would travel around the world.",
+    "options": [
+      "would have",
+      "have",
+      "had had",
+      "had"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 3.0
+  },
+  {
+    "id": "B2-R-0022",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "I'm really looking forward _____ my holiday next month.",
+    "options": [
+      "for",
+      "on",
+      "to",
+      "at"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "B2-R-0023",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "Isn’t it just like him to ........ at the party without being invited?",
+    "options": [
+      "head for",
+      "turn up",
+      "go to",
+      "catch on"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B2-R-0024",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "It’s not ....... going in now. We’ve missed half the film.",
+    "options": [
+      "use",
+      "point",
+      "good",
+      "worth"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 3.0
+  },
+  {
+    "id": "B2-R-0025",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "Please speak clearly! When you ......, I can't understand a word you're saying.",
+    "options": [
+      "yell",
+      "giggle",
+      "sob",
+      "mumble"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 3.0
+  },
+  {
+    "id": "B2-R-0026",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "She didn’t fancy ......... out alone at that time of the evening.",
+    "options": [
+      "to go",
+      "she would go",
+      "that she had to go",
+      "going"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 3.0
+  },
+  {
+    "id": "B2-R-0027",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "She followed the recipe to the letter ......... the meal perfectly.",
+    "options": [
+      "so to prepare",
+      "to be preparing",
+      "so as to prepare",
+      "for to prepare"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "B2-R-0028",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "She has a strong _____ of responsibility.",
+    "options": [
+      "opinion",
+      "idea",
+      "thought",
+      "sense"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 3.0
+  },
+  {
+    "id": "B2-R-0029",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "She won't pass her exams ..... she starts studying hard!",
+    "options": [
+      "whether",
+      "unless",
+      "when",
+      "if"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B2-R-0030",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "The documents _____ by the manager while the team was waiting in the meeting room.",
+    "options": [
+      "were be checked",
+      "were being checked",
+      "have checked",
+      "checked"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B2-R-0031",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "The movie was so _____ that I couldn't stop thinking about it for days.",
+    "options": [
+      "thoughtless",
+      "thought-provoking",
+      "uninteresting",
+      "confusing"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B2-R-0032",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "The person _____ gave me the book is my teacher.",
+    "options": [
+      "who",
+      "which",
+      "whom",
+      "whose"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "B2-R-0033",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "They set off at night, ……. the heavy holiday traffic.",
+    "options": [
+      "to avoiding",
+      "for avoiding",
+      "for to avoid",
+      "so as to avoid"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 3.0
+  },
+  {
+    "id": "B2-R-0034",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "We can’t phone him now. At this time of night, he ………...",
+    "options": [
+      "sleep",
+      "will be sleeping",
+      "slept",
+      "will sleep"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "B2-R-0035",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "When did you …… golf?",
+    "options": [
+      "go down with",
+      "come off",
+      "take up",
+      "set up"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "B2-R-0036",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "When she was a teenager, she was made ........ after her baby sister.",
+    "options": [
+      "look",
+      "looking",
+      "to look",
+      "that she looked"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "B2-R-0037",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "When your alarm clock rings tomorrow morning, I ........ a late dinner on the other side of the world!",
+    "options": [
+      "have been having",
+      "would be having",
+      "will be having",
+      "have"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "B2-R-0038",
+    "skill": "reading",
+    "level": "B2",
+    "prompt": "You _____ study harder if you want to pass the exam.",
+    "options": [
+      "can",
+      "might",
+      "must",
+      "should"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C1-R-0009",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "…….., we wouldn’t have known what to do.",
+    "options": [
+      "But for his help",
+      "Unless he helped",
+      "Regardless he helped",
+      "If he helped"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "C1-R-0010",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "ben's remarks were seen as _____, sparking controversy and much talk among the audience.",
+    "options": [
+      "harmless",
+      "provocative",
+      "bland",
+      "neutral"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "C1-R-0011",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "Derek's argument was so _____ that it completely undermined her credibility and nobody voted for him.",
+    "options": [
+      "persuasive",
+      "valid",
+      "convincing",
+      "flawed"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 3.0
+  },
+  {
+    "id": "C1-R-0012",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "Has Damian decided to take ……… in the competition?",
+    "options": [
+      "off",
+      "part",
+      "up",
+      "in"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "C1-R-0013",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "He agreed to sign the form but he looked extremely ill–at– ……..",
+    "options": [
+      "sorts",
+      "ease",
+      "mind",
+      "heart"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "C1-R-0014",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "He had been travelling all day so he was ............ when he finally arrived. All he wanted to do was put his feet up.",
+    "options": [
+      "charismatic",
+      "lively",
+      "exhausted",
+      "starving"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C1-R-0015",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "I caught that train by the skin of ……. They were already closing the doors when I rushed onto the platform.",
+    "options": [
+      "my teeth",
+      "my nose",
+      "my lip",
+      "my hair"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "C1-R-0016",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "I was nervous about staying the night there. I imagined ………..",
+    "options": [
+      "haunted the old house",
+      "being haunted the old house",
+      "to be haunted the old house",
+      "the old house to be haunted"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 3.0
+  },
+  {
+    "id": "C1-R-0017",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "I’d let ………. if I were you. What he doesn’t know, won’t hurt him.",
+    "options": [
+      "the cat out of the bag",
+      "sleeping dogs lie",
+      "the wolf out",
+      "a bee in his bonnet"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "C1-R-0018",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "I’m feeling a bit ……… I think I’ll take an aspirin and go to bed.",
+    "options": [
+      "under the weather",
+      "up the creek",
+      "on cloud nine",
+      "under a cloud"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "C1-R-0019",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "It is by …….. certain that the plan will be approved. The new legislation is very strict.",
+    "options": [
+      "far",
+      "rights",
+      "the way",
+      "no means"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 3.0
+  },
+  {
+    "id": "C1-R-0020",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "It’s high time he ……… a flat of his own. He can’t live with his parents forever.",
+    "options": [
+      "will find",
+      "found",
+      "has found",
+      "finds"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "C1-R-0021",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "I've been blowing my ........ nose all day. I wonder if I’m coming down with a cold.",
+    "options": [
+      "liquidy",
+      "trickly",
+      "runny",
+      "shifty"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C1-R-0022",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "I've never seen anyhting like this before. This artist’s work is known for its _____ use of color and texture.",
+    "options": [
+      "repetitive",
+      "monotonous",
+      "innovative",
+      "predictable"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C1-R-0023",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "Thank you for a lovely evening but it’s time we ........ home.",
+    "options": [
+      "are going",
+      "were to go",
+      "went",
+      "have gone"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C1-R-0024",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "The book provides an _____ analysis of the global economic crisis, it is indeed very thorough.",
+    "options": [
+      "in-depth",
+      "perfunctory",
+      "ordinary",
+      "unbiased"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "C1-R-0025",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "The CEO’s speech was _____ and left the audience motivated for the future.",
+    "options": [
+      "mediocre",
+      "inspirational",
+      "tedious",
+      "irrelevant"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "C1-R-0026",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "The findings of the research were _____, causing the team to reconsider their initial hypothesis.",
+    "options": [
+      "predictable",
+      "routine",
+      "unexpected",
+      "foreseen"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C1-R-0027",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "The lawyer's argument was so _____ that no one could challenge it.",
+    "options": [
+      "convincing",
+      "vague",
+      "uncertain",
+      "biased"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "C1-R-0028",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "The new policy was implemented to _____ the growing concerns over data privacy.",
+    "options": [
+      "ignore",
+      "address",
+      "avoid",
+      "eliminate"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "C1-R-0029",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "The politician made a _____ effort to repair his public image after the scandal.",
+    "options": [
+      "clumsy",
+      "concerted",
+      "reluctant",
+      "impulsive"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "C1-R-0030",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "The scientist made a _____ breakthrough that changed the course of medical history.",
+    "options": [
+      "trivial",
+      "groundbreaking",
+      "moderate",
+      "controversial"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "C1-R-0031",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "The witness’s testimony was _____, leaving no room for doubt about the suspect’s guilt.",
+    "options": [
+      "compelling",
+      "ambiguous",
+      "irrelevant",
+      "indecisive"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "C1-R-0032",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "They promised to do everything within their ……….. to help us.",
+    "options": [
+      "hands",
+      "reach",
+      "power",
+      "reason"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C1-R-0033",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "This time next week, he …….. to America.",
+    "options": [
+      "travels",
+      "is travelled",
+      "will be travelling",
+      "has travelled"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C1-R-0034",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "Those children look guilty. What have they …….. up to since I left the room?",
+    "options": [
+      "put",
+      "taken",
+      "been",
+      "done"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C1-R-0035",
+    "skill": "reading",
+    "level": "C1",
+    "prompt": "We're not making any progress by arguing like this. We're just going round and round ………",
+    "options": [
+      "the curve",
+      "in circles",
+      "and about",
+      "the wall"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "C2-R-0001",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Although it’s a small business, its annual ………. is surprisingly high.",
+    "options": [
+      "outcome",
+      "turnover",
+      "outlook",
+      "turnabout"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "C2-R-0002",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Although the negotiations were tough, both sides remained _____ and avoided conflict.",
+    "options": [
+      "diplomatic",
+      "stubborn",
+      "aggressive",
+      "impatient"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "C2-R-0003",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Can you give me a rough …….. of what the job could cost?",
+    "options": [
+      "estimate",
+      "worth",
+      "value",
+      "account"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "C2-R-0004",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Cheer up! Why are you always ……....? Look on the bright side of life for a change.",
+    "options": [
+      "in the dark",
+      "on the blink",
+      "down in the dumps",
+      "watching your step"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C2-R-0005",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Despite several _____ setbacks, the project was finished successfully.",
+    "options": [
+      "significant",
+      "minor",
+      "occasional",
+      "expected"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "C2-R-0006",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Don’t feel guilty. You have no reason …….. yourself.",
+    "options": [
+      "to blame",
+      "to be guilty",
+      "to be faulted",
+      "to mind"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "C2-R-0007",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "He fell deeper and deeper into the ………., and then went bankrupt.",
+    "options": [
+      "blue",
+      "red",
+      "green",
+      "black"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "C2-R-0008",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Her presentation was _____, capturing the audience’s full attention from start to finish.",
+    "options": [
+      "captivating",
+      "average",
+      "forgettable",
+      "distracting"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "C2-R-0009",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "His _____ attitude towards deadlines frustrated his colleagues.",
+    "options": [
+      "casual",
+      "dedicated",
+      "punctual",
+      "meticulous"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "C2-R-0010",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "His explanation was _____, leaving no room for misunderstanding.",
+    "options": [
+      "confusing",
+      "tentative",
+      "clear-cut",
+      "ambiguous"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C2-R-0011",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "I’m …….. about going on holiday with Jane. I’m not sure I can put up with her for two weeks.",
+    "options": [
+      "in seventh heaven",
+      "second to none",
+      "having second thoughts",
+      "bringing to mind"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C2-R-0012",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "I’m afraid that book has been out of ……… for years. You may find it in some second–hand shop.",
+    "options": [
+      "date",
+      "turn",
+      "print",
+      "reach"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C2-R-0013",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "I’m in two ……….. whether to accept the offer or not.",
+    "options": [
+      "brains",
+      "minds",
+      "heads",
+      "ideas"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "C2-R-0014",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Milly didn’t ……….. looking after her baby brother, as she didn't want to go out anyway that night.",
+    "options": [
+      "object",
+      "matter",
+      "mind",
+      "care for"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C2-R-0015",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "My sister bought some goldfish from the shop but we now we have to buy a ....... to put them in.",
+    "options": [
+      "tank",
+      "nest",
+      "cage",
+      "kennel"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "C2-R-0016",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "The artist’s latest exhibition was _____, offering new perspectives on contemporary art.",
+    "options": [
+      "predictable",
+      "uninspired",
+      "groundbreaking",
+      "ordinary"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C2-R-0017",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "The bus drivers have decided to come out ……… with the other transport workers.",
+    "options": [
+      "in relation",
+      "in sympathy",
+      "in accordance",
+      "by consent"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "C2-R-0018",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "The driver slammed on the brakes and there was a ....... sound.",
+    "options": [
+      "creaking",
+      "hissing",
+      "screeching",
+      "slamming"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C2-R-0019",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "The goods will be sent on ………. for thirty days.",
+    "options": [
+      "credit",
+      "sale",
+      "condition",
+      "approval"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 3.0
+  },
+  {
+    "id": "C2-R-0020",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "The new CEO's decision to expand globally was _____, considering the company's current success.",
+    "options": [
+      "unexpected",
+      "reckless",
+      "logical",
+      "risky"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C2-R-0021",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "The policeman ……….. the details of the accident.",
+    "options": [
+      "saw off",
+      "gave up",
+      "wrote off",
+      "took down"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 3.0
+  },
+  {
+    "id": "C2-R-0022",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "The report was praised for its _____ analysis of the data, offering deep insights into the issue.",
+    "options": [
+      "brief",
+      "incomplete",
+      "thorough",
+      "shallow"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C2-R-0023",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "The view from the top of the skyscraper is ......... Now, I understand why so many people want to come and visit it.",
+    "options": [
+      "iconic",
+      "spoilt",
+      "breathtaking",
+      "tacky"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C2-R-0024",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "This picture is a fake. It’s absolutely ……….. .",
+    "options": [
+      "worthless",
+      "unworthy",
+      "priceless",
+      "invaluable"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 0.0
+  },
+  {
+    "id": "C2-R-0025",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "When he asked Tom's new girlfriend, if she was his mother, he really put his ……. .",
+    "options": [
+      "shoulder to the wheel",
+      "foot in it",
+      "cat in the bag",
+      "mind to it"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 1.0
+  },
+  {
+    "id": "C2-R-0026",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "When he made that incredible proposal, I was so surprised that I was ……… for words.",
+    "options": [
+      "missing",
+      "wanting",
+      "at a loss",
+      "in need"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  },
+  {
+    "id": "C2-R-0027",
+    "skill": "reading",
+    "level": "C2",
+    "prompt": "Whenever they go out anywhere, she expects him to ……….. It’s not fair because he earns less than she does.",
+    "options": [
+      "pay out of hand",
+      "pay through the nose",
+      "foot the bill",
+      "pull up his socks"
+    ],
+    "audioUrl": NaN,
+    "needsReview": NaN,
+    "correctIndex": 2.0
+  }
+]

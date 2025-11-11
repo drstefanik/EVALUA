@@ -74,12 +74,21 @@ export default async function handler(req, res) {
       return res.status(200).json({ progress: out });
     }
 
-    // POST /content/progress  body { fileId, seconds?, completed? }
-    const body = typeof req.body === "object" ? req.body : {};
-    const fileId = String(body.fileId || "");
-    if (!fileId) return sendError(res, 400, "fileId missing");
-    const seconds = Number.isFinite(body.seconds) ? Number(body.seconds) : undefined;
-    const completed = typeof body.completed === "boolean" ? body.completed : undefined;
+// POST /content/progress  body { fileId, seconds?, duration?, completed? }
+const body = typeof req.body === "object" ? req.body : {};
+const fileId = String(body.fileId || "");
+if (!fileId) return sendError(res, 400, "fileId missing");
+const seconds = Number.isFinite(body.seconds) ? Number(body.seconds) : undefined;
+const duration = Number.isFinite(body.duration) ? Number(body.duration) : undefined;
+
+let completed = typeof body.completed === "boolean" ? body.completed : undefined;
+
+// ✅ Calcolo automatico del completamento al 60%
+if (!completed && seconds && duration && duration > 0) {
+  const progressRatio = seconds / duration;
+  if (progressRatio >= 0.6) completed = true;
+}
+
 
     // cerca un record esistente (per il tuo schema: entrambi testo)
     const existing = await tbl.PROGRESS.select({

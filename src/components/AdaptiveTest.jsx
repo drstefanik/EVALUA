@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { initState, pickNextItem, gradeAnswer, computeResult } from "../engine/adaptive";
 import { useItems } from "../hooks/useItems"; // named export: OK
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer, Tooltip } from "recharts";
 
 export default function AdaptiveTest() {
   const { items, error } = useItems(); // carica A1..C2
@@ -28,43 +29,40 @@ export default function AdaptiveTest() {
   if (error) return <div className="p-6 text-red-600">Errore nel caricare i dati.</div>;
   if (!items) return <div className="p-6">Loading…</div>;
   if (finished) {
-    return (
-      <div className="max-w-xl mx-auto p-6 space-y-2">
-        <h2 className="text-2xl font-semibold">Estimated level: {result.estimatedLevel}</h2>
-        <p>Confidence: {(result.confidence * 100).toFixed(0)}%</p>
-        <pre className="text-xs bg-gray-50 p-3 rounded">{JSON.stringify(result.askedByLevel, null, 2)}</pre>
-      </div>
-    );
-  }
-  if (!item) return <div className="p-6">Loading…</div>;
+  const breakdown = Object.entries(result.askedByLevel).map(([level, count]) => ({ level, count }));
+  const total = breakdown.reduce((s, r) => s + r.count, 0);
+  const used = breakdown.filter(r => r.count > 0).map(r => `${r.level}:${r.count}`).join(" • ");
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-4">
-      <div className="text-sm opacity-70">
-        Level: {st.current} • Question {st.askedCount + 1} • {item.skill}
+    <div className="max-w-3xl mx-auto p-6 space-y-6">
+      <div>
+        <h2 className="text-3xl font-semibold">Estimated level: {result.estimatedLevel}</h2>
+        <p className="text-sm opacity-75">Confidence: {(result.confidence * 100).toFixed(0)}%</p>
       </div>
 
-      {item.skill === "listening" && item.audioUrl && (
-        <audio controls src={item.audioUrl} className="w-full" />
-      )}
-
-      {item.passage && item.passage.trim() !== "" && (
-        <div className="p-4 rounded-lg bg-gray-50 border whitespace-pre-wrap">{item.passage}</div>
-      )}
-
-      <div className="text-lg font-medium">{item.prompt}</div>
-
-      <div className="space-y-2">
-        {item.options.map((opt, i) => (
-          <button
-            key={i}
-            onClick={() => onAnswer(i)}
-            className="w-full text-left p-3 border rounded-lg hover:bg-gray-100"
-          >
-            {String.fromCharCode(65 + i)}. {opt}
-          </button>
-        ))}
+      {/* FRASE TECNICA (no motivazionale) */}
+      <div className="p-4 rounded-lg border bg-white/50">
+        <p className="text-sm">
+          Outcome: <strong>CEFR {result.estimatedLevel}</strong>. The test converged after <strong>{total}</strong> items.
+          Distribution of administered items by pool → {used || "n/a"}. Decision rule: last stable level according to the adaptive policy
+          (start B1, +1 level after two consecutive correct answers; −1 level after any error; stop if a level reaches 7 items).
+        </p>
       </div>
+
+      {/* RADAR */}
+      <div className="h-80 w-full">
+        <ResponsiveContainer>
+          <RadarChart data={breakdown}>
+            <PolarGrid />
+            <PolarAngleAxis dataKey="level" />
+            <Tooltip />
+            <Radar name="Items" dataKey="count" stroke="" fill="" fillOpacity={0.35} />
+          </RadarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* (Opzionale) JSON raw */}
+      <pre className="text-xs bg-gray-50 p-3 rounded">{JSON.stringify(result.askedByLevel, null, 2)}</pre>
     </div>
   );
 }

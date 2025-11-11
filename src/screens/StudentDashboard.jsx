@@ -226,11 +226,18 @@ export default function StudentDashboard() {
     return !progress[prev.id]?.completed
   }, [progress])
 
-  const [playing, setPlaying] = useState(null)
-  const handleOpenVideo = (file) => setPlaying(file)
-  const handleCloseVideo = () => setPlaying(null)
-  const handleProgress = (fileId, seconds) => upsert(fileId, { seconds })
-  const handleComplete = (fileId) => upsert(fileId, { completed: true })
+const [playing, setPlaying] = useState(null)
+const handleOpenVideo = (file) => setPlaying(file)
+const handleCloseVideo = () => setPlaying(null)
+
+// ✅ callback stabili: evitano re-render del modal/player
+const handleProgress = useCallback((fileId, seconds) => {
+  upsert(fileId, { seconds })
+}, [upsert])
+
+const handleComplete = useCallback((fileId) => {
+  upsert(fileId, { completed: true })
+}, [upsert])
 
   /* ------------------------------ UI ------------------------------ */
   return (

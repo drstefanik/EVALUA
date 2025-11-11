@@ -20,6 +20,7 @@ export const tbl = Object.freeze({
   SCHOOL_OTP: base("SchoolOTP"),
   FOLDERS: base("Folders"),
   FILES: base("Files"),
+  PROGRESS: base("Progress"),
 });
 
 export function getBase() {

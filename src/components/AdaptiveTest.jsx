@@ -43,11 +43,11 @@ function getToken() {
 export default function AdaptiveTest() {
   const { items, error } = useItems();
 
-  // --- NUOVO: fasi ---
+  // Fasi
   const [phase, setPhase] = useState("intro"); // intro | running | finished
 
-  // Manteniamo la tua struttura engine/stato
-  const [st] = useState(initState); // non tocco il tuo pattern
+  // Engine/stato
+  const [st] = useState(initState);
   const [item, setItem] = useState(null);
   const [finished, setFinished] = useState(false);
   const [result, setResult] = useState(null);
@@ -108,7 +108,7 @@ export default function AdaptiveTest() {
     }, 140);
   };
 
-  // Salvataggio su Airtable via API route (immutato)
+  // Salvataggio su Airtable via API route
   useEffect(() => {
     if (!finished || !result) return;
 
@@ -170,26 +170,28 @@ export default function AdaptiveTest() {
     );
   }
 
-  // ---- Fase INTRO (nuova)
+  // ---- Fase INTRO
   if (phase === "intro") {
-    return <AdaptiveIntro onStart={() => {
-      // reset stato UI locale
-      setItem(null);
-      setFinished(false);
-      setResult(null);
-      setPendingNext(false);
-      setPhase("running");
-    }} />;
+    return (
+      <AdaptiveIntro
+        onStart={() => {
+          setItem(null);
+          setFinished(false);
+          setResult(null);
+          setPendingNext(false);
+          setPhase("running");
+        }}
+      />
+    );
   }
 
   // ---------- FINE TEST ----------
   if (phase === "finished" && finished && result) {
+    // Dati per eventuale grafico (non rivela algoritmo)
     const breakdown = Object.entries(result.askedByLevel).map(([level, count]) => ({
       level,
       count,
     }));
-    const total = breakdown.reduce((s, r) => s + r.count, 0);
-    const used = breakdown.filter(r => r.count > 0).map(r => `${r.level}:${r.count}`).join(" • ");
 
     return (
       <div className="mx-auto max-w-3xl p-6">
@@ -202,16 +204,16 @@ export default function AdaptiveTest() {
             Confidence: {(result.confidence * 100).toFixed(0)}%
           </p>
 
+          {/* Messaggio istituzionale (no algoritmo, no durata) */}
           <div className="mt-5 rounded-xl border bg-gray-50 p-4">
             <p className="text-sm text-gray-700">
-              The adaptive assessment established the candidate’s proficiency at{" "}
-              <strong>CEFR {result.estimatedLevel}</strong>. The test concluded after{" "}
-              <strong>{total}</strong> items. Distribution of administered items by pool →{" "}
-              {used || "n/a"}. Decision rule: last stable level (start B1; +1 after two consecutive
-              correct; −1 after two consecutive errors; stop if a level reaches 7 items).
+              This QUAET outcome reflects your performance in this session and indicates an
+              estimated proficiency of <strong>CEFR {result.estimatedLevel}</strong>. For official
+              placement or enrolment decisions, please follow your institution’s policy.
             </p>
           </div>
 
+          {/* Radar opzionale */}
           <div className="mt-8 h-80 w-full">
             <ResponsiveContainer>
               <RadarChart data={breakdown}>
@@ -236,13 +238,18 @@ export default function AdaptiveTest() {
             >
               Back to start
             </button>
+            {/* Reindirizza sempre alla dashboard studente */}
             <a
-              href="/dashboard"
+              href="/student"
               className="px-5 py-2.5 rounded-xl text-white bg-black hover:opacity-90"
             >
               Go to dashboard
             </a>
           </div>
+
+          <p className="mt-4 text-xs text-gray-500">
+            QUAET — the Qualification UAE Adaptive English Test.
+          </p>
         </div>
       </div>
     );
@@ -286,9 +293,7 @@ export default function AdaptiveTest() {
         )}
 
         {/* Prompt */}
-        <h1 className="mb-4 text-2xl font-semibold tracking-tight">
-          {item.prompt}
-        </h1>
+        <h1 className="mb-4 text-2xl font-semibold tracking-tight">{item.prompt}</h1>
 
         {/* Options */}
         <div className="space-y-3">

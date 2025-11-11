@@ -4,7 +4,10 @@ import Player from '@vimeo/player'
 export default function VideoModal({ open, file, onClose, onProgress, onComplete }) {
   const iframeRef = useRef(null)
   const playerRef = useRef(null)
-  const lastSentRef = useRef(0)
+
+  const lastSentRef = useRef(0)          // throttle progress (1s)
+  const durationRef = useRef(null)       // durata in secondi
+  const completedSentRef = useRef(false) // evita onComplete multipli
 
   useEffect(() => {
     if (!open || !file) return
@@ -13,19 +16,44 @@ export default function VideoModal({ open, file, onClose, onProgress, onComplete
 
     const player = new Player(iframe)
     playerRef.current = player
+    completedSentRef.current = false
+    lastSentRef.current = 0
+
+    // inizializza durata (preferisci quella passata dal backend, fallback a getDuration)
+    if (typeof file.duration === 'number' && file.duration > 0) {
+      durationRef.current = file.duration
+    } else {
+      player.getDuration().then((d) => {
+        if (typeof d === 'number' && d > 0) durationRef.current = d
+      }).catch(() => {})
+    }
 
     const handleTime = (data) => {
       const seconds = Math.floor(data?.seconds || 0)
-      // throttle: invia max 1 volta al secondo
+
+      // throttle progress: invia max 1 volta al secondo
       if (seconds !== lastSentRef.current) {
         lastSentRef.current = seconds
         onProgress?.(file.id, seconds)
       }
-      if (file.duration && seconds >= Math.max(15, file.duration * 0.9)) {
+
+      // completamento al 60% (una sola volta)
+      const duration = durationRef.current
+      if (!completedSentRef.current && duration && duration > 0) {
+        const ratio = seconds / duration
+        if (ratio >= 0.6) {
+          completedSentRef.current = true
+          onComplete?.(file.id)
+        }
+      }
+    }
+
+    const handleEnded = () => {
+      if (!completedSentRef.current) {
+        completedSentRef.current = true
         onComplete?.(file.id)
       }
     }
-    const handleEnded = () => onComplete?.(file.id)
 
     player.on('timeupdate', handleTime)
     player.on('ended', handleEnded)
@@ -36,13 +64,15 @@ export default function VideoModal({ open, file, onClose, onProgress, onComplete
       player.unload().catch(() => {})
       playerRef.current = null
       lastSentRef.current = 0
+      durationRef.current = null
+      completedSentRef.current = false
     }
-  // 👉 ricrea il player solo quando cambia l’apertura o l’ID del file
+  // ricrea il player solo quando cambia apertura o ID del file
   }, [open, file?.id])
 
   if (!open || !file) return null
 
-  // Aggiunge autopause=0 senza rompere eventuali query esistenti
+  // evita autopause tra eventuali istanze
   const src = file.url?.includes('?') ? `${file.url}&autopause=0` : `${file.url}?autopause=0`
 
   return (

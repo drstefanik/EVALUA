@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './styles.css'
@@ -25,6 +25,9 @@ import Contact from './pages/public/Contact.jsx'
 import Privacy from './pages/public/Privacy.jsx'
 import Terms from './pages/public/Terms.jsx'
 
+// Lazy load del test adattivo
+const AdaptiveTest = lazy(() => import('./components/AdaptiveTest.jsx'))
+
 const router = createBrowserRouter([
   {
     element: <Layout />,
@@ -46,6 +49,18 @@ const router = createBrowserRouter([
       { path: '/signup-student', element: <SignupStudent /> },
       { path: '/logout', element: <Logout /> },
       { path: '/forgot', element: <ForgotPassword /> },
+
+      // ✅ Route pubblica per il test adattivo (Listening + Reading)
+      {
+        path: '/adaptive-test',
+        element: (
+          <Suspense fallback={<div className="p-6">Loading…</div>}>
+            <AdaptiveTest />
+          </Suspense>
+        ),
+      },
+
+      // ✅ Aree protette
       {
         element: <ProtectedRoute allowedRoles={['admin']} />,
         children: [{ path: '/admin', element: <AdminDashboard /> }]

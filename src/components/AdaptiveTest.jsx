@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { initState, pickNextItem, gradeAnswer, computeResult } from "../engine/adaptive";
-import { useItems } from "../hooks/useItems"; // <-- nuovo
+import { useItems } from "../hooks/useItems"; // named export: OK
 
 export default function AdaptiveTest() {
   const { items, error } = useItems(); // carica A1..C2
@@ -9,16 +9,11 @@ export default function AdaptiveTest() {
   const [finished, setFinished] = useState(false);
   const [result, setResult] = useState(null);
 
-  // quando i dati sono pronti, estrai la prima domanda
   useEffect(() => {
     if (!items || error) return;
     const next = pickNextItem(st, items);
-    if (!next) {
-      setFinished(true);
-      setResult(computeResult(st));
-    } else {
-      setItem(next);
-    }
+    if (!next) { setFinished(true); setResult(computeResult(st)); }
+    else setItem(next);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items, error]);
 
@@ -26,20 +21,12 @@ export default function AdaptiveTest() {
     if (!items) return;
     gradeAnswer(st, item, idx);
     const next = pickNextItem(st, items);
-    if (!next) {
-      setFinished(true);
-      setResult(computeResult(st));
-    } else {
-      setItem(next);
-    }
+    if (!next) { setFinished(true); setResult(computeResult(st)); }
+    else setItem(next);
   };
 
-  if (error) {
-    return <div className="p-6 text-red-600">Errore nel caricare i dati.</div>;
-  }
-  if (!items) {
-    return <div className="p-6">Loading…</div>;
-  }
+  if (error) return <div className="p-6 text-red-600">Errore nel caricare i dati.</div>;
+  if (!items) return <div className="p-6">Loading…</div>;
   if (finished) {
     return (
       <div className="max-w-xl mx-auto p-6 space-y-2">

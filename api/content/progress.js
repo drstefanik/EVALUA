@@ -17,7 +17,7 @@ function extractToken(req) {
 }
 
 function escapeFormulaValue(value) {
-  return String(value ?? "").replace(/"/g, '\\"');
+  return String(value ?? "").replace(/'/g, "\\'");
 }
 
 function getUserIdentifier(payload) {
@@ -33,7 +33,7 @@ function getUserIdentifier(payload) {
 
 async function handleGet(req, res, userId) {
   try {
-    const filterByFormula = `{UserId} = "${escapeFormulaValue(userId)}"`;
+    const filterByFormula = `{UserId} = '${escapeFormulaValue(userId)}'`;
     const records = await tbl.PROGRESS.select({
       filterByFormula,
     }).all();
@@ -98,7 +98,7 @@ async function handlePost(req, res, userId) {
   }
 
   try {
-    const filterByFormula = `AND({UserId} = "${escapeFormulaValue(userId)}", {FileId} = "${escapeFormulaValue(fileId)}")`;
+    const filterByFormula = `AND({UserId} = '${escapeFormulaValue(userId)}', {FileId} = '${escapeFormulaValue(fileId)}')`;
 
     const existing = await tbl.PROGRESS.select({
       filterByFormula,

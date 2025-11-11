@@ -9,25 +9,29 @@ export default function VideoCard({ file, locked, progressPct, onClick }) {
         locked ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'
       }`}
     >
-      <div className="aspect-[16/9] w-full bg-slate-100 dark:bg-slate-800">
+      <div className="aspect-[16/9] w-full bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900">
         {file.thumb ? (
-          <img src={file.thumb} alt={file.title} className="h-full w-full object-cover" />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-slate-400">No cover</div>
-        )}
+          <img
+            src={file.thumb}
+            alt=""
+            className="h-full w-full object-cover"
+            loading="lazy"
+            referrerPolicy="no-referrer"
+          />
+        ) : null}
         {!locked && progressPct > 0 && (
           <div className="absolute bottom-0 left-0 h-1 bg-binavy" style={{ width: `${progressPct}%` }} />
         )}
         {locked && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-sm font-semibold">
-            Locked — complete previous
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-xs font-semibold">
+            Locked — completa la precedente
           </div>
         )}
       </div>
       <div className="p-3">
         <div className="text-sm font-semibold text-slate-900 dark:text-white">{file.title}</div>
         {file.duration ? (
-          <div className="mt-1 text-xs text-slate-500">{Math.round(file.duration/60)} min</div>
+          <div className="mt-1 text-xs text-slate-500">{Math.round(file.duration / 60)} min</div>
         ) : null}
       </div>
     </button>

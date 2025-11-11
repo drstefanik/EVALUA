@@ -24,7 +24,7 @@ export default function VideoCard({ file, locked, progressPct, onClick }) {
         )}
         {locked && (
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-xs font-semibold">
-            Locked — completa la precedente
+            Locked — watch the previous lesson to unlock
           </div>
         )}
       </div>

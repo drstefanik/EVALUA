@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { initState, pickNextItem, gradeAnswer, computeResult } from "../engine/adaptive";
 import { useItems } from "../hooks/useItems";
+import AdaptiveIntro from "../components/AdaptiveIntro";
 import {
   Radar,
   RadarChart,
@@ -41,14 +42,20 @@ function getToken() {
 
 export default function AdaptiveTest() {
   const { items, error } = useItems();
-  const [st] = useState(initState);
+
+  // --- NUOVO: fasi ---
+  const [phase, setPhase] = useState("intro"); // intro | running | finished
+
+  // Manteniamo la tua struttura engine/stato
+  const [st] = useState(initState); // non tocco il tuo pattern
   const [item, setItem] = useState(null);
   const [finished, setFinished] = useState(false);
   const [result, setResult] = useState(null);
   const [pendingNext, setPendingNext] = useState(false);
 
-  const startedAtIsoRef = useRef(new Date().toISOString());
-  const startedAtTsRef = useRef(Date.now());
+  // Timing & metriche
+  const startedAtIsoRef = useRef(null);
+  const startedAtTsRef = useRef(null);
   const askedBySkillRef = useRef({ listening: 0, reading: 0 });
 
   const noteAsked = (nextItem) => {
@@ -57,24 +64,34 @@ export default function AdaptiveTest() {
     askedBySkillRef.current[k] = (askedBySkillRef.current[k] || 0) + 1;
   };
 
+  // Avvio effettivo del test quando si passa a "running"
   useEffect(() => {
+    if (phase !== "running") return;
     if (!items || error) return;
+
+    // reset timing e contatori ad ogni nuovo tentativo
+    startedAtIsoRef.current = new Date().toISOString();
+    startedAtTsRef.current = Date.now();
+    askedBySkillRef.current = { listening: 0, reading: 0 };
+
     const next = pickNextItem(st, items);
     if (!next) {
       setFinished(true);
       setResult(computeResult(st));
+      setPhase("finished");
     } else {
       setItem(next);
       noteAsked(next);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items, error]);
+  }, [phase, items, error]);
 
   const goNext = () => {
     const next = pickNextItem(st, items);
     if (!next) {
       setFinished(true);
       setResult(computeResult(st));
+      setPhase("finished");
     } else {
       setItem(next);
       noteAsked(next);
@@ -91,7 +108,7 @@ export default function AdaptiveTest() {
     }, 140);
   };
 
-  // Salvataggio su Airtable via API route
+  // Salvataggio su Airtable via API route (immutato)
   useEffect(() => {
     if (!finished || !result) return;
 
@@ -117,7 +134,6 @@ export default function AdaptiveTest() {
           headers: {
             "Content-Type": "application/json",
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            // Fallback: l’API li legge anche se non sono nel body
             "x-user-id": payload.userId ?? "",
             "x-user-email": payload.userEmail ?? "",
           },
@@ -129,6 +145,7 @@ export default function AdaptiveTest() {
     })();
   }, [finished, result]);
 
+  // ---- UI di stato/caricamento/errore
   if (error) {
     return (
       <div className="mx-auto max-w-2xl p-6">
@@ -153,8 +170,20 @@ export default function AdaptiveTest() {
     );
   }
 
+  // ---- Fase INTRO (nuova)
+  if (phase === "intro") {
+    return <AdaptiveIntro onStart={() => {
+      // reset stato UI locale
+      setItem(null);
+      setFinished(false);
+      setResult(null);
+      setPendingNext(false);
+      setPhase("running");
+    }} />;
+  }
+
   // ---------- FINE TEST ----------
-  if (finished && result) {
+  if (phase === "finished" && finished && result) {
     const breakdown = Object.entries(result.askedByLevel).map(([level, count]) => ({
       level,
       count,
@@ -192,6 +221,27 @@ export default function AdaptiveTest() {
                 <Radar name="Items" dataKey="count" fillOpacity={0.35} />
               </RadarChart>
             </ResponsiveContainer>
+          </div>
+
+          <div className="mt-6 flex gap-3">
+            <button
+              onClick={() => {
+                setPhase("intro");
+                setItem(null);
+                setFinished(false);
+                setResult(null);
+                setPendingNext(false);
+              }}
+              className="px-5 py-2.5 rounded-xl border hover:bg-gray-50"
+            >
+              Back to start
+            </button>
+            <a
+              href="/dashboard"
+              className="px-5 py-2.5 rounded-xl text-white bg-black hover:opacity-90"
+            >
+              Go to dashboard
+            </a>
           </div>
         </div>
       </div>

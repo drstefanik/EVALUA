@@ -8,6 +8,52 @@ import FileListItem from '../components/FileListItem'
 
 const API_BASE = import.meta.env.VITE_AUTH_API ?? '/api'
 
+function relationToId(value) {
+  if (!value) return null
+  if (Array.isArray(value) && value.length > 0) {
+    const first = value[0]
+    if (typeof first === 'string') return first
+    if (first && typeof first === 'object') {
+      if (typeof first.id === 'string') return first.id
+      if (typeof first.value === 'string') return first.value
+    }
+    return null
+  }
+  if (typeof value === 'object') {
+    if (typeof value.id === 'string') return value.id
+    if (typeof value.value === 'string') return value.value
+    return null
+  }
+  if (typeof value === 'string') return value
+  return null
+}
+
+function normalizeFolder(folder) {
+  const parentId = relationToId(folder?.parent)
+  const visibility = Array.isArray(folder?.visibility)
+    ? relationToId(folder.visibility)
+    : folder?.visibility ?? null
+  return {
+    ...folder,
+    parent: parentId ?? null,
+    visibility: visibility ?? null,
+  }
+}
+
+function normalizeFile(file) {
+  const folderId = relationToId(file?.folder)
+  const prereqId = relationToId(file?.prereq)
+  const visibility = Array.isArray(file?.visibility)
+    ? relationToId(file.visibility)
+    : file?.visibility ?? null
+  return {
+    ...file,
+    folder: folderId ?? null,
+    prereq: prereqId ?? null,
+    visibility: visibility ?? null,
+  }
+}
+
 function buildTree(folders) {
   const map = new Map()
   folders.forEach((folder) => {
@@ -134,12 +180,29 @@ export default function StudentDashboard() {
     async function load() {
       setLoading(true); setError('')
       try {
-        const r = await fetch(`${API_BASE}/content/tree`, { headers: { Authorization: `Bearer ${token}` } })
+        const r = await fetch(`${API_BASE}/content/tree`, {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: 'no-store',
+        })
         const payload = await r.json().catch(()=> ({}))
         if (!r.ok) { setError(payload?.error || 'Unable to retrieve the content.'); setFolders([]); setFiles([]); return }
         if (!active) return
-        setFolders(Array.isArray(payload?.folders) ? payload.folders : [])
-        setFiles(Array.isArray(payload?.files) ? payload.files : [])
+        const rawFolders = Array.isArray(payload?.folders) ? payload.folders : []
+        const rawFiles = Array.isArray(payload?.files) ? payload.files : []
+        const normalizedFolders = rawFolders.map(normalizeFolder).filter((folder) => {
+          if (!folder?.visibility) return true
+          return folder.visibility === 'student'
+        })
+        const folderIdSet = new Set(normalizedFolders.map((folder) => folder.id))
+        const normalizedFiles = rawFiles
+          .map(normalizeFile)
+          .filter((file) => {
+            if (!file?.folder || !folderIdSet.has(file.folder)) return false
+            if (!file?.visibility) return true
+            return file.visibility === 'student'
+          })
+        setFolders(normalizedFolders)
+        setFiles(normalizedFiles)
       } catch {
         if (active) { setError('Connection unavailable. Try again later.'); setFolders([]); setFiles([]) }
       } finally { if (active) setLoading(false) }

@@ -16,10 +16,30 @@ function extractToken(req) {
   return token;
 }
 
+function extractRelationId(value) {
+  if (!value) return null;
+  if (Array.isArray(value) && value.length > 0) {
+    const first = value[0];
+    if (typeof first === "string") return first;
+    if (first && typeof first === "object") {
+      if (typeof first.id === "string") return first.id;
+      if (typeof first.value === "string") return first.value;
+    }
+    return null;
+  }
+  if (typeof value === "object" && value !== null) {
+    if (typeof value.id === "string") return value.id;
+    if (typeof value.value === "string") return value.value;
+    return null;
+  }
+  if (typeof value === "string") return value;
+  return null;
+}
+
 function sanitizeFolder(record) {
   const fields = record?.fields ?? {};
   const parentField = fields.parent || fields.parent_folder || fields.folder_parent;
-  const parentId = Array.isArray(parentField) && parentField.length > 0 ? parentField[0] : null;
+  const parentId = extractRelationId(parentField);
   const rawOrder = fields.order ?? fields.sort_order;
   const parsedOrder = Number(rawOrder);
 
@@ -28,6 +48,7 @@ function sanitizeFolder(record) {
     name: fields.name ?? fields.title ?? "",
     slug: fields.slug ?? fields.identifier ?? null,
     parent: typeof parentId === "string" ? parentId : null,
+    visibility: fields.visibility ?? null,
     order: Number.isFinite(parsedOrder) ? parsedOrder : 999,
   };
 }
@@ -35,7 +56,9 @@ function sanitizeFolder(record) {
 function sanitizeFile(record) {
   const fields = record?.fields ?? {};
   const folderField = fields.folder || fields.folders || fields.parent_folder;
-  const folderId = Array.isArray(folderField) && folderField.length > 0 ? folderField[0] : null;
+  const folderId = extractRelationId(folderField);
+  const prereqField = fields.prereq || fields.prerequisite || fields.prerequisites;
+  const prereqId = extractRelationId(prereqField);
   const rawOrder = fields.order ?? fields.sort_order;
   const parsedOrder = Number(rawOrder);
 
@@ -45,6 +68,7 @@ function sanitizeFile(record) {
     type: fields.type ?? fields.format ?? "",
     url: fields.url ?? fields.link ?? fields.href ?? null,
     folder: typeof folderId === "string" ? folderId : null,
+    visibility: fields.visibility ?? null,
   };
 
   if (Number.isFinite(parsedOrder)) {
@@ -57,21 +81,24 @@ function sanitizeFile(record) {
     file.size = parsedSize;
   }
 
+  if (typeof prereqId === "string") {
+    file.prereq = prereqId;
+  }
+
   return file;
 }
 
 function extractFolderId(record) {
   const fields = record?.fields ?? {};
   const folderField = fields.folder || fields.folders || fields.parent_folder;
-  if (Array.isArray(folderField) && folderField.length > 0) {
-    const [value] = folderField;
-    return typeof value === "string" ? value : null;
-  }
-  return null;
+  const folderId = extractRelationId(folderField);
+  return typeof folderId === "string" ? folderId : null;
 }
 
 export default async function handler(req, res) {
   if (!ensureMethod(req, res, "GET")) return;
+
+  res.setHeader("Cache-Control", "no-store");
 
   const token = extractToken(req);
   if (!token) {
@@ -114,8 +141,8 @@ export default async function handler(req, res) {
         .join(",")})`;
 
       const fileRecords = await tbl.FILES.select({
-        filterByFormula: fileFilterFormula,
-        fields: ["title", "type", "url", "size", "folder"],
+        filterByFormula: `AND(${fileFilterFormula}, {visibility} = "student")`,
+        fields: ["title", "type", "url", "size", "folder", "visibility", "prereq"],
       }).all();
 
       files = fileRecords

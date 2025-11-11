@@ -5,6 +5,31 @@ import { useItems } from "../hooks/useItems";
 // 🔸 Lazy import del radar (caricato solo quando finished === true)
 const RadarBreakdown = lazy(() => import("./RadarBreakdown.jsx"));
 
+/** Prova a recuperare utente da varie chiavi comuni di localStorage */
+function getCurrentUserFromStorage() {
+  const fallback = {
+    id: localStorage.getItem("userId") || "",
+    email: localStorage.getItem("userEmail") || "",
+  };
+  const keys = ["user", "auth", "session", "currentUser"];
+  for (const k of keys) {
+    try {
+      const raw = localStorage.getItem(k);
+      if (!raw) continue;
+      const obj = JSON.parse(raw);
+      if (obj && (obj.id || obj.userId || obj._id || obj.email || obj.userEmail)) {
+        return {
+          id: obj.id || obj.userId || obj._id || "",
+          email: obj.email || obj.userEmail || "",
+        };
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+  return fallback;
+}
+
 export default function AdaptiveTest() {
   const { items, error } = useItems(); // carica A1..C2
   const [st] = useState(initState);
@@ -16,6 +41,14 @@ export default function AdaptiveTest() {
   const startedAtIsoRef = useRef(new Date().toISOString());
   const startedAtTsRef = useRef(Date.now());
 
+  // conteggio per skill (Listening / Reading)
+  const askedBySkillRef = useRef({ listening: 0, reading: 0 });
+  const noteAsked = (nextItem) => {
+    if (!nextItem || !nextItem.skill) return;
+    const k = nextItem.skill;
+    askedBySkillRef.current[k] = (askedBySkillRef.current[k] || 0) + 1;
+  };
+
   // prima domanda
   useEffect(() => {
     if (!items || error) return;
@@ -25,6 +58,7 @@ export default function AdaptiveTest() {
       setResult(computeResult(st));
     } else {
       setItem(next);
+      noteAsked(next);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items, error]);
@@ -38,6 +72,7 @@ export default function AdaptiveTest() {
       setResult(computeResult(st));
     } else {
       setItem(next);
+      noteAsked(next);
     }
   };
 
@@ -45,12 +80,15 @@ export default function AdaptiveTest() {
   useEffect(() => {
     if (!finished || !result) return;
 
+    const { id, email } = getCurrentUserFromStorage();
+
     const payload = {
-      userId: window?.localStorage?.getItem("userId") || "",
-      userEmail: window?.localStorage?.getItem("userEmail") || "",
+      userId: id,
+      userEmail: email,
       estimatedLevel: result.estimatedLevel,
       confidence: result.confidence,
       askedByLevel: result.askedByLevel,
+      askedBySkill: askedBySkillRef.current, // <-- nuovo
       totalItems: Object.values(result.askedByLevel).reduce((a, b) => a + b, 0),
       startedAt: startedAtIsoRef.current,
       durationSec: Math.round((Date.now() - startedAtTsRef.current) / 1000),
@@ -72,10 +110,6 @@ export default function AdaptiveTest() {
       count,
     }));
     const total = breakdown.reduce((s, r) => s + r.count, 0);
-    const used = breakdown
-      .filter((r) => r.count > 0)
-      .map((r) => `${r.level}:${r.count}`)
-      .join(" • ");
 
     return (
       <div className="max-w-3xl mx-auto p-6 space-y-6">
@@ -86,15 +120,19 @@ export default function AdaptiveTest() {
 
         {/* Frase tecnica (no motivazionale) */}
         <div className="p-4 rounded-lg border bg-white/50">
-<p className="text-sm">
-  The adaptive assessment established the candidate’s proficiency at <strong>CEFR {result.estimatedLevel}</strong>.  
-  The test concluded after <strong>{total}</strong> items, following the procedures defined by the certification framework.
-</p>
-
+          <p className="text-sm">
+            The adaptive assessment established the candidate’s proficiency at{" "}
+            <strong>CEFR {result.estimatedLevel}</strong>. The test concluded after{" "}
+            <strong>{total}</strong> items, following the procedures defined by the certification
+            framework. Skill distribution (administered items) — Reading:{" "}
+            {askedBySkillRef.current.reading || 0}, Listening: {askedBySkillRef.current.listening || 0}.
+          </p>
         </div>
 
         {/* Radar lazy-loaded */}
-        <Suspense fallback={<div className="h-80 flex items-center justify-center">Loading chart…</div>}>
+        <Suspense
+          fallback={<div className="h-80 flex items-center justify-center">Loading chart…</div>}
+        >
           <RadarBreakdown data={breakdown} />
         </Suspense>
 

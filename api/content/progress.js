@@ -1,170 +1,70 @@
-import { parseJsonBody, sendError } from "../_lib/http.js";
-import { verifyJWT } from "../../src/util.js";
-import { tbl } from "../../src/airtable.js";
-
-function extractToken(req) {
-  const header = req.headers?.authorization || req.headers?.Authorization;
-  if (!header || typeof header !== "string") {
-    return null;
-  }
-  const parts = header.split(" ");
-  if (parts.length !== 2) return null;
-  const [scheme, token] = parts;
-  if (scheme !== "Bearer" || !token) {
-    return null;
-  }
-  return token;
-}
-
-function escapeFormulaValue(value) {
-  return String(value ?? "").replace(/'/g, "\\'");
-}
-
-function getUserIdentifier(payload) {
-  const { id, email } = payload ?? {};
-  if (typeof id === "string" && id.trim()) {
-    return id.trim();
-  }
-  if (typeof email === "string" && email.trim()) {
-    return email.trim().toLowerCase();
-  }
-  return null;
-}
-
-async function handleGet(req, res, userId) {
+// POST /content/progress
+router.post('/content/progress', async (req, res) => {
   try {
-    const filterByFormula = `{UserId} = '${escapeFormulaValue(userId)}'`;
-    const records = await tbl.PROGRESS.select({
-      filterByFormula,
-    }).all();
+    const userId = req.user?.id || req.user?.email
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' })
+    const { fileId, seconds, completed } = req.body
+    if (!fileId) return res.status(400).json({ error: 'fileId missing' })
 
-    const progress = {};
-    for (const record of records) {
-      const fields = record?.fields ?? {};
-      const fileId = fields.FileId;
-      if (!fileId) continue;
-      const secondsRaw = fields.Seconds;
-      const seconds = Number(secondsRaw);
-      const completed = Boolean(fields.Completed);
-      progress[fileId] = {
-        seconds: Number.isFinite(seconds) && seconds >= 0 ? seconds : 0,
-        completed,
-      };
+    // Se Progress.UserId è Link-to-record verso "Students"
+    // e Progress.FileId è Link-to-record verso "Files",
+    // risolvi i record ids:
+    let userFieldValue = userId
+    let fileFieldValue = fileId
+
+    const progressTable = base('Progress')
+    const filesTable = base('Files')
+    const studentsTable = base('Students') // se non esiste, lascia com'è e usa testo
+
+    // tenta di risolvere FILE come record id (se fileId non è già recXXXX)
+    if (!/^rec[a-zA-Z0-9]{14}$/.test(fileId)) {
+      const fileRec = await filesTable.select({
+        maxRecords: 1,
+        filterByFormula: `OR(RECORD_ID() = '${fileId}', {id} = '${fileId}', {title} = '${fileId}')`
+      }).firstPage().catch(() => [])
+      if (fileRec && fileRec[0]) fileFieldValue = fileRec[0].id
     }
 
-    res.status(200).json({ progress });
-  } catch (error) {
-    console.error("Unable to load progress", error);
-    return sendError(res, 500, "Unable to load progress");
-  }
-}
-
-async function handlePost(req, res, userId) {
-  let body;
-  try {
-    body = await parseJsonBody(req);
-  } catch (error) {
-    console.error("Invalid JSON body for progress", error);
-    return sendError(res, 400, "Invalid payload");
-  }
-
-  const rawFileId = body?.fileId;
-  const fileId = typeof rawFileId === "string" ? rawFileId.trim() : "";
-  if (!fileId) {
-    return sendError(res, 400, "fileId is required");
-  }
-
-  let secondsValue;
-  if ("seconds" in (body || {})) {
-    const parsedSeconds = Number(body.seconds);
-    if (!Number.isFinite(parsedSeconds) || parsedSeconds < 0) {
-      return sendError(res, 400, "seconds must be a non-negative number");
+    // risolvi USER come record id se hai tabella Students che contiene email/id
+    if (!/^rec[a-zA-Z0-9]{14}$/.test(userId)) {
+      const userRec = await studentsTable.select({
+        maxRecords: 1,
+        filterByFormula: `OR({email} = '${userId}', {UserId} = '${userId}')`
+      }).firstPage().catch(() => [])
+      if (userRec && userRec[0]) userFieldValue = userRec[0].id
     }
-    secondsValue = parsedSeconds;
-  }
 
-  let completedValue;
-  if ("completed" in (body || {})) {
-    const rawCompleted = body.completed;
-    if (typeof rawCompleted === "boolean") {
-      completedValue = rawCompleted;
-    } else if (typeof rawCompleted === "string") {
-      completedValue = rawCompleted.toLowerCase() === "true";
-    } else if (typeof rawCompleted === "number") {
-      completedValue = rawCompleted !== 0;
-    } else {
-      completedValue = Boolean(rawCompleted);
-    }
-  }
+    // prepara i valori gestendo sia testo sia link-to-record
+    const toValue = (v) => (/^rec[a-zA-Z0-9]{14}$/.test(String(v)) ? [String(v)] : String(v))
 
-  try {
-    const filterByFormula = `AND({UserId} = '${escapeFormulaValue(userId)}', {FileId} = '${escapeFormulaValue(fileId)}')`;
-
-    const existing = await tbl.PROGRESS.select({
-      filterByFormula,
+    const findExisting = await progressTable.select({
       maxRecords: 1,
-    }).firstPage();
+      filterByFormula: `AND(
+        OR({UserId} = '${userId}', {UserId} = '${toValue(userFieldValue)}'),
+        OR({FileId} = '${fileId}', {FileId} = '${toValue(fileFieldValue)}')
+      )`
+    }).firstPage().catch(() => [])
 
-    if (existing.length > 0) {
-      const record = existing[0];
-      const updateFields = {};
-      if (secondsValue !== undefined) {
-        updateFields.Seconds = secondsValue;
-      }
-      if (completedValue !== undefined) {
-        updateFields.Completed = completedValue;
-      }
-
-      if (Object.keys(updateFields).length > 0) {
-        await tbl.PROGRESS.update(record.id, updateFields);
-      }
+    if (findExisting && findExisting[0]) {
+      const rec = findExisting[0]
+      await progressTable.update(rec.id, {
+        UserId: toValue(userFieldValue),
+        FileId: toValue(fileFieldValue),
+        ...(Number.isFinite(seconds) ? { Seconds: seconds } : {}),
+        ...(typeof completed === 'boolean' ? { Completed: completed } : {})
+      })
     } else {
-      await tbl.PROGRESS.create({
-        UserId: userId,
-        FileId: fileId,
-        Seconds: secondsValue ?? 0,
-        Completed: completedValue ?? false,
-      });
+      await progressTable.create({
+        UserId: toValue(userFieldValue),
+        FileId: toValue(fileFieldValue),
+        Seconds: Number.isFinite(seconds) ? seconds : 0,
+        Completed: !!completed
+      })
     }
 
-    res.status(200).json({ success: true });
-  } catch (error) {
-    console.error("Unable to save progress", error);
-    return sendError(res, 500, "Unable to save progress");
+    res.json({ success: true })
+  } catch (err) {
+    console.error('save progress error', err)
+    res.status(500).json({ error: 'Unable to save progress' })
   }
-}
-
-export default async function handler(req, res) {
-  const token = extractToken(req);
-  if (!token) {
-    return sendError(res, 401, "Token not provided");
-  }
-
-  let payload;
-  try {
-    payload = verifyJWT(token);
-  } catch (error) {
-    console.error("Invalid JWT for progress", error);
-    return sendError(res, 401, "Invalid session");
-  }
-
-  if (payload?.role !== "student") {
-    return sendError(res, 403, "Access denied");
-  }
-
-  const userId = getUserIdentifier(payload);
-  if (!userId) {
-    return sendError(res, 401, "Unauthorized");
-  }
-
-  if (req.method === "GET") {
-    return handleGet(req, res, userId);
-  }
-
-  if (req.method === "POST") {
-    return handlePost(req, res, userId);
-  }
-
-  res.setHeader("Allow", "GET, POST");
-  return sendError(res, 405, "Method Not Allowed");
-}
+})

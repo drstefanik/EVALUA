@@ -2,10 +2,8 @@ import { useEffect, useRef, useState, Suspense, lazy } from "react";
 import { initState, pickNextItem, gradeAnswer, computeResult } from "../engine/adaptive";
 import { useItems } from "../hooks/useItems";
 
-// 🔸 Lazy import del radar (caricato solo quando finished === true)
 const RadarBreakdown = lazy(() => import("./RadarBreakdown.jsx"));
 
-/** Prova a recuperare utente da varie chiavi comuni di localStorage */
 function getCurrentUserFromStorage() {
   const fallback = {
     id: localStorage.getItem("userId") || "",
@@ -23,25 +21,21 @@ function getCurrentUserFromStorage() {
           email: obj.email || obj.userEmail || "",
         };
       }
-    } catch {
-      /* ignore */
-    }
+    } catch {}
   }
   return fallback;
 }
 
 export default function AdaptiveTest() {
-  const { items, error } = useItems(); // carica A1..C2
+  const { items, error } = useItems();
   const [st] = useState(initState);
   const [item, setItem] = useState(null);
   const [finished, setFinished] = useState(false);
   const [result, setResult] = useState(null);
 
-  // traccia inizio test per durata
   const startedAtIsoRef = useRef(new Date().toISOString());
   const startedAtTsRef = useRef(Date.now());
 
-  // conteggio per skill (Listening / Reading)
   const askedBySkillRef = useRef({ listening: 0, reading: 0 });
   const noteAsked = (nextItem) => {
     if (!nextItem || !nextItem.skill) return;
@@ -49,7 +43,6 @@ export default function AdaptiveTest() {
     askedBySkillRef.current[k] = (askedBySkillRef.current[k] || 0) + 1;
   };
 
-  // prima domanda
   useEffect(() => {
     if (!items || error) return;
     const next = pickNextItem(st, items);
@@ -76,7 +69,6 @@ export default function AdaptiveTest() {
     }
   };
 
-  // Salvataggio su Airtable via API route (creata in /api/save-placement.js)
   useEffect(() => {
     if (!finished || !result) return;
 
@@ -88,7 +80,7 @@ export default function AdaptiveTest() {
       estimatedLevel: result.estimatedLevel,
       confidence: result.confidence,
       askedByLevel: result.askedByLevel,
-      askedBySkill: askedBySkillRef.current, // <-- nuovo
+      askedBySkill: askedBySkillRef.current,
       totalItems: Object.values(result.askedByLevel).reduce((a, b) => a + b, 0),
       startedAt: startedAtIsoRef.current,
       durationSec: Math.round((Date.now() - startedAtTsRef.current) / 1000),
@@ -110,6 +102,7 @@ export default function AdaptiveTest() {
       count,
     }));
     const total = breakdown.reduce((s, r) => s + r.count, 0);
+    const used = breakdown.filter(r => r.count > 0).map(r => `${r.level}:${r.count}`).join(" • ");
 
     return (
       <div className="max-w-3xl mx-auto p-6 space-y-6">
@@ -118,28 +111,19 @@ export default function AdaptiveTest() {
           <p className="text-sm opacity-75">Confidence: {(result.confidence * 100).toFixed(0)}%</p>
         </div>
 
-        {/* Frase tecnica (no motivazionale) */}
         <div className="p-4 rounded-lg border bg-white/50">
           <p className="text-sm">
             The adaptive assessment established the candidate’s proficiency at{" "}
             <strong>CEFR {result.estimatedLevel}</strong>. The test concluded after{" "}
-            <strong>{total}</strong> items, following the procedures defined by the certification
-            framework. Skill distribution (administered items) — Reading:{" "}
-            {askedBySkillRef.current.reading || 0}, Listening: {askedBySkillRef.current.listening || 0}.
+            <strong>{total}</strong> items. Distribution of administered items by pool → {used || "n/a"}.
+            Decision rule: last stable level (start B1; +1 after two consecutive correct; −1 after any error;
+            stop if a level reaches 7 items).
           </p>
         </div>
 
-        {/* Radar lazy-loaded */}
-        <Suspense
-          fallback={<div className="h-80 flex items-center justify-center">Loading chart…</div>}
-        >
+        <Suspense fallback={<div className="h-80 flex items-center justify-center">Loading chart…</div>}>
           <RadarBreakdown data={breakdown} />
         </Suspense>
-
-        {/* (Opzionale) JSON raw */}
-        <pre className="text-xs bg-gray-50 p-3 rounded">
-          {JSON.stringify(result.askedByLevel, null, 2)}
-        </pre>
       </div>
     );
   }
@@ -148,9 +132,8 @@ export default function AdaptiveTest() {
 
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-4">
-      <div className="text-sm opacity-70">
-        Level: {st.current} • Question {st.askedCount + 1} • {item.skill}
-      </div>
+      {/* Header domanda — niente livello/skill, contatore corretto (parte da 1) */}
+      <div className="text-sm opacity-70">Question {st.askedCount}</div>
 
       {item.skill === "listening" && item.audioUrl && (
         <audio controls src={item.audioUrl} className="w-full" />

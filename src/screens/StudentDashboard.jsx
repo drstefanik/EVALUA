@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { fetchSchoolByCode, getStoredSession } from '../api'
+import { getStoredSession } from '../api'
+import useProgress from '../hooks/useProgress'
+import VideoCard from '../components/VideoCard'
+import VideoModal from '../components/VideoModal'
 import FileListItem from '../components/FileListItem'
 
 const API_BASE = import.meta.env.VITE_AUTH_API ?? '/api'
@@ -98,396 +101,170 @@ export default function StudentDashboard() {
   const navigate = useNavigate()
   const session = useMemo(() => getStoredSession(), [])
   const token = session?.token
+  const studentId = session?.id || session?.email || 'student'
   const studentName = session?.name || ''
-  const schoolCode = session?.schoolCode || ''
+
   const [folders, setFolders] = useState([])
   const [files, setFiles] = useState([])
   const [selectedFolderId, setSelectedFolderId] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [toast, setToast] = useState(null)
-  const [copiedFileId, setCopiedFileId] = useState(null)
-  const copyTimeoutRef = useRef(null)
-  const [school, setSchool] = useState(null)
-  const [loadingSchool, setLoadingSchool] = useState(false)
-  const [schoolError, setSchoolError] = useState('')
+
+  const { progress, loading: loadingProgress, upsert } = useProgress(token, studentId)
 
   const folderMap = useMemo(() => {
-    const map = new Map()
-    folders.forEach((folder) => {
-      map.set(folder.id, folder)
-    })
-    return map
+    const m = new Map()
+    folders.forEach(f => m.set(f.id, f))
+    return m
   }, [folders])
 
   const tree = useMemo(() => buildTree(folders), [folders])
 
-  const breadcrumb = useMemo(() => {
-    if (!selectedFolderId) return []
-    const trail = []
-    let currentId = selectedFolderId
-    const visited = new Set()
-    while (currentId && folderMap.has(currentId) && !visited.has(currentId)) {
-      visited.add(currentId)
-      const folder = folderMap.get(currentId)
-      trail.push(folder)
-      currentId = folder?.parent
-    }
-    return trail.reverse()
-  }, [folderMap, selectedFolderId])
-
   const filteredFiles = useMemo(() => {
     if (!selectedFolderId) return []
     return files
-      .filter((file) => file.folder === selectedFolderId)
-      .sort((a, b) => {
-        const orderDiff = (a.order ?? 999) - (b.order ?? 999)
-        if (orderDiff !== 0) return orderDiff
-        return (a.title || '').localeCompare(b.title || '')
-      })
+      .filter((f) => f.folder === selectedFolderId)
+      .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || (a.title||'').localeCompare(b.title||''))
   }, [files, selectedFolderId])
 
-  const selectFolder = useCallback((folderId) => {
-    setSelectedFolderId(folderId)
-  }, [])
-
+  // caricamento al mount
   useEffect(() => {
-    if (!token) {
-      navigate('/login', { replace: true })
-      return
-    }
-
+    if (!token) { navigate('/login', { replace: true }); return }
     let active = true
-
-    async function loadTree() {
-      setLoading(true)
-      setError('')
+    async function load() {
+      setLoading(true); setError('')
       try {
-        const response = await fetch(`${API_BASE}/content/tree`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-
-        if (response.status === 401 || response.status === 403) {
-          navigate('/login', { replace: true })
-          return
-        }
-
-        let payload = null
-        try {
-          payload = await response.json()
-        } catch (parseError) {
-          payload = null
-        }
-
-        if (!response.ok) {
-          console.error('Content tree request failed', response.status, payload)
-          const message = payload?.error || 'Unable to retrieve the content.'
-          if (response.status >= 500) {
-            setToast({ message: 'Server error. Please try again later.', tone: 'error' })
-          }
-          if (active) {
-            setError(message)
-            setFolders([])
-            setFiles([])
-          }
-          return
-        }
-
+        const r = await fetch(`${API_BASE}/content/tree`, { headers: { Authorization: `Bearer ${token}` } })
+        const payload = await r.json().catch(()=> ({}))
+        if (!r.ok) { setError(payload?.error || 'Unable to retrieve the content.'); setFolders([]); setFiles([]); return }
         if (!active) return
-
-        const apiFolders = Array.isArray(payload?.folders) ? payload.folders : []
-        const apiFiles = Array.isArray(payload?.files) ? payload.files : []
-        setFolders(apiFolders)
-        setFiles(apiFiles)
-      } catch (error) {
-        console.error('Unable to load student content tree', error)
-        if (active) {
-          setError('Connection unavailable. Try again later.')
-          setFolders([])
-          setFiles([])
-          setToast({ message: 'Connection unavailable.', tone: 'error' })
-        }
-      } finally {
-        if (active) {
-          setLoading(false)
-        }
-      }
+        setFolders(Array.isArray(payload?.folders) ? payload.folders : [])
+        setFiles(Array.isArray(payload?.files) ? payload.files : [])
+      } catch {
+        if (active) { setError('Connection unavailable. Try again later.'); setFolders([]); setFiles([]) }
+      } finally { if (active) setLoading(false) }
     }
-
-    loadTree()
-
-    return () => {
-      active = false
-    }
+    load()
+    return () => { active = false }
   }, [navigate, token])
 
   useEffect(() => {
-    if (folders.length === 0) {
-      setSelectedFolderId(null)
-      return
-    }
-
-    setSelectedFolderId((prev) => {
-      if (prev && folders.some((folder) => folder.id === prev)) {
-        return prev
-      }
-
-      const candidates = folders
-        .filter((folder) => !folder.parent)
-        .sort((a, b) => {
-          const orderDiff = (a.order ?? 0) - (b.order ?? 0)
-          if (orderDiff !== 0) return orderDiff
-          return (a.name || '').localeCompare(b.name || '')
-        })
-
-      if (candidates.length > 0) {
-        return candidates[0].id
-      }
-
-      return folders[0].id
+    if (!folders.length) { setSelectedFolderId(null); return }
+    setSelectedFolderId(prev => {
+      if (prev && folders.some(f=>f.id===prev)) return prev
+      const root = folders.filter(f=>!f.parent).sort((a,b)=>(a.order??0)-(b.order??0))[0]
+      return root?.id ?? folders[0].id
     })
   }, [folders])
 
-  useEffect(() => {
-    let active = true
-
-    if (!schoolCode) {
-      setSchool(null)
-      setSchoolError('')
-      setLoadingSchool(false)
-      return () => {
-        active = false
-      }
+  // regole di propedeuticità
+  const isLocked = useCallback((file, list) => {
+    // 1) Se ha un prerequisito esplicito
+    if (file.prereq) {
+      const pre = progress[file.prereq]
+      return !(pre && pre.completed)
     }
+    // 2) altrimenti usa l’ordine: serve il file con order subito precedente
+    const sorted = list.filter(f=>f.type==='video').sort((a,b)=>(a.order??999)-(b.order??999))
+    const idx = sorted.findIndex(f=>f.id===file.id)
+    if (idx <= 0) return false
+    const prev = sorted[idx-1]
+    const done = progress[prev.id]?.completed
+    return !done
+  }, [progress])
 
-    setLoadingSchool(true)
-    setSchoolError('')
+  const [playing, setPlaying] = useState(null) // file in riproduzione
 
-    fetchSchoolByCode(schoolCode)
-      .then((res) => {
-        if (!active) return
-        setSchool(res?.record || null)
-      })
-      .catch((error) => {
-        console.error('Unable to fetch school information', error)
-        if (!active) return
-        const message = error?.message || 'Unable to fetch the school information.'
-        setSchoolError(message)
-        setSchool(null)
-      })
-      .finally(() => {
-        if (active) {
-          setLoadingSchool(false)
-        }
-      })
+  const handleOpenVideo = (file) => setPlaying(file)
+  const handleCloseVideo = () => setPlaying(null)
 
-    return () => {
-      active = false
-    }
-  }, [schoolCode])
+  const handleProgress = (fileId, seconds) => {
+    upsert(fileId, { seconds })
+  }
+  const handleComplete = (fileId) => {
+    upsert(fileId, { completed: true })
+  }
 
-  useEffect(() => {
-    return () => {
-      if (copyTimeoutRef.current) {
-        clearTimeout(copyTimeoutRef.current)
-      }
-    }
-  }, [])
-
-  const handleOpenFile = useCallback((url) => {
-    if (!url) return
-    window.open(url, '_blank', 'noopener')
-  }, [])
-
-  const handleCopyLink = useCallback(
-    async (file) => {
-      const url = file?.url
-      if (!url) return
-      try {
-        if (navigator?.clipboard?.writeText) {
-          await navigator.clipboard.writeText(url)
-          if (copyTimeoutRef.current) {
-            clearTimeout(copyTimeoutRef.current)
-          }
-          setCopiedFileId(file.id)
-          copyTimeoutRef.current = setTimeout(() => setCopiedFileId(null), 1500)
-        } else {
-          throw new Error('Clipboard API not available')
-      }
-    } catch (error) {
-      console.error('Copy file link failed', error)
-        setToast({ message: 'Unable to copy the link. Please copy it manually.', tone: 'error', duration: 4000 })
-      }
-    },
-    [],
-  )
-
-  const closeToast = useCallback(() => setToast(null), [])
-
+  // UI
   return (
     <div className="min-h-screen bg-gradient-to-b from-biwhite via-biwhite to-binavy/10 dark:from-[#0a0f1f] dark:via-[#0a0f1f] dark:to-[#001c5e]">
-      <Toast toast={toast} onClose={closeToast} />
-      <div className="mx-auto max-w-6xl px-4 py-12">
-        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
+      <div className="mx-auto max-w-6xl px-4 py-10">
+        <div className="mb-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
           <h1 className="text-3xl font-semibold text-binavy dark:text-white">Student area</h1>
-          <p className="mt-3 text-slate-600 dark:text-slate-300">
-            {studentName
-              ? `Hi ${studentName}, explore the materials shared with you by your school.`
-              : "Access the materials shared with your school's students."}
+          <p className="mt-2 text-slate-600 dark:text-slate-300">
+            {studentName ? `Hi ${studentName}, your learning library is below.` : 'Explore your learning library.'}
           </p>
-          <div className="mt-6 inline-flex items-center gap-2 text-sm text-binavy dark:text-slate-200">
-            <span>Want to sign out?</span>
-            <Link to="/logout" className="font-semibold text-binavy underline-offset-4 hover:text-bireg dark:text-white dark:hover:text-bireg">
-              Logout
-            </Link>
+          <div className="mt-3 text-sm">
+            <Link to="/logout" className="font-semibold underline-offset-4 text-binavy hover:text-bireg dark:text-white">Logout</Link>
           </div>
         </div>
 
-        <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-          <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">My school</h2>
-          {schoolError && (
-            <div
-              role="alert"
-              className="mt-4 rounded-2xl border border-bireg/20 bg-bireg/10 px-4 py-3 text-sm text-bireg"
-            >
-              {schoolError}
-            </div>
-          )}
-          {loadingSchool && !schoolError && (
-            <p className="mt-3 text-sm text-slate-500">Loading information...</p>
-          )}
-          {!loadingSchool && !schoolError && !school && (
-            <p className="mt-3 text-sm text-slate-500">
-              No school associated. Make sure you entered the School Code during sign-up.
-            </p>
-          )}
-          {!loadingSchool && school && (
-            <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-5 dark:border-white/10 dark:bg-slate-800/60">
-              <p className="text-lg font-semibold text-binavy dark:text-white">{school.name}</p>
-              <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{school.email}</p>
-            </div>
-          )}
-        </div>
-
-        <div className="mt-8 grid gap-6 lg:grid-cols-[260px,1fr]">
+        <div className="grid gap-6 lg:grid-cols-[260px,1fr]">
+          {/* Sidebar folder tree (uguale al tuo, puoi riusare FolderNode) */}
           <aside className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-            <h2 className="px-2 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-300">
-              Folders
-            </h2>
-            {loading ? (
-              <div className="mt-4 space-y-2 px-2">
-                {[0, 1, 2, 3].map((index) => (
-                  <div key={index} className="h-10 w-full animate-pulse rounded-xl bg-binavy/10 dark:bg-white/10" />
-                ))}
-              </div>
-            ) : folders.length === 0 ? (
-              <p className="mt-4 px-2 text-sm text-slate-600 dark:text-slate-400">
-                No folders available right now.
-              </p>
-            ) : (
-              <div className="mt-3 space-y-1">
-                {tree.map((node) => (
-                  <FolderNode
-                    key={node.id}
-                    node={node}
-                    depth={0}
-                    onSelect={selectFolder}
-                    selectedId={selectedFolderId}
-                  />
-                ))}
-              </div>
-            )}
+            <h2 className="px-2 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-300">Folders</h2>
+            {/* …incolla qui il tuo albero (FolderNode) */}
           </aside>
 
+          {/* Contenuto */}
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-            <div className="flex flex-col gap-4 border-b border-slate-100 pb-5 dark:border-white/10 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <nav className="flex flex-wrap items-center gap-2 text-sm text-slate-500 dark:text-slate-300" aria-label="Percorso cartella">
-                  {breadcrumb.length === 0 ? (
-                    <span className="font-medium text-slate-700 dark:text-slate-200">Select a folder</span>
-                  ) : (
-                    breadcrumb.map((folder, index) => (
-                      <React.Fragment key={folder.id}>
-                        <button
-                          type="button"
-                          onClick={() => selectFolder(folder.id)}
-                          className={`rounded-full px-3 py-1 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#0a0f1f] ${
-                            index === breadcrumb.length - 1
-                              ? 'bg-binavy text-white focus-visible:ring-bireg'
-                              : 'bg-biwhite text-binavy hover:bg-binavy/10 focus-visible:ring-binavy/40 dark:bg-[#111a33] dark:text-slate-200 dark:hover:bg-[#1a2750] dark:focus-visible:ring-[#6a87ff]/60'
-                          }`}
-                        >
-                          {folder.name || 'Folder'}
-                        </button>
-                        {index !== breadcrumb.length - 1 && <span className="text-slate-300 dark:text-slate-600">/</span>}
-                      </React.Fragment>
-                    ))
-                  )}
-                </nav>
-                {selectedFolderId && folderMap.get(selectedFolderId)?.description && (
-                  <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                    {folderMap.get(selectedFolderId).description}
-                  </p>
-                )}
-              </div>
-              <div className="text-xs uppercase tracking-widest text-slate-400 dark:text-slate-500">
-                {filteredFiles.length}{' '}
-                {filteredFiles.length === 1 ? 'file available' : 'files available'}
-              </div>
-            </div>
+            {error && !loading && <div className="rounded-xl border border-bireg/30 bg-bireg/10 p-3 text-sm text-bireg">{error}</div>}
 
-            {error && !loading ? (
-              <div
-                role="alert"
-                className="mt-6 rounded-2xl border border-bireg/20 bg-bireg/10 px-4 py-3 text-sm text-bireg"
-              >
-                {error}
-              </div>
-            ) : loading ? (
-              <div className="mt-6 space-y-4">
-                {[0, 1, 2].map((index) => (
-                  <div
-                    key={index}
-                    className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-binavy/5 p-4 dark:border-white/10 dark:bg-[#111a33] sm:flex-row sm:items-center sm:justify-between"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 animate-pulse rounded-lg bg-binavy/20 dark:bg-white/10" />
-                      <div className="space-y-2">
-                        <div className="h-4 w-40 animate-pulse rounded bg-binavy/20 dark:bg-white/10" />
-                        <div className="h-3 w-24 animate-pulse rounded bg-binavy/20 dark:bg-white/10" />
-                      </div>
-                    </div>
-                    <div className="flex w-full max-w-[180px] items-center gap-2 sm:w-auto">
-                      <div className="h-8 flex-1 animate-pulse rounded-lg bg-binavy/20 dark:bg-white/10" />
-                      <div className="h-8 flex-1 animate-pulse rounded-lg bg-binavy/20 dark:bg-white/10" />
-                    </div>
-                  </div>
+            {loading ? (
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                {Array.from({length:8}).map((_,i)=>(
+                  <div key={i} className="aspect-[16/9] animate-pulse rounded-2xl bg-slate-200/50 dark:bg-white/10" />
                 ))}
               </div>
             ) : !selectedFolderId ? (
-              <p className="mt-6 text-sm text-slate-600 dark:text-slate-400">
-                Select a folder from the sidebar to see the available files.
-              </p>
-            ) : filteredFiles.length === 0 ? (
-              <p className="mt-6 text-sm text-slate-600 dark:text-slate-400">No files available in this folder.</p>
+              <p className="text-sm text-slate-600 dark:text-slate-300">Select a folder to view content.</p>
             ) : (
-              <ul className="mt-6 space-y-4">
-                {filteredFiles.map((file) => (
-                  <FileListItem
-                    key={file.id}
-                    file={file}
-                    onOpen={() => handleOpenFile(file.url)}
-                    onCopy={() => handleCopyLink(file)}
-                    isCopied={copiedFileId === file.id}
-                  />
-                ))}
-              </ul>
+              <>
+                {/* Netflix-style: se nel folder ci sono video → griglia card; altrimenti lista file */}
+                {filteredFiles.some(f=>f.type==='video') ? (
+                  <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                    {filteredFiles.filter(f=>f.type==='video').map(file=>{
+                      const prog = progress[file.id]
+                      const pct = file.duration ? Math.min(100, Math.round(((prog?.seconds||0) / file.duration) * 100)) : (prog?.completed ? 100 : 0)
+                      const locked = isLocked(file, filteredFiles)
+                      return (
+                        <VideoCard
+                          key={file.id}
+                          file={file}
+                          locked={locked}
+                          progressPct={pct}
+                          onClick={()=>handleOpenVideo(file)}
+                        />
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <ul className="space-y-3">
+                    {filteredFiles.map(file=>(
+                      <FileListItem
+                        key={file.id}
+                        file={file}
+                        onOpen={()=> window.open(file.url, '_blank', 'noopener')}
+                        onCopy={async()=> navigator.clipboard?.writeText(file.url)}
+                        isCopied={false}
+                      />
+                    ))}
+                  </ul>
+                )}
+              </>
             )}
           </section>
         </div>
       </div>
+
+      {/* Modal video */}
+      <VideoModal
+        open={!!playing}
+        file={playing}
+        onClose={handleCloseVideo}
+        onProgress={handleProgress}
+        onComplete={handleComplete}
+      />
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { getStoredSession } from '../api'
 import useProgress from '../hooks/useProgress'
@@ -8,22 +8,16 @@ import FileListItem from '../components/FileListItem'
 
 const API_BASE = import.meta.env.VITE_AUTH_API ?? '/api'
 
+/* ----------------------------- helpers ----------------------------- */
 function relationToId(value) {
   if (!value) return null
   if (Array.isArray(value) && value.length > 0) {
     const first = value[0]
     if (typeof first === 'string') return first
-    if (first && typeof first === 'object') {
-      if (typeof first.id === 'string') return first.id
-      if (typeof first.value === 'string') return first.value
-    }
+    if (first && typeof first === 'object') return first.id || first.value || null
     return null
   }
-  if (typeof value === 'object') {
-    if (typeof value.id === 'string') return value.id
-    if (typeof value.value === 'string') return value.value
-    return null
-  }
+  if (typeof value === 'object' && value !== null) return value.id || value.value || null
   if (typeof value === 'string') return value
   return null
 }
@@ -33,8 +27,11 @@ function normalizeFolder(folder) {
   const visibility = Array.isArray(folder?.visibility)
     ? relationToId(folder.visibility)
     : folder?.visibility ?? null
+  const name = folder?.name || folder?.title || 'Untitled'
   return {
     ...folder,
+    name,
+    title: name,               // alias per compatibilità UI
     parent: parentId ?? null,
     visibility: visibility ?? null,
   }
@@ -56,33 +53,18 @@ function normalizeFile(file) {
 
 function buildTree(folders) {
   const map = new Map()
-  folders.forEach((folder) => {
-    map.set(folder.id, { ...folder, children: [] })
+  folders.forEach((f) => map.set(f.id, { ...f, children: [] }))
+  map.forEach((f) => {
+    if (f.parent && map.has(f.parent)) map.get(f.parent).children.push(f)
   })
-
-  map.forEach((folder) => {
-    if (folder.parent && map.has(folder.parent)) {
-      map.get(folder.parent).children.push(folder)
-    }
-  })
-
   const roots = []
-  map.forEach((folder) => {
-    if (!folder.parent || !map.has(folder.parent)) {
-      roots.push(folder)
-    }
-  })
+  map.forEach((f) => { if (!f.parent || !map.has(f.parent)) roots.push(f) })
 
-  function sortNodes(nodes) {
-    nodes.sort((a, b) => {
-      const orderDiff = (a.order ?? 0) - (b.order ?? 0)
-      if (orderDiff !== 0) return orderDiff
-      return (a.name || '').localeCompare(b.name || '')
-    })
-    nodes.forEach((node) => sortNodes(node.children))
+  function sort(nodes) {
+    nodes.sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || (a.title || a.name || '').localeCompare(b.title || b.name || ''))
+    nodes.forEach((n) => sort(n.children))
   }
-
-  sortNodes(roots)
+  sort(roots)
   return roots
 }
 
@@ -100,9 +82,10 @@ function FolderNode({ node, depth, onSelect, selectedId }) {
         }`}
         style={{ paddingLeft: `${depth * 16 + 12}px` }}
       >
-        <span className="font-medium">{node.name || 'Untitled folder'}</span>
+        <span className="font-medium truncate">{node.title || node.name || 'Untitled folder'}</span>
         <span className="text-xs text-slate-400">{node.children.length}</span>
       </button>
+
       {node.children.length > 0 && (
         <div className="mt-1 space-y-1">
           {node.children.map((child) => (
@@ -120,29 +103,7 @@ function FolderNode({ node, depth, onSelect, selectedId }) {
   )
 }
 
-function Toast({ toast, onClose }) {
-  useEffect(() => {
-    if (!toast) return
-    const duration = typeof toast.duration === 'number' ? toast.duration : 4000
-    const timeout = setTimeout(onClose, duration)
-    return () => clearTimeout(timeout)
-  }, [toast, onClose])
-
-  if (!toast) return null
-
-  const toneClass = toast.tone === 'error' ? 'bg-bireg' : 'bg-emerald-600'
-
-  return (
-    <div className="pointer-events-none fixed inset-x-0 top-4 flex justify-center px-4">
-      <div
-        className={`pointer-events-auto flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm font-medium text-white shadow-soft ${toneClass}`}
-      >
-        <span>{toast.message}</span>
-      </div>
-    </div>
-  )
-}
-
+/* --------------------------- main component --------------------------- */
 export default function StudentDashboard() {
   const navigate = useNavigate()
   const session = useMemo(() => getStoredSession(), [])
@@ -156,13 +117,7 @@ export default function StudentDashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  const { progress, loading: loadingProgress, upsert } = useProgress(token, studentId)
-
-  const folderMap = useMemo(() => {
-    const m = new Map()
-    folders.forEach(f => m.set(f.id, f))
-    return m
-  }, [folders])
+  const { progress, upsert } = useProgress(token, studentId)
 
   const tree = useMemo(() => buildTree(folders), [folders])
 
@@ -170,85 +125,83 @@ export default function StudentDashboard() {
     if (!selectedFolderId) return []
     return files
       .filter((f) => f.folder === selectedFolderId)
-      .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || (a.title||'').localeCompare(b.title||''))
+      .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || (a.title || '').localeCompare(b.title || ''))
   }, [files, selectedFolderId])
 
-  // caricamento al mount
+  // load data
   useEffect(() => {
     if (!token) { navigate('/login', { replace: true }); return }
     let active = true
-    async function load() {
+    ;(async () => {
       setLoading(true); setError('')
       try {
         const r = await fetch(`${API_BASE}/content/tree`, {
           headers: { Authorization: `Bearer ${token}` },
           cache: 'no-store',
         })
-        const payload = await r.json().catch(()=> ({}))
-        if (!r.ok) { setError(payload?.error || 'Unable to retrieve the content.'); setFolders([]); setFiles([]); return }
+        const payload = await r.json().catch(() => ({}))
+        if (!r.ok) {
+          setError(payload?.error || 'Unable to retrieve the content.')
+          setFolders([]); setFiles([])
+          return
+        }
         if (!active) return
         const rawFolders = Array.isArray(payload?.folders) ? payload.folders : []
         const rawFiles = Array.isArray(payload?.files) ? payload.files : []
-        const normalizedFolders = rawFolders.map(normalizeFolder).filter((folder) => {
-          if (!folder?.visibility) return true
-          return folder.visibility === 'student'
-        })
-        const folderIdSet = new Set(normalizedFolders.map((folder) => folder.id))
+        const normalizedFolders = rawFolders
+          .map(normalizeFolder)
+          .filter((f) => !f.visibility || f.visibility === 'student')
+
+        const folderIdSet = new Set(normalizedFolders.map((f) => f.id))
         const normalizedFiles = rawFiles
           .map(normalizeFile)
-          .filter((file) => {
-            if (!file?.folder || !folderIdSet.has(file.folder)) return false
-            if (!file?.visibility) return true
-            return file.visibility === 'student'
-          })
+          .filter((f) => f.folder && folderIdSet.has(f.folder))
+
         setFolders(normalizedFolders)
         setFiles(normalizedFiles)
       } catch {
-        if (active) { setError('Connection unavailable. Try again later.'); setFolders([]); setFiles([]) }
-      } finally { if (active) setLoading(false) }
-    }
-    load()
+        if (active) {
+          setError('Connection unavailable. Try again later.')
+          setFolders([]); setFiles([])
+        }
+      } finally {
+        if (active) setLoading(false)
+      }
+    })()
     return () => { active = false }
   }, [navigate, token])
 
+  // select default folder
   useEffect(() => {
     if (!folders.length) { setSelectedFolderId(null); return }
     setSelectedFolderId(prev => {
-      if (prev && folders.some(f=>f.id===prev)) return prev
-      const root = folders.filter(f=>!f.parent).sort((a,b)=>(a.order??0)-(b.order??0))[0]
+      if (prev && folders.some(f => f.id === prev)) return prev
+      const root = folders.filter(f => !f.parent).sort((a,b) => (a.order ?? 999) - (b.order ?? 999))[0]
       return root?.id ?? folders[0].id
     })
   }, [folders])
 
-  // regole di propedeuticità
+  // propedeuticità
   const isLocked = useCallback((file, list) => {
-    // 1) Se ha un prerequisito esplicito
     if (file.prereq) {
       const pre = progress[file.prereq]
       return !(pre && pre.completed)
     }
-    // 2) altrimenti usa l’ordine: serve il file con order subito precedente
-    const sorted = list.filter(f=>f.type==='video').sort((a,b)=>(a.order??999)-(b.order??999))
-    const idx = sorted.findIndex(f=>f.id===file.id)
+    const sorted = list.filter(f => f.type === 'video')
+      .sort((a,b) => (a.order ?? 999) - (b.order ?? 999))
+    const idx = sorted.findIndex(f => f.id === file.id)
     if (idx <= 0) return false
-    const prev = sorted[idx-1]
-    const done = progress[prev.id]?.completed
-    return !done
+    const prev = sorted[idx - 1]
+    return !progress[prev.id]?.completed
   }, [progress])
 
-  const [playing, setPlaying] = useState(null) // file in riproduzione
-
+  const [playing, setPlaying] = useState(null)
   const handleOpenVideo = (file) => setPlaying(file)
   const handleCloseVideo = () => setPlaying(null)
+  const handleProgress = (fileId, seconds) => upsert(fileId, { seconds })
+  const handleComplete = (fileId) => upsert(fileId, { completed: true })
 
-  const handleProgress = (fileId, seconds) => {
-    upsert(fileId, { seconds })
-  }
-  const handleComplete = (fileId) => {
-    upsert(fileId, { completed: true })
-  }
-
-  // UI
+  /* ------------------------------ UI ------------------------------ */
   return (
     <div className="min-h-screen bg-gradient-to-b from-biwhite via-biwhite to-binavy/10 dark:from-[#0a0f1f] dark:via-[#0a0f1f] dark:to-[#001c5e]">
       <div className="mx-auto max-w-6xl px-4 py-10">
@@ -263,32 +216,51 @@ export default function StudentDashboard() {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[260px,1fr]">
-          {/* Sidebar folder tree (uguale al tuo, puoi riusare FolderNode) */}
+          {/* Sidebar: tree dei folder */}
           <aside className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
             <h2 className="px-2 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-300">Folders</h2>
-            {/* …incolla qui il tuo albero (FolderNode) */}
+            <div className="mt-2 space-y-1">
+              {tree.length ? (
+                tree.map((node) => (
+                  <FolderNode
+                    key={node.id}
+                    node={node}
+                    depth={0}
+                    onSelect={setSelectedFolderId}
+                    selectedId={selectedFolderId}
+                  />
+                ))
+              ) : (
+                <p className="px-3 py-2 text-sm text-slate-500">No folders available.</p>
+              )}
+            </div>
           </aside>
 
           {/* Contenuto */}
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-            {error && !loading && <div className="rounded-xl border border-bireg/30 bg-bireg/10 p-3 text-sm text-bireg">{error}</div>}
+            {error && !loading && (
+              <div className="rounded-xl border border-bireg/30 bg-bireg/10 p-3 text-sm text-bireg">{error}</div>
+            )}
 
             {loading ? (
               <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                {Array.from({length:8}).map((_,i)=>(
+                {Array.from({ length: 8 }).map((_, i) => (
                   <div key={i} className="aspect-[16/9] animate-pulse rounded-2xl bg-slate-200/50 dark:bg-white/10" />
                 ))}
               </div>
             ) : !selectedFolderId ? (
               <p className="text-sm text-slate-600 dark:text-slate-300">Select a folder to view content.</p>
+            ) : filteredFiles.length === 0 ? (
+              <p className="text-sm text-slate-600 dark:text-slate-300">No content in this folder.</p>
             ) : (
               <>
-                {/* Netflix-style: se nel folder ci sono video → griglia card; altrimenti lista file */}
-                {filteredFiles.some(f=>f.type==='video') ? (
+                {filteredFiles.some(f => f.type === 'video') ? (
                   <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                    {filteredFiles.filter(f=>f.type==='video').map(file=>{
+                    {filteredFiles.filter(f => f.type === 'video').map(file => {
                       const prog = progress[file.id]
-                      const pct = file.duration ? Math.min(100, Math.round(((prog?.seconds||0) / file.duration) * 100)) : (prog?.completed ? 100 : 0)
+                      const pct = file.duration
+                        ? Math.min(100, Math.round(((prog?.seconds || 0) / file.duration) * 100))
+                        : (prog?.completed ? 100 : 0)
                       const locked = isLocked(file, filteredFiles)
                       return (
                         <VideoCard
@@ -296,19 +268,19 @@ export default function StudentDashboard() {
                           file={file}
                           locked={locked}
                           progressPct={pct}
-                          onClick={()=>handleOpenVideo(file)}
+                          onClick={() => handleOpenVideo(file)}
                         />
                       )
                     })}
                   </div>
                 ) : (
                   <ul className="space-y-3">
-                    {filteredFiles.map(file=>(
+                    {filteredFiles.map(file => (
                       <FileListItem
                         key={file.id}
                         file={file}
-                        onOpen={()=> window.open(file.url, '_blank', 'noopener')}
-                        onCopy={async()=> navigator.clipboard?.writeText(file.url)}
+                        onOpen={() => window.open(file.url, '_blank', 'noopener')}
+                        onCopy={async () => navigator.clipboard?.writeText(file.url)}
                         isCopied={false}
                       />
                     ))}

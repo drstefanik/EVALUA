@@ -4,7 +4,9 @@ import { ChevronDown, LayoutDashboard, Menu, X } from 'lucide-react'
 import ThemeToggle from './ThemeToggle'
 import { getStoredSession, getDashboardPath, routeExists } from '../api'
 import { marketingContent } from '../lib/marketingContent'
-import evaluaGlobe from '../assets/evalua-globe.svg' // <-- logo (rinominato senza spazi)
+import evaluaLogo from '../assets/EVALUA.svg'
+import evaluaDarkmodeLogo from '../assets/EVALUA DARKMODE.svg'
+import { useThemeMode } from '../hooks/useThemeMode'
 
 const nav = marketingContent.navigation
 
@@ -30,6 +32,7 @@ export default function Navbar() {
   const [solutionsOpen, setSolutionsOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [session, setSession] = useState(null)
+  const isDarkMode = useThemeMode()
 
   const authMenuRef = useRef(null)
   const solutionsRef = useRef(null)
@@ -95,7 +98,7 @@ export default function Navbar() {
             className="group flex items-center gap-3 text-lg font-semibold tracking-wide text-[var(--brand-primary)] transition-transform hover:scale-[1.02]"
           >
             <img
-              src={evaluaGlobe}
+              src={isDarkMode ? evaluaDarkmodeLogo : evaluaLogo}
               alt="EVALUA logo"
               className="h-8 w-8 transition-transform duration-300 group-hover:scale-110"
             />

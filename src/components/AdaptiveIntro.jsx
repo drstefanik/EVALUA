@@ -15,13 +15,15 @@ export default function AdaptiveIntro({ onStart }) {
   return (
     <div className="max-w-3xl mx-auto p-6">
       <div className="rounded-2xl border bg-white p-6 shadow-sm">
-        <h1 className="text-2xl font-semibold mb-2">Adaptive Placement Test</h1>
+        {/* Title & lead */}
+        <h1 className="text-2xl font-semibold mb-2">QUAET — Adaptive Assessment</h1>
         <p className="text-gray-700 mb-6">
-          This short adaptive test estimates your CEFR level. Questions adjust to your performance.
-          Please prepare your environment before starting.
+          QUAET is a <strong>fast and accurate</strong> adaptive assessment that determines your CEFR proficiency.
+          Please make sure your environment is ready before you begin.
         </p>
 
         <div className="grid gap-4 md:grid-cols-2 mb-6">
+          {/* Checklist */}
           <div className="rounded-xl border p-4">
             <h2 className="font-medium mb-2">Before you start</h2>
 
@@ -56,16 +58,18 @@ export default function AdaptiveIntro({ onStart }) {
             </label>
           </div>
 
+          {/* Guidelines (no duration, no algorithm) */}
           <div className="rounded-xl border p-4">
-            <h2 className="font-medium mb-2">Test info</h2>
+            <h2 className="font-medium mb-2">Guidelines</h2>
             <ul className="list-disc pl-5 text-gray-700 space-y-1">
-              <li>Estimated duration: <strong>8–12 minutes</strong></li>
-              <li>Adaptive policy: start at <strong>B1</strong>, +1 after two consecutive correct; −1 after two consecutive wrong; stop when a level reaches <strong>7 items</strong>.</li>
-              <li>Do not refresh or close the page.</li>
+              <li>Complete the assessment in one sitting.</li>
+              <li>Do not refresh or close the page during the session.</li>
+              <li>Answer independently and to the best of your ability.</li>
             </ul>
           </div>
         </div>
 
+        {/* Actions */}
         <div className="flex items-center gap-3">
           <button
             disabled={!allOk}

@@ -31,7 +31,7 @@ function normalizeFolder(folder) {
   return {
     ...folder,
     name,
-    title: name,               // alias per compatibilità UI
+    title: name,
     parent: parentId ?? null,
     visibility: visibility ?? null,
   }
@@ -121,6 +121,28 @@ export default function StudentDashboard() {
 
   const tree = useMemo(() => buildTree(folders), [folders])
 
+  const childrenOf = useCallback(
+    (id) => folders
+      .filter(f => f.parent === id)
+      .sort((a,b)=>(a.order??999)-(b.order??999) || (a.title||a.name||'').localeCompare(b.title||b.name||'')),
+    [folders]
+  )
+
+  const fileCountOf = useCallback(
+    (id) => files.filter(f => f.folder === id).length,
+    [files]
+  )
+
+  const hasDescendantFiles = useCallback((id) => {
+    const stack = [...childrenOf(id)]
+    while (stack.length) {
+      const n = stack.pop()
+      if (fileCountOf(n.id) > 0) return true
+      stack.push(...childrenOf(n.id))
+    }
+    return false
+  }, [childrenOf, fileCountOf])
+
   const filteredFiles = useMemo(() => {
     if (!selectedFolderId) return []
     return files
@@ -181,7 +203,16 @@ export default function StudentDashboard() {
     })
   }, [folders])
 
-  // propedeuticità
+  // auto-open first subfolder with content
+  useEffect(() => {
+    if (!selectedFolderId) return
+    if (filteredFiles.length > 0) return
+    const kids = childrenOf(selectedFolderId)
+    const target = kids.find(k => fileCountOf(k.id) > 0) || kids.find(k => hasDescendantFiles(k.id))
+    if (target) setSelectedFolderId(target.id)
+  }, [selectedFolderId, filteredFiles.length, childrenOf, fileCountOf, hasDescendantFiles])
+
+  // propedeuticity
   const isLocked = useCallback((file, list) => {
     if (file.prereq) {
       const pre = progress[file.prereq]
@@ -216,7 +247,7 @@ export default function StudentDashboard() {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[260px,1fr]">
-          {/* Sidebar: tree dei folder */}
+          {/* Sidebar */}
           <aside className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
             <h2 className="px-2 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-300">Learning Hub</h2>
             <div className="mt-2 space-y-1">
@@ -236,7 +267,7 @@ export default function StudentDashboard() {
             </div>
           </aside>
 
-          {/* Contenuto */}
+          {/* Main content */}
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
             {error && !loading && (
               <div className="rounded-xl border border-bireg/30 bg-bireg/10 p-3 text-sm text-bireg">{error}</div>
@@ -251,7 +282,33 @@ export default function StudentDashboard() {
             ) : !selectedFolderId ? (
               <p className="text-sm text-slate-600 dark:text-slate-300">Select a folder to view content.</p>
             ) : filteredFiles.length === 0 ? (
-              <p className="text-sm text-slate-600 dark:text-slate-300">No content in this folder.</p>
+              (() => {
+                const subs = childrenOf(selectedFolderId)
+                if (subs.length === 0) {
+                  return <p className="text-sm text-slate-600 dark:text-slate-300">This section is empty.</p>
+                }
+                return (
+                  <div>
+                    <p className="mb-3 text-sm text-slate-600 dark:text-slate-300">
+                      Select a subsection:
+                    </p>
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                      {subs.map(s => (
+                        <button
+                          key={s.id}
+                          onClick={() => setSelectedFolderId(s.id)}
+                          className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-slate-900/70"
+                        >
+                          <span className="font-medium truncate">{s.title || s.name || 'Untitled'}</span>
+                          <span className="ml-3 inline-flex min-w-[1.5rem] items-center justify-center rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600 dark:bg-white/10 dark:text-slate-300">
+                            {fileCountOf(s.id)}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })()
             ) : (
               <>
                 {filteredFiles.some(f => f.type === 'video') ? (
@@ -292,7 +349,7 @@ export default function StudentDashboard() {
         </div>
       </div>
 
-      {/* Modal video */}
+      {/* Video modal */}
       <VideoModal
         open={!!playing}
         file={playing}

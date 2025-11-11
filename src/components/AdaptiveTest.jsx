@@ -86,13 +86,11 @@ export default function AdaptiveTest() {
 
         {/* Frase tecnica (no motivazionale) */}
         <div className="p-4 rounded-lg border bg-white/50">
-          <p className="text-sm">
-            Outcome: <strong>CEFR {result.estimatedLevel}</strong>. The test converged after{" "}
-            <strong>{total}</strong> items. Distribution of administered items by pool →{" "}
-            {used || "n/a"}. Decision rule: last stable level under the adaptive policy
-            (start B1, +1 level after two consecutive correct answers; −1 level after any error;
-            stop if a level reaches 7 items).
-          </p>
+<p className="text-sm">
+  The adaptive assessment established the candidate’s proficiency at <strong>CEFR {result.estimatedLevel}</strong>.  
+  The test concluded after <strong>{total}</strong> items, following the procedures defined by the certification framework.
+</p>
+
         </div>
 
         {/* Radar lazy-loaded */}

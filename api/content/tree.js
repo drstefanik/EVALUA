@@ -68,6 +68,21 @@ function extractFolderId(record) {
   const folderId = extractRelationId(f.folder || f.folders || f.parent_folder);
   return typeof folderId === "string" ? folderId : null;
 }
+async function fetchVimeoThumb(url) {
+  try {
+    // accetta sia player.vimeo.com/video/ID che vimeo.com/ID
+    const oembedUrl = `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(url)}`
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 3500) // 3.5s safety
+    const r = await fetch(oembedUrl, { signal: controller.signal })
+    clearTimeout(timeout)
+    if (!r.ok) return null
+    const data = await r.json()
+    return data?.thumbnail_url || null
+  } catch {
+    return null
+  }
+}
 
 // ---- handler ---------------------------------------------------------------
 export default async function handler(req, res) {
@@ -123,6 +138,18 @@ export default async function handler(req, res) {
             (a.title || "").localeCompare(b.title || "")
         );
     }
+// dopo .map(({ record }) => sanitizeFile(record))
+files = await Promise.all(
+  files.map(async (f) => {
+    if (f.type === 'video' && !f.thumb && f.url) {
+      const thumb = await fetchVimeoThumb(f.url)
+      if (thumb) f.thumb = thumb
+      // opzionale: salva in Airtable per cache
+      // try { await tbl.FILES.update(f.id, { thumb }) } catch {}
+    }
+    return f
+  })
+)
 
     console.log("student tree folders", folders.length);
     console.log("student tree files", files.length);

@@ -16,10 +16,13 @@ export default function AdaptiveIntro({ onStart }) {
     <div className="max-w-3xl mx-auto p-6">
       <div className="rounded-2xl border bg-white p-6 shadow-sm">
         {/* Title & lead */}
-        <h1 className="text-2xl font-semibold mb-2">QUAET — Adaptive Assessment</h1>
+        <h1 className="text-2xl font-semibold mb-2">
+          QUAET — the Qualification UAE Adaptive English Test
+        </h1>
         <p className="text-gray-700 mb-6">
-          QUAET is a <strong>fast and accurate</strong> adaptive assessment that determines your CEFR proficiency.
-          Please make sure your environment is ready before you begin.
+          QUAET is a <strong>fast and accurate adaptive English assessment</strong> designed to
+          identify your CEFR proficiency level through dynamic question selection.
+          Please ensure optimal testing conditions before starting.
         </p>
 
         <div className="grid gap-4 md:grid-cols-2 mb-6">
@@ -34,7 +37,7 @@ export default function AdaptiveIntro({ onStart }) {
                 checked={checked.audio}
                 onChange={(e) => setChecked((s) => ({ ...s, audio: e.target.checked }))}
               />
-              <span>Use <strong>headphones</strong> and set an appropriate volume.</span>
+              <span>Use <strong>headphones</strong> and adjust the volume appropriately.</span>
             </label>
 
             <label className="flex items-start gap-3 mb-2 cursor-pointer">
@@ -54,17 +57,18 @@ export default function AdaptiveIntro({ onStart }) {
                 checked={checked.environment}
                 onChange={(e) => setChecked((s) => ({ ...s, environment: e.target.checked }))}
               />
-              <span>Stay in a <strong>quiet place</strong> without interruptions.</span>
+              <span>Stay in a <strong>quiet, distraction-free environment</strong>.</span>
             </label>
           </div>
 
-          {/* Guidelines (no duration, no algorithm) */}
+          {/* Guidelines */}
           <div className="rounded-xl border p-4">
             <h2 className="font-medium mb-2">Guidelines</h2>
             <ul className="list-disc pl-5 text-gray-700 space-y-1">
-              <li>Complete the assessment in one sitting.</li>
-              <li>Do not refresh or close the page during the session.</li>
-              <li>Answer independently and to the best of your ability.</li>
+              <li>Complete the assessment in a single uninterrupted session.</li>
+              <li>Do not refresh, close, or navigate away from this page.</li>
+              <li>Answer each question independently and honestly.</li>
+              <li>Your performance will adaptively determine your proficiency level.</li>
             </ul>
           </div>
         </div>

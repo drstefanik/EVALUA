@@ -1,8 +1,14 @@
-import { useEffect, useRef, useState, Suspense, lazy } from "react";
+import { useEffect, useRef, useState } from "react";
 import { initState, pickNextItem, gradeAnswer, computeResult } from "../engine/adaptive";
 import { useItems } from "../hooks/useItems";
-
-const RadarBreakdown = lazy(() => import("./RadarBreakdown.jsx"));
+import {
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
 
 function getCurrentUserFromStorage() {
   const fallback = {
@@ -27,7 +33,7 @@ function getCurrentUserFromStorage() {
 }
 
 export default function AdaptiveTest() {
-  const { items, error } = useItems();
+  const { items, error } = useItems(); // carica A1..C2
   const [st] = useState(initState);
   const [item, setItem] = useState(null);
   const [finished, setFinished] = useState(false);
@@ -69,6 +75,7 @@ export default function AdaptiveTest() {
     }
   };
 
+  // Salvataggio su Airtable via API route
   useEffect(() => {
     if (!finished || !result) return;
 
@@ -102,7 +109,10 @@ export default function AdaptiveTest() {
       count,
     }));
     const total = breakdown.reduce((s, r) => s + r.count, 0);
-    const used = breakdown.filter(r => r.count > 0).map(r => `${r.level}:${r.count}`).join(" • ");
+    const used = breakdown
+      .filter((r) => r.count > 0)
+      .map((r) => `${r.level}:${r.count}`)
+      .join(" • ");
 
     return (
       <div className="max-w-3xl mx-auto p-6 space-y-6">
@@ -121,9 +131,17 @@ export default function AdaptiveTest() {
           </p>
         </div>
 
-        <Suspense fallback={<div className="h-80 flex items-center justify-center">Loading chart…</div>}>
-          <RadarBreakdown data={breakdown} />
-        </Suspense>
+        {/* Radar inline (niente lazy, niente chunk esterno) */}
+        <div className="h-80 w-full">
+          <ResponsiveContainer>
+            <RadarChart data={breakdown}>
+              <PolarGrid />
+              <PolarAngleAxis dataKey="level" />
+              <Tooltip />
+              <Radar name="Items" dataKey="count" fillOpacity={0.35} />
+            </RadarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     );
   }
@@ -132,7 +150,6 @@ export default function AdaptiveTest() {
 
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-4">
-      {/* Header domanda — niente livello/skill, contatore corretto (parte da 1) */}
       <div className="text-sm opacity-70">Question {st.askedCount}</div>
 
       {item.skill === "listening" && item.audioUrl && (

@@ -1,4 +1,19 @@
 // api/save-placement.js
+import { verifyJWT } from "../../src/util.js";
+
+// helpers
+function toISOOrNull(v) {
+  if (!v) return null;
+  const d = new Date(v);
+  return isNaN(d.getTime()) ? null : d.toISOString();
+}
+function genTestId() {
+  try {
+    if (globalThis.crypto?.randomUUID) return crypto.randomUUID();
+  } catch {}
+  return `T-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -10,7 +25,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Supporto sia a edge (req.json) che a node (req.body)
+    // Supporto edge (req.json) e node (req.body)
     const body = (typeof req.json === "function") ? await req.json() : (req.body || {});
     const header = (n) => req.headers[n]?.toString() || "";
     const cookie = (name) =>
@@ -18,23 +33,42 @@ export default async function handler(req, res) {
         .split(";").map(s => s.trim())
         .find(c => c.startsWith(name + "="))?.split("=")[1] || "";
 
-    // 🔹 Sorgenti identità (no JWT): header → body → cookie
-    const userIdRaw =
-      header("x-user-id") || body.userId || cookie("userId") || "";
-    const userEmailRaw =
-      header("x-user-email") || header("x-user") || body.userEmail || cookie("userEmail") || "";
+    // JWT opzionale
+    let claims = null;
+    const bearer = header("authorization");
+    if (bearer?.toLowerCase().startsWith("bearer ")) {
+      try { claims = verifyJWT(bearer.slice(7)); } catch {}
+    }
 
-    const userId = userIdRaw || null;
-    const userEmail = userEmailRaw || null;
+    // Identità: header → body → cookie → JWT
+    const userIdHeader = header("x-user-id") || null;
+    const userEmailHeader = header("x-user-email") || header("x-user") || null;
 
-    // 🔹 Normalizza campi payload
-    const estimatedLevel = body.estimatedLevel || null;
-    const confidence = (body.confidence ?? null);
+    const userIdFromBody = body.userId || null;
+    const userEmailFromBody = body.userEmail || null;
+
+    const userIdCookie = cookie("userId") || null;
+    const userEmailCookie = cookie("userEmail") || null;
+
+    const normalizedUserId =
+      userIdFromBody || userIdHeader || userIdCookie || claims?.userId || null;
+    const normalizedUserEmail =
+      userEmailFromBody || userEmailHeader || userEmailCookie || claims?.email || null;
+
+    // Payload normalizzato
+    const estimatedLevel = body.estimatedLevel ?? null;
+    const confidence =
+      typeof body.confidence === "string"
+        ? Number(String(body.confidence).replace("%", "").trim()) || null
+        : (typeof body.confidence === "number" ? body.confidence : null);
+
     const totalItems = (body.totalItems ?? null);
-    const startedAt = body.startedAt || new Date().toISOString();
-    const durationSec = (body.durationSec ?? null);
 
-    // Serializza in modo sicuro gli oggetti
+    // Date in ISO (Airtable preferisce ISO)
+    const startedAtISO = toISOOrNull(body.startedAt) || new Date().toISOString();
+    const completedAtISO = toISOOrNull(body.completedAt) || new Date().toISOString();
+
+    // Serializza oggetti in stringa (campi di testo in Airtable)
     const askedByLevel =
       typeof body.askedByLevel === "string"
         ? body.askedByLevel
@@ -44,19 +78,27 @@ export default async function handler(req, res) {
         ? body.askedBySkill
         : (body.askedBySkill ? JSON.stringify(body.askedBySkill) : undefined);
 
+    // IDs
+    const testId = body.testId || genTestId();
+    const candidateId = body.candidateId || normalizedUserId || claims?.userId || null;
+
+    // Campi Airtable
     const fields = {
-      UserId: userId,
-      UserEmail: userEmail,
+      UserId: normalizedUserId,
+      UserEmail: normalizedUserEmail,
       EstimatedLevel: estimatedLevel,
       Confidence: confidence,
       AskedByLevel: askedByLevel,
       TotalItems: totalItems,
-      StartedAt: startedAt,
-      DurationSec: durationSec,
+      StartedAt: startedAtISO,
+      DurationSec: body.durationSec ?? null,
+
+      // NEW
+      TestId: testId,
+      CandidateId: candidateId,
+      CompletedAt: completedAtISO,
     };
     if (askedBySkill !== undefined) fields.AskedBySkill = askedBySkill;
-
-    const rec = { fields };
 
     const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_PLACEMENTS)}`;
     const resp = await fetch(url, {
@@ -65,7 +107,7 @@ export default async function handler(req, res) {
         Authorization: `Bearer ${AIRTABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ records: [rec] }),
+      body: JSON.stringify({ records: [{ fields }], typecast: true }),
     });
 
     if (!resp.ok) {
@@ -74,7 +116,14 @@ export default async function handler(req, res) {
     }
 
     const data = await resp.json();
-    return res.status(200).json({ ok: true, airtable: data });
+    const created = data?.records?.[0];
+    return res.status(200).json({
+      ok: true,
+      id: created?.id || null,
+      testId,
+      candidateId,
+      airtable: data,
+    });
   } catch (e) {
     return res.status(500).json({ error: e?.message || "Unknown error" });
   }

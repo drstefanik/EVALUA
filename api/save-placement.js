@@ -87,17 +87,12 @@ export default async function handler(req, res) {
     const totalItems = (body.totalItems ?? null);
 
     const startedAtISO = toISOOrNull(body.startedAt) || new Date().toISOString();
-    // NOTA: CompletedAt è un campo computed in Airtable, quindi NON lo inviamo
+    // CompletedAt è un campo computed in Airtable, quindi NON lo inviamo
 
     const askedByLevel =
       typeof body.askedByLevel === "string"
         ? body.askedByLevel
         : JSON.stringify(body.askedByLevel || {});
-
-    const askedBySkill =
-      typeof body.askedBySkill === "string"
-        ? body.askedBySkill
-        : (body.askedBySkill ? JSON.stringify(body.askedBySkill) : undefined);
 
     const testId = body.testId || genTestId();
     const candidateId = body.candidateId || genCandidateId(normalizedUserId, normalizedUserEmail);
@@ -113,10 +108,9 @@ export default async function handler(req, res) {
       DurationSec: body.durationSec ?? null,
       TestId: testId,
       CandidateId: candidateId,
-      // ❌ niente CompletedAt: è un campo computed in Airtable
     };
 
-    if (askedBySkill !== undefined) fields.AskedBySkill = askedBySkill;
+    // NON esiste AskedBySkill in Airtable, quindi non lo mandiamo
     if (body.studentRecordId) fields.Student = [body.studentRecordId];
 
     const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_PLACEMENTS)}`;

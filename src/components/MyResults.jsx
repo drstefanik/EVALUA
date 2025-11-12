@@ -2,30 +2,69 @@ import { useState } from 'react'
 import { generateCertificatePDF } from '../utils/certPdf.js'
 
 function formatValue(value) {
-  if (value === null || value === undefined) return '—'
+  if (value === null || value === undefined || value === '') return '—'
   return value
+}
+
+// fallback per recuperare id/email se non arrivano via props
+function getLocalUser() {
+  try {
+    const id = localStorage.getItem('userId') || ''
+    const email = localStorage.getItem('userEmail') || ''
+    return { id, email }
+  } catch {
+    return { id: '', email: '' }
+  }
 }
 
 export default function MyResults({ results, currentUser }) {
   const [downloadingId, setDownloadingId] = useState(null)
 
-  const download = async (row) => {
-    if (!row) return
-    setDownloadingId(row.id)
+  const download = async (attempt) => {
+    if (!attempt) return
+    setDownloadingId(attempt.id)
+
     try {
+      // ---- User data (ID, anagrafica) ----
+      const local = getLocalUser()
+      const candidateId =
+        currentUser?.id || currentUser?.recordId || local.id || null
+
+      const userPayload = {
+        id: candidateId, // <-- usato dal PDF per Candidate ID
+        fullName:
+          currentUser?.name ||
+          currentUser?.fullName ||
+          currentUser?.displayName ||
+          currentUser?.email ||
+          'Candidate',
+        email: currentUser?.email || local.email || '',
+        // nuovi campi se li hai nello schema utente
+        nationality: currentUser?.nationality || currentUser?.Nationality || '-',
+        dateOfBirth: currentUser?.dateOfBirth || currentUser?.DateOfBirth || null,
+      }
+
+      // ---- Result data (normalizzato per il PDF) ----
+      const testId =
+        attempt.TestId || attempt.testId || attempt.placementTestId || attempt.id || null
+
+      const resultPayload = {
+        level: attempt.level || attempt.EstimatedLevel || 'N/A',
+        confidence: typeof attempt.confidence === 'number'
+          ? attempt.confidence
+          : (attempt.Confidence ?? attempt.confidence ?? 'N/A'),
+        items: typeof attempt.items === 'number'
+          ? attempt.items
+          : (attempt.TotalItems ?? attempt.items ?? '—'),
+        duration: attempt.durationLabel || attempt.duration || (attempt.DurationSec ? `${attempt.DurationSec}s` : '—'),
+        completedAt: attempt.completedAtLabel || attempt.CompletedAt || attempt.completedAt || attempt._createdTime || new Date().toISOString(),
+        // NEW
+        testId,
+      }
+
       await generateCertificatePDF({
-        user: {
-          fullName: currentUser?.name || currentUser?.fullName || currentUser?.email || 'Candidate',
-          email: currentUser?.email || '',
-        },
-        result: {
-          level: row.level || 'N/A',
-          confidence:
-            typeof row.confidence === 'number' ? row.confidence : row.confidence ?? 'N/A',
-          items: typeof row.items === 'number' ? row.items : row.items ?? '—',
-          duration: row.durationLabel || row.duration || '—',
-          completedAt: row.completedAtLabel || row.completedAt || new Date().toISOString(),
-        },
+        user: userPayload,
+        result: resultPayload,
       })
     } catch (error) {
       console.error('Unable to generate certificate PDF', error)
@@ -68,18 +107,27 @@ export default function MyResults({ results, currentUser }) {
               {results.map((attempt) => (
                 <tr key={attempt.id} className="border-b border-slate-100 last:border-none dark:border-slate-800">
                   <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
-                    {formatValue(attempt.completedAtLabel)}
+                    {formatValue(attempt.completedAtLabel || attempt.CompletedAt || attempt._createdTime)}
                   </td>
-                  <td className="px-3 py-3 text-slate-700 dark:text-slate-200">{formatValue(attempt.level)}</td>
-                  <td className="px-3 py-3 text-slate-700 dark:text-slate-200">{formatValue(attempt.confidenceLabel)}</td>
-                  <td className="px-3 py-3 text-slate-700 dark:text-slate-200">{formatValue(attempt.items)}</td>
-                  <td className="px-3 py-3 text-slate-700 dark:text-slate-200">{formatValue(attempt.durationLabel)}</td>
+                  <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
+                    {formatValue(attempt.level || attempt.EstimatedLevel)}
+                  </td>
+                  <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
+                    {formatValue(attempt.confidenceLabel ?? attempt.Confidence ?? attempt.confidence)}
+                  </td>
+                  <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
+                    {formatValue(attempt.items ?? attempt.TotalItems)}
+                  </td>
+                  <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
+                    {formatValue(attempt.durationLabel ?? (attempt.DurationSec ? `${attempt.DurationSec}s` : null))}
+                  </td>
                   <td className="px-3 py-3 text-right">
                     <button
                       type="button"
                       onClick={() => download(attempt)}
                       className="inline-flex items-center rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-binavy focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-slate-900/80 dark:text-slate-200 dark:hover:bg-slate-800"
                       disabled={downloadingId === attempt.id}
+                      title="Download official result certificate (PDF)"
                     >
                       {downloadingId === attempt.id ? 'Preparing…' : 'Download PDF'}
                     </button>

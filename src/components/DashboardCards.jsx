@@ -61,7 +61,7 @@ export default function DashboardCards({ latestResult, features }) {
           <p className="text-sm text-slate-600">{renderLatestResult(latestResult)}</p>
           <div className="mt-auto pt-4">
             <Link
-              to="/student/results"
+              to="/student#my-results"
               className="inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-5 py-3 text-white hover:opacity-90"
             >
               View history

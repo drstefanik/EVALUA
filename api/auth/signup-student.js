@@ -4,29 +4,40 @@ import { hashPassword, signJWT } from "../../src/util.js";
 import { tbl } from "../../src/airtable.js";
 import { findStudentByEmail } from "../../src/finders.js";
 
+function pick(v, alt = "") {
+  return typeof v === "string" ? v.trim() : (typeof v === "number" ? String(v) : alt);
+}
+
 export default async function handler(req, res) {
   if (!ensureMethod(req, res, "POST")) return;
 
-  let body;
+  let body = null;
   try {
     body = await parseJsonBody(req);
-  } catch (error) {
-    console.error("Invalid JSON body", error);
-    return sendError(res, 400, "Invalid payload");
+  } catch (_) {
+    // fallback: a volte framework passa già req.body
+    body = req.body || null;
   }
 
-  const firstName = typeof body?.first_name === "string" ? body.first_name.trim() : "";
-  const lastName  = typeof body?.last_name  === "string" ? body.last_name.trim()  : "";
-  const email     = typeof body?.email      === "string" ? body.email.trim()      : "";
-  const password  = typeof body?.password   === "string" ? body.password          : "";
+  // Normalizza sia snake_case che camelCase
+  const firstName = pick(body?.first_name ?? body?.firstName);
+  const lastName  = pick(body?.last_name  ?? body?.lastName);
+  const email     = pick(body?.email).toLowerCase();
+  const password  = typeof body?.password === "string" ? body.password : "";
 
-  // nuovi campi (tutti opzionali)
-  const date_of_birth = typeof body?.date_of_birth === "string" ? body.date_of_birth : null; // "YYYY-MM-DD"
-  const nationality   = typeof body?.nationality   === "string" ? body.nationality   : "";
-  const phone         = typeof body?.phone         === "string" ? body.phone         : "";
+  const date_of_birth = pick(body?.date_of_birth ?? body?.dateOfBirth, null); // ISO preferito, ma opzionale
+  const nationality   = pick(body?.nationality);
+  const phone         = pick(body?.phone);
 
-  if (!firstName || !lastName || !email || !password) {
-    return sendError(res, 400, "Incomplete student registration data");
+  const missing = [];
+  if (!firstName) missing.push("first_name");
+  if (!lastName)  missing.push("last_name");
+  if (!email)     missing.push("email");
+  if (!password)  missing.push("password");
+  if (missing.length) {
+    // piccolo log di debug (senza password)
+    console.warn("Signup missing fields:", missing);
+    return sendError(res, 400, `Incomplete student registration data: ${missing.join(", ")}`);
   }
 
   try {
@@ -46,7 +57,7 @@ export default async function handler(req, res) {
           password_hash,
           status: "active",
           date_of_birth: date_of_birth || null,
-          nationality: nationality || "",   // Single select in Airtable (ok passare stringa)
+          nationality: nationality || "",
           phone: phone || "",
         },
       },

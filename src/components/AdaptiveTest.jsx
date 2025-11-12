@@ -41,16 +41,7 @@ function getToken() {
   // salvato dopo /api/auth/login
   return localStorage.getItem("authToken") || "";
 }
-
-// NEW: genera un TestId robusto
-function genTestId() {
-  try {
-    if (globalThis.crypto?.randomUUID) return crypto.randomUUID();
-  } catch {}
-  return `T-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
-}
-
-function AdaptiveTestContent() {
+function AdaptiveTestContent({ currentUser }) {
   const { items, error } = useItems();
 
   // Fasi
@@ -67,6 +58,7 @@ function AdaptiveTestContent() {
   const startedAtIsoRef = useRef(null);
   const startedAtTsRef = useRef(null);
   const askedBySkillRef = useRef({ listening: 0, reading: 0 });
+  const lastSavedEntryIdRef = useRef(null);
 
   const noteAsked = (nextItem) => {
     if (!nextItem || !nextItem.skill) return;
@@ -122,7 +114,7 @@ function AdaptiveTestContent() {
   useEffect(() => {
     if (!finished || !result) return;
 
-    const { id, email } = getCurrentUserFromStorage();
+    const { id: storedId, email: storedEmail } = getCurrentUserFromStorage();
     const token = getToken();
 
     const completedAtIso = new Date().toISOString();
@@ -135,50 +127,96 @@ function AdaptiveTestContent() {
       }
     })();
 
-    // NEW: genera TestId e fissa CandidateId
-    const testId = genTestId();
-    const candidateId = id || null;
+    const askedByLevel = result?.askedByLevel || st?.askedByLevel || {};
+    const studentRecordId = currentUser?.recordId || currentUser?.id || null;
+    const normalizedUserId = studentRecordId || storedId || null;
+    const normalizedEmail = currentUser?.email || storedEmail || null;
 
     const payload = {
-      userId: candidateId,
-      userEmail: email || null,
-      estimatedLevel: result.estimatedLevel,
-      confidence: result.confidence, // numero 0..1 o 0..100 (server lo normalizza)
-      askedByLevel: result.askedByLevel,
+      userId: normalizedUserId,
+      userEmail: normalizedEmail,
+      studentRecordId,
+      estimatedLevel: result?.estimatedLevel || st?.current || null,
+      confidence: result?.confidence ?? null, // numero 0..1 o 0..100 (server lo normalizza)
+      askedByLevel,
       askedBySkill: askedBySkillRef.current,
       totalItems: totalItemsSafe,
       startedAt: startedAtIsoRef.current,
       durationSec: Math.round((Date.now() - startedAtTsRef.current) / 1000),
       completedAt: completedAtIso,
-
-      // NEW
-      testId,
-      candidateId,
     };
 
-    // storage locale (cronologia)
-    if (typeof window !== "undefined") {
+    const storageKey = "evaluaAdaptiveResults";
+    const entryId = `${payload.startedAt || completedAtIso}-${payload.estimatedLevel || "result"}`;
+
+    if (lastSavedEntryIdRef.current === entryId) {
+      return;
+    }
+    lastSavedEntryIdRef.current = entryId;
+
+    const entry = {
+      id: entryId,
+      estimatedLevel: payload.estimatedLevel || null,
+      confidence: payload.confidence ?? null,
+      totalItems: payload.totalItems ?? null,
+      durationSec: payload.durationSec ?? null,
+      askedByLevel: askedByLevel || {},
+      askedBySkill: payload.askedBySkill || {},
+      startedAt: payload.startedAt,
+      completedAt: completedAtIso,
+      TestId: null,
+      testId: null,
+      CandidateId: null,
+      candidateId: null,
+    };
+
+    const persistEntry = (value) => {
+      const raw = window.localStorage.getItem(storageKey);
+      const parsed = raw ? JSON.parse(raw) : [];
+      const list = Array.isArray(parsed) ? parsed : [];
+      const updated = [value, ...list.filter((it) => it?.id !== value.id)];
+      window.localStorage.setItem(storageKey, JSON.stringify(updated.slice(0, 20)));
+      window.dispatchEvent(new CustomEvent("evalua:adaptive-result-saved", { detail: value }));
+    };
+
+    const enrichEntryWithServerIds = (testId, candidateId) => {
       try {
-        const storageKey = "evaluaAdaptiveResults";
         const raw = window.localStorage.getItem(storageKey);
         const parsed = raw ? JSON.parse(raw) : [];
-        const list = Array.isArray(parsed) ? parsed : [];
-        const entry = {
-          id: `${payload.startedAt || completedAtIso}-${payload.estimatedLevel}`,
-          ...payload,
-        };
-        const updated = [entry, ...list.filter((it) => it?.startedAt !== entry.startedAt)];
-        window.localStorage.setItem(storageKey, JSON.stringify(updated.slice(0, 20)));
-        window.dispatchEvent(new CustomEvent("evalua:adaptive-result-saved", { detail: entry }));
+        if (!Array.isArray(parsed)) return;
+        const nextList = parsed.map((item) => {
+          if (item?.id !== entryId) return item;
+          return {
+            ...item,
+            TestId: testId || item?.TestId || null,
+            testId: testId || item?.testId || null,
+            CandidateId: candidateId || item?.CandidateId || null,
+            candidateId: candidateId || item?.candidateId || null,
+          };
+        });
+        window.localStorage.setItem(storageKey, JSON.stringify(nextList.slice(0, 20)));
+        const updatedEntry = nextList.find((it) => it?.id === entryId);
+        if (updatedEntry) {
+          window.dispatchEvent(
+            new CustomEvent("evalua:adaptive-result-saved", { detail: updatedEntry })
+          );
+        }
+      } catch (err) {
+        console.error("adaptive-results enrichment failed:", err);
+      }
+    };
+
+    if (typeof window !== "undefined") {
+      try {
+        persistEntry(entry);
       } catch (err) {
         console.error("adaptive-results storage failed:", err);
       }
     }
 
-    // invio a /api/save-placement (con TestId/CandidateId)
     (async () => {
       try {
-        await fetch("/api/save-placement", {
+        const response = await fetch("/api/save-placement", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -188,11 +226,24 @@ function AdaptiveTestContent() {
           },
           body: JSON.stringify(payload),
         });
+
+        if (!response.ok) {
+          const text = await response.text().catch(() => "");
+          console.error("save-placement failed:", response.status, text);
+          return;
+        }
+
+        const data = await response.json().catch(() => null);
+        if (!data) return;
+
+        if ((data.testId || data.candidateId) && typeof window !== "undefined") {
+          enrichEntryWithServerIds(data.testId || null, data.candidateId || null);
+        }
       } catch (err) {
         console.error("save-placement failed:", err);
       }
     })();
-  }, [finished, result]);
+  }, [currentUser, finished, result]);
 
   // ---- UI di stato/caricamento/errore
   if (error) {
@@ -398,7 +449,7 @@ export default function AdaptiveTest() {
         </div>
       }
     >
-      <AdaptiveTestContent />
+      <AdaptiveTestContent currentUser={currentUser} />
     </FeatureGate>
   )
 }

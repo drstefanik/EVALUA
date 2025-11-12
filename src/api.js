@@ -356,12 +356,15 @@ export async function refreshCurrentUser() {
     const schoolField = Array.isArray(data?.school) ? data.school[0] : data?.school
     return persistCurrentUser({
       id: data?.id || session.id || null,
+      recordId: data?.id || session.id || null,
       name: data?.name || session.name || null,
       email: data?.email || session.email || localStorage.getItem('userEmail') || null,
       role,
       schoolId: schoolField || session.schoolId || null,
       schoolName: session.schoolName || null,
       schoolCode: session.schoolCode || null,
+      nationality: data?.nationality ?? null,
+      dateOfBirth: data?.dateOfBirth ?? null,
       features: data?.features,
     })
   } catch (error) {

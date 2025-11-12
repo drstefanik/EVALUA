@@ -284,19 +284,53 @@ export default function StudentDashboard() {
         if (!Array.isArray(parsed)) { setAdaptiveResults([]); return }
         const normalized = parsed
           .map((entry, index) => {
-            const startedAt = entry?.startedAt || null
-            const completedAt = entry?.completedAt || null
-            return {
-              id: entry?.id || `${startedAt || 'attempt'}-${index}`,
-              estimatedLevel: entry?.estimatedLevel || null,
-              confidence: typeof entry?.confidence === 'number' ? entry.confidence : null,
-              totalItems: typeof entry?.totalItems === 'number' ? entry.totalItems : null,
-              durationSec: typeof entry?.durationSec === 'number' ? entry.durationSec : null,
-              askedByLevel: typeof entry?.askedByLevel === 'object' && entry?.askedByLevel !== null
+            const startedAt = entry?.startedAt || entry?.StartedAt || null
+            const completedAt = entry?.completedAt || entry?.CompletedAt || startedAt || null
+            const askedByLevel =
+              typeof entry?.askedByLevel === 'object' && entry?.askedByLevel !== null
                 ? entry.askedByLevel
-                : {},
+                : (typeof entry?.AskedByLevel === 'object' && entry?.AskedByLevel !== null
+                  ? entry.AskedByLevel
+                  : {})
+            const askedBySkill =
+              typeof entry?.askedBySkill === 'object' && entry?.askedBySkill !== null
+                ? entry.askedBySkill
+                : (typeof entry?.AskedBySkill === 'object' && entry?.AskedBySkill !== null
+                  ? entry.AskedBySkill
+                  : {})
+            const totalItemsValue = typeof entry?.totalItems === 'number'
+              ? entry.totalItems
+              : (typeof entry?.TotalItems === 'number' ? entry.TotalItems : null)
+            const durationValue = typeof entry?.durationSec === 'number'
+              ? entry.durationSec
+              : (typeof entry?.DurationSec === 'number' ? entry.DurationSec : null)
+            const confidenceRaw = typeof entry?.confidence === 'number'
+              ? entry.confidence
+              : (typeof entry?.Confidence === 'number' ? entry.Confidence : null)
+            const estimatedLevelValue = entry?.estimatedLevel || entry?.EstimatedLevel || null
+            const testId = entry?.TestId || entry?.testId || null
+            const candidateId = entry?.CandidateId || entry?.candidateId || null
+
+            return {
+              ...entry,
+              id: entry?.id || `${startedAt || 'attempt'}-${index}`,
+              estimatedLevel: estimatedLevelValue,
+              EstimatedLevel: estimatedLevelValue,
+              confidence: confidenceRaw,
+              Confidence: confidenceRaw,
+              totalItems: totalItemsValue,
+              TotalItems: totalItemsValue,
+              durationSec: durationValue,
+              DurationSec: durationValue,
+              askedByLevel,
+              askedBySkill,
               startedAt,
               completedAt,
+              CompletedAt: completedAt,
+              TestId: testId,
+              testId: testId,
+              CandidateId: candidateId,
+              candidateId: candidateId,
             }
           })
           .sort((a, b) => {
@@ -363,19 +397,45 @@ export default function StudentDashboard() {
   const resultsForTable = useMemo(() => {
     return adaptiveResults.map((attempt, index) => {
       const completed = attempt.completedAt || attempt.startedAt || null
-      const confidencePct =
-        typeof attempt.confidence === 'number' ? Math.round(attempt.confidence * 100) : null
-      const durationSeconds = typeof attempt.durationSec === 'number' ? attempt.durationSec : null
+      const confidenceRaw = typeof attempt.confidence === 'number'
+        ? attempt.confidence
+        : (typeof attempt.Confidence === 'number' ? attempt.Confidence : null)
+      const confidencePct = typeof confidenceRaw === 'number'
+        ? (confidenceRaw > 1 ? Math.round(confidenceRaw) : Math.round(confidenceRaw * 100))
+        : null
+      const totalItemsValue = typeof attempt.totalItems === 'number'
+        ? attempt.totalItems
+        : (typeof attempt.TotalItems === 'number' ? attempt.TotalItems : null)
+      const durationSeconds = typeof attempt.durationSec === 'number'
+        ? attempt.durationSec
+        : (typeof attempt.DurationSec === 'number' ? attempt.DurationSec : null)
+      const testId = attempt.TestId ?? attempt.testId ?? null
+      const candidateId = attempt.CandidateId ?? attempt.candidateId ?? null
+      const estimatedLevelValue = attempt.estimatedLevel ?? attempt.EstimatedLevel ?? attempt.level ?? null
+
       return {
+        ...attempt,
         id: attempt.id || `result-${index}`,
-        level: attempt.estimatedLevel || '—',
+        level: estimatedLevelValue || '—',
+        estimatedLevel: estimatedLevelValue,
+        EstimatedLevel: estimatedLevelValue,
         confidence: confidencePct,
+        Confidence: confidencePct,
         confidenceLabel: confidencePct !== null ? `${confidencePct}%` : '—',
-        items: typeof attempt.totalItems === 'number' ? attempt.totalItems : '—',
+        items: totalItemsValue !== null ? totalItemsValue : '—',
+        totalItems: totalItemsValue,
+        TotalItems: totalItemsValue,
         duration: durationSeconds,
+        durationSec: durationSeconds,
+        DurationSec: durationSeconds,
         durationLabel: formatDuration(durationSeconds),
         completedAt: completed,
         completedAtLabel: formatDateTime(completed),
+        CompletedAt: completed,
+        TestId: testId,
+        testId: testId,
+        CandidateId: candidateId,
+        candidateId: candidateId,
       }
     })
   }, [adaptiveResults, formatDateTime, formatDuration])

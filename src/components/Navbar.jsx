@@ -193,7 +193,7 @@ export default function Navbar() {
                 Log in
               </Link>
               <Link
-                to="/signup-school"
+                to="/signup-student"
                 className="rounded-full bg-[var(--brand-primary)] px-4 py-2 text-sm font-semibold text-[var(--brand-primary-contrast)] shadow-soft hover:opacity-90"
               >
                 Sign up
@@ -248,7 +248,7 @@ export default function Navbar() {
               ) : (
                 <div className="space-y-2">
                   <Link
-                    to="/signup-school"
+                    to="/signup-student"
                     className="block rounded-full bg-[var(--brand-primary)] px-4 py-3 text-center text-sm font-semibold text-[var(--brand-primary-contrast)]"
                   >
                     Sign up

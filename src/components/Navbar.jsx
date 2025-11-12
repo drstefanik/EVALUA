@@ -4,8 +4,8 @@ import { ChevronDown, LayoutDashboard, Menu, X } from 'lucide-react'
 import ThemeToggle from './ThemeToggle'
 import { getStoredSession, getDashboardPath, routeExists } from '../api'
 import { marketingContent } from '../lib/marketingContent'
-import evaluaLogo from '../assets/EVALUA.svg'
-import evaluaDarkmodeLogo from '../assets/EVALUA DARKMODE.svg'
+import evaluaLogo from '../assets/evalua-globe.svg'
+import evaluaDarkmodeLogo from '../assets/EVALUA DARK SOLO GLOBE.svg'
 import { useThemeMode } from '../hooks/useThemeMode'
 
 const nav = marketingContent.navigation

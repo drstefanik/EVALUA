@@ -14,6 +14,7 @@
     "bcryptjs": "^3.0.2",
     "framer-motion": "^11.2.13",
     "jsonwebtoken": "^9.0.2",
+    "jspdf": "^3.0.3",
     "lucide-react": "^0.548.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -1,7 +1,6 @@
-// src/screens/SignupStudent.jsx
 import React, { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { ApiError, getDashboardPath, persistSession, signupStudent } from '../api'
+import { ApiError, getDashboardPath, persistSession, refreshCurrentUser, signupStudent } from '../api'
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/
@@ -90,9 +89,15 @@ export default function SignupStudent() {
       }
 
       const data = await signupStudent(payload)
-      persistSession(data)
-      setPassword(''); setConfirmPassword('')
-
+      persistSession({ ...data, email: email.trim().toLowerCase() })
+      try {
+        await refreshCurrentUser()
+      } catch (refreshError) {
+        console.error('Unable to refresh current user', refreshError)
+      }
+      setPassword('')
+      setConfirmPassword('')
+      setSchoolCode('')
       const destination = getDashboardPath(data?.role) || '/student'
       const sName = data?.schoolName ? ` ${data.schoolName}` : ''
       setSuccess(`Registration completed for${sName}. Redirecting…`)

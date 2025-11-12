@@ -47,7 +47,7 @@ export default function SignupSchool() {
         otp_code: otp.trim(),
       }
       const data = await signupSchool(payload)
-      persistSession(data)
+      persistSession({ ...data, email: email.trim().toLowerCase() })
       setPassword('')
       setConfirmPassword('')
       setOtp('')

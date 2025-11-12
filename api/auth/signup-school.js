@@ -80,7 +80,14 @@ export default async function handler(req, res) {
     const token = signJWT({ role: "school", id: schoolId, email });
     res
       .status(201)
-      .json({ token, role: "school", id: schoolId, name, schoolCode: school_code });
+      .json({
+        token,
+        role: "school",
+        id: schoolId,
+        name,
+        email,
+        schoolCode: school_code,
+      });
   } catch (error) {
     console.error("Signup school error", error);
     return sendError(res, 500, "Server error");

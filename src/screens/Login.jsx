@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ApiError, getDashboardPath, login, persistSession } from '../api'
+import { ApiError, getDashboardPath, login, persistSession, refreshCurrentUser } from '../api'
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -24,8 +24,14 @@ export default function Login(){
     setLoading(true)
 
     try {
-      const data = await login({ email: email.trim(), password })
-      persistSession(data)
+      const normalizedEmail = email.trim().toLowerCase()
+      const data = await login({ email: normalizedEmail, password })
+      persistSession({ ...data, email: normalizedEmail })
+      try {
+        await refreshCurrentUser()
+      } catch (refreshError) {
+        console.error('Unable to refresh current user', refreshError)
+      }
       setPassword('')
       const destination = getDashboardPath(data?.role)
       setSuccess('Logged in successfully, redirecting…')

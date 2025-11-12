@@ -55,6 +55,57 @@ async function request(path, { method = 'GET', body, headers = {}, withAuth = fa
   return data
 }
 
+const CURRENT_USER_KEY = 'currentUser'
+
+function normalizeFeatures(features) {
+  if (!features || typeof features !== 'object') return null
+  return {
+    courses: Boolean(features.courses),
+    quaet: Boolean(features.quaet),
+    results: Boolean(features.results),
+  }
+}
+
+export function getStoredCurrentUser() {
+  try {
+    const raw = localStorage.getItem(CURRENT_USER_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw)
+    if (!parsed || typeof parsed !== 'object') return null
+    if (parsed.features) {
+      parsed.features = normalizeFeatures(parsed.features)
+    }
+    return parsed
+  } catch {
+    return null
+  }
+}
+
+export function persistCurrentUser(user) {
+  if (!user) {
+    localStorage.removeItem(CURRENT_USER_KEY)
+    return null
+  }
+
+  const existing = getStoredCurrentUser() || {}
+  const next = { ...existing, ...user }
+
+  if (user.features !== undefined) {
+    next.features = normalizeFeatures(user.features)
+  } else if (existing.features && !next.features) {
+    next.features = existing.features
+  }
+
+  Object.keys(next).forEach((key) => {
+    if (next[key] === undefined) {
+      delete next[key]
+    }
+  })
+
+  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(next))
+  return next
+}
+
 // -------- AUTH --------
 
 export async function login({ email, password }) {
@@ -86,9 +137,11 @@ export function persistSession({
   role,
   id,
   name,
+  email,
   schoolId,
   schoolName,
   schoolCode,
+  features,
 }) {
   if (token) localStorage.setItem('token', token)
   else localStorage.removeItem('token')
@@ -102,6 +155,14 @@ export function persistSession({
   if (id) localStorage.setItem('id', id)
   else localStorage.removeItem('id')
 
+  if (email) {
+    localStorage.setItem('userEmail', email)
+    localStorage.setItem('email', email)
+  } else {
+    localStorage.removeItem('userEmail')
+    localStorage.removeItem('email')
+  }
+
   if (schoolId) localStorage.setItem('schoolId', schoolId)
   else localStorage.removeItem('schoolId')
 
@@ -110,6 +171,23 @@ export function persistSession({
 
   if (schoolCode) localStorage.setItem('schoolCode', schoolCode)
   else localStorage.removeItem('schoolCode')
+
+  const normalizedRole = role ? String(role).toLowerCase() : null
+  if (normalizedRole !== 'student') {
+    persistCurrentUser(null)
+    return
+  }
+
+  persistCurrentUser({
+    id,
+    name,
+    email: email || localStorage.getItem('userEmail') || null,
+    role: normalizedRole,
+    schoolId,
+    schoolName,
+    schoolCode,
+    features,
+  })
 }
 
 export function clearSession() {
@@ -125,8 +203,10 @@ export function clearSession() {
   localStorage.removeItem('authToken')
   localStorage.removeItem('userId')
   localStorage.removeItem('userEmail')
+  localStorage.removeItem('email')
   localStorage.removeItem('binext_user')
   localStorage.removeItem('binext_role')
+  localStorage.removeItem(CURRENT_USER_KEY)
 }
 
 /**
@@ -161,15 +241,16 @@ export function getStoredSession() {
     const id =
       localStorage.getItem('id') || localStorage.getItem('userId')
     const name = localStorage.getItem('name')
+    const email = localStorage.getItem('email') || localStorage.getItem('userEmail')
     const schoolId = localStorage.getItem('schoolId')
     const schoolName = localStorage.getItem('schoolName')
     const schoolCode = localStorage.getItem('schoolCode')
 
-    if (!token && !role && !id && !name && !schoolId && !schoolName && !schoolCode) {
+    if (!token && !role && !id && !name && !email && !schoolId && !schoolName && !schoolCode) {
       return null
     }
 
-    const session = { token, role, id, name, schoolId, schoolName, schoolCode }
+    const session = { token, role, id, name, email, schoolId, schoolName, schoolCode }
     if (session.role && typeof session.role === 'string') {
       session.role = session.role.toLowerCase()
     }
@@ -238,4 +319,45 @@ export async function fetchSchoolByCode(code) {
   }
 
   return request(`/get-school-by-code?code=${encodeURIComponent(code)}`)
+}
+
+export async function fetchCurrentUser(params = {}) {
+  const query = new URLSearchParams()
+  if (params.id) query.set('id', params.id)
+  if (params.email) query.set('email', params.email)
+  const qs = query.toString()
+  const url = `/get-current-user${qs ? `?${qs}` : ''}`
+  return request(url, { method: 'GET', withAuth: true })
+}
+
+export async function refreshCurrentUser() {
+  const session = getStoredSession()
+  if (!session || !session.token) {
+    persistCurrentUser(null)
+    return null
+  }
+
+  const role = session.role ? String(session.role).toLowerCase() : null
+  if (role !== 'student') {
+    persistCurrentUser(null)
+    return null
+  }
+
+  try {
+    const data = await fetchCurrentUser({ id: session.id, email: session.email })
+    const schoolField = Array.isArray(data?.school) ? data.school[0] : data?.school
+    return persistCurrentUser({
+      id: data?.id || session.id || null,
+      name: data?.name || session.name || null,
+      email: data?.email || session.email || localStorage.getItem('userEmail') || null,
+      role,
+      schoolId: schoolField || session.schoolId || null,
+      schoolName: session.schoolName || null,
+      schoolCode: session.schoolCode || null,
+      features: data?.features,
+    })
+  } catch (error) {
+    console.error('refreshCurrentUser failed', error)
+    throw error
+  }
 }

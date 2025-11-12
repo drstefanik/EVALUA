@@ -269,7 +269,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(9)
   doc.setTextColor(BRAND.mute)
-  doc.text('Issuer: Evalua / British Institutes • www.ba72.org', margin, pageH - 56)
+  doc.text('Issuer: Evalua', margin, pageH - 56)
 
   // Optional diagonal watermark (subtle)
   doc.setTextColor(200, 205, 210)

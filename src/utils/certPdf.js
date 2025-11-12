@@ -45,10 +45,7 @@ function formatDateOnly(value) {
   }
 }
 
-/**
- * Convert an SVG to PNG dataURL preserving aspect ratio.
- * Fits INSIDE a bounding box (maxW x maxH) without distortion.
- */
+/** Convert SVG to PNG (contain-fit) */
 async function svgToPngDataUrl(svgUrl, maxW = 220, maxH = 60) {
   const response = await fetch(svgUrl)
   const svgText = await response.text()
@@ -63,7 +60,6 @@ async function svgToPngDataUrl(svgUrl, maxW = 220, maxH = 60) {
   })
 
   const aspect = (img.width || maxW) / (img.height || maxH)
-  // contain fit
   let drawW = maxW
   let drawH = drawW / aspect
   if (drawH > maxH) {
@@ -119,6 +115,22 @@ function drawRoundedRect(doc, x, y, w, h, r = 8, colorHex = '#FFFFFF') {
   doc.roundedRect(x, y, w, h, r, r, 'FD')
 }
 
+/** Write text with automatic wrapping inside a max width */
+function textInBox(doc, text, x, y, maxWidth, {
+  font = 'helvetica',
+  style = 'normal',
+  size = 10,
+  color = BRAND.text,
+  lineHeight = 12,
+} = {}) {
+  doc.setFont(font, style)
+  doc.setFontSize(size)
+  doc.setTextColor(color)
+  const lines = doc.splitTextToSize(String(text ?? '-'), Math.max(10, maxWidth))
+  lines.forEach((ln, i) => doc.text(ln, x, y + i * lineHeight))
+  return { nextY: y + lines.length * lineHeight, lines }
+}
+
 /** Big CEFR badge (e.g., "B1") on the right side. */
 function drawCefrBadge(doc, levelText = '-', margin) {
   const { x, y, w, h } = getBadgeFrame(doc, margin)
@@ -151,7 +163,6 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     const { dataUrl, w, h } = await svgToPngDataUrl(evaluaLogoUrl, 220, 60)
     doc.addImage(dataUrl, 'PNG', margin, 56, w, h)
   } catch (error) {
-    // Non bloccare il PDF se il logo fallisce
     console.error('Unable to load Evalua logo for certificate', error)
   }
 
@@ -167,7 +178,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
 
   // CEFR badge
   const levelText = String(result?.level || result?.estimatedLevel || '-').toUpperCase()
-  drawCefrBadge(doc, levelText, margin) // <-- rimossa parentesi extra
+  drawCefrBadge(doc, levelText, margin)
 
   // Limite destro riga sezione = bordo sinistro badge - 12px
   const badge = getBadgeFrame(doc, margin)
@@ -202,40 +213,67 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     margin, y
   )
   y = drawLabelValue(doc, 'Items administered', result?.items ?? '-', margin, y)
-  if (result?.duration) {
-    y = drawLabelValue(doc, 'Duration', result.duration, margin, y)
-  }
+  if (result?.duration) y = drawLabelValue(doc, 'Duration', result.duration, margin, y)
   y = drawLabelValue(doc, 'Completed', formatDate(result?.completedAt), margin, y)
 
-  // Right side summary card
+  // Right side summary card — dynamic height + wrapping
   const hasTestId = !!(result?.testId || result?.id)
   const hasCandId = !!(user?.id || user?.recordId)
-  const cardY = 280 // <-- portato fuori dallo scope per usarlo sotto
+  const rightX = badge.x
+  const innerPad = 14
+  const innerW = badge.w - innerPad * 2
+  let cardY = 280
   if (hasTestId || hasCandId) {
-    const rightX = badge.x
+    // Pre-calc line counts to size the card
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10)
+    const testLines = hasTestId
+      ? doc.splitTextToSize(String(result?.testId || result?.id || '-'), innerW)
+      : []
+    const candLines = hasCandId
+      ? doc.splitTextToSize(String(user?.id || user?.recordId || '-'), innerW)
+      : []
+    const lineHeight = 12
+
+    const blockHeights =
+      (hasTestId ? (24 /*label gap*/ + testLines.length * lineHeight + 6) : 0) +
+      (hasCandId ? (24 /*label gap*/ + candLines.length * lineHeight + 6) : 0)
+
+    const cardHeight = Math.max(96, blockHeights + innerPad * 2)
+
+    // Draw card
     doc.setFillColor('#FFFFFF'); doc.setDrawColor('#DADDE2')
-    doc.roundedRect(rightX, cardY, badge.w, 120, 10, 10, 'FD')
+    doc.roundedRect(rightX, cardY, badge.w, cardHeight, 10, 10, 'FD')
 
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor('#555555')
-    doc.text('Test ID', rightX + 14, cardY + 24)
-    doc.setFont('helvetica', 'normal'); doc.setTextColor('#111111')
-    doc.text(String(result?.testId || result?.id || '-'), rightX + 14, cardY + 42)
-
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor('#555555')
-    doc.text('Candidate ID', rightX + 14, cardY + 70)
-    doc.setFont('helvetica', 'normal'); doc.setTextColor('#111111')
-    doc.text(String(user?.id || user?.recordId || '-'), rightX + 14, cardY + 88)
+    // Content
+    let cy = cardY + innerPad + 10
+    if (hasTestId) {
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor('#555555')
+      doc.text('Test ID', rightX + innerPad, cy)
+      cy += 18
+      const r1 = textInBox(doc, String(result?.testId || result?.id || '-'), rightX + innerPad, cy, innerW, {
+        size: 10, color: BRAND.text, lineHeight,
+      })
+      cy = r1.nextY + 6
+    }
+    if (hasCandId) {
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor('#555555')
+      doc.text('Candidate ID', rightX + innerPad, cy)
+      cy += 18
+      const r2 = textInBox(doc, String(user?.id || user?.recordId || '-'), rightX + innerPad, cy, innerW, {
+        size: 10, color: BRAND.text, lineHeight,
+      })
+      cy = r2.nextY + 6
+    }
   }
 
   // Notes box
-  const noteY = cardY + 150
+  const noteY = cardY + 160
   drawRoundedRect(doc, margin, noteY, pageW - margin * 2, 84, 8, '#F7F9FB')
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(10)
   doc.setTextColor(BRAND.mute)
   doc.text(
-    'This certificate reports the outcome of an adaptive placement procedure (QUAET). ' +
-    'Results indicate the estimated CEFR level for placement purposes.',
+    'This certificate reports the outcome of an adaptive placement procedure (QUAET). Results indicate the estimated CEFR level for placement purposes.',
     margin + 12, noteY + 24, { maxWidth: pageW - margin * 2 - 24 }
   )
 
@@ -250,20 +288,28 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   doc.setTextColor(BRAND.text)
   doc.text('Authorized Signatory', margin, sigY + 16)
 
-  // Validation block (right)
+  // Verification block (right) — wrapping
   const valW = 260
   const valX = pageW - margin - valW
-  drawRoundedRect(doc, valX, sigY - 28, valW, 72, 8, '#FFFFFF')
+  drawRoundedRect(doc, valX, sigY - 28, valW, 92, 8, '#FFFFFF')
+
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(10)
   doc.setTextColor(BRAND.primary)
   doc.text('Verification', valX + 12, sigY - 10 + 18)
-  doc.setFont('helvetica', 'normal')
-  doc.setTextColor(BRAND.text)
+
   const code = (result?.verificationCode || `${(user?.id || 'U')}-${(result?.testId || 'T')}-${levelText}`).toUpperCase()
-  doc.text(`Code: ${code}`, valX + 12, sigY - 10 + 36)
+
+  // Code (wrapped)
+  textInBox(doc, `Code: ${code}`, valX + 12, sigY - 10 + 34, valW - 24, {
+    size: 9, color: BRAND.text, lineHeight: 11,
+  })
+
+  // Verify URL
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(9)
   doc.setTextColor(BRAND.mute)
-  doc.text('Verify at: evalua.education/verify', valX + 12, sigY - 10 + 54)
+  doc.text('Verify at: evalua.education/verify', valX + 12, sigY - 10 + 70)
 
   // Footer
   doc.setFont('helvetica', 'normal')
@@ -271,7 +317,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   doc.setTextColor(BRAND.mute)
   doc.text('Issuer: Evalua', margin, pageH - 56)
 
-  // Optional diagonal watermark (subtle)
+  // Watermark
   doc.setTextColor(200, 205, 210)
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(48)

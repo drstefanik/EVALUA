@@ -27,11 +27,22 @@ export default function MyResults({ results, currentUser }) {
     try {
       // ---- User data (ID, anagrafica) ----
       const local = getLocalUser()
-      const candidateId =
-        currentUser?.id || currentUser?.recordId || local.id || null
+
+      // CandidateId "bello" generato in Placements (CAND-XXXX)
+      const candidateIdResolved =
+        attempt.CandidateId ||
+        attempt.candidateId ||
+        currentUser?.candidateId ||
+        currentUser?.CandidateId ||
+        currentUser?.id ||
+        currentUser?.recordId ||
+        local.id ||
+        null
 
       const userPayload = {
-        id: candidateId, // <-- usato dal PDF per Candidate ID
+        // usato dal PDF per "Candidate ID" se non arriva da result
+        id: candidateIdResolved || local.id || '',
+        candidateId: candidateIdResolved || undefined,
         fullName:
           currentUser?.name ||
           currentUser?.fullName ||
@@ -39,27 +50,46 @@ export default function MyResults({ results, currentUser }) {
           currentUser?.email ||
           'Candidate',
         email: currentUser?.email || local.email || '',
-        // nuovi campi se li hai nello schema utente
         nationality: currentUser?.nationality || currentUser?.Nationality || '-',
         dateOfBirth: currentUser?.dateOfBirth || currentUser?.DateOfBirth || null,
       }
 
       // ---- Result data (normalizzato per il PDF) ----
       const testId =
-        attempt.TestId || attempt.testId || attempt.placementTestId || attempt.id || null
+        attempt.TestId ||
+        attempt.testId ||
+        attempt.placementTestId ||
+        attempt.id ||
+        null
 
       const resultPayload = {
-        level: attempt.level || attempt.EstimatedLevel || 'N/A',
-        confidence: typeof attempt.confidence === 'number'
-          ? attempt.confidence
-          : (attempt.Confidence ?? attempt.confidence ?? 'N/A'),
-        items: typeof attempt.items === 'number'
-          ? attempt.items
-          : (attempt.TotalItems ?? attempt.items ?? '—'),
-        duration: attempt.durationLabel || attempt.duration || (attempt.DurationSec ? `${attempt.DurationSec}s` : '—'),
-        completedAt: attempt.completedAtLabel || attempt.CompletedAt || attempt.completedAt || attempt._createdTime || new Date().toISOString(),
-        // NEW
+        level:
+          attempt.level ||
+          attempt.EstimatedLevel ||
+          attempt.estimatedLevel ||
+          'N/A',
+        confidence:
+          typeof attempt.confidence === 'number'
+            ? attempt.confidence
+            : (attempt.Confidence ?? attempt.confidence ?? 'N/A'),
+        items:
+          typeof attempt.items === 'number'
+            ? attempt.items
+            : (attempt.TotalItems ?? attempt.items ?? '—'),
+        duration:
+          attempt.durationLabel ||
+          attempt.duration ||
+          (attempt.DurationSec ? `${attempt.DurationSec}s` : '—'),
+        completedAt:
+          attempt.completedAtLabel ||
+          attempt.CompletedAt ||
+          attempt.completedAt ||
+          attempt._createdTime ||
+          new Date().toISOString(),
+
+        // NEW: ID coerenti con Placements
         testId,
+        candidateId: candidateIdResolved || undefined,
       }
 
       await generateCertificatePDF({
@@ -105,21 +135,35 @@ export default function MyResults({ results, currentUser }) {
             </thead>
             <tbody>
               {results.map((attempt) => (
-                <tr key={attempt.id} className="border-b border-slate-100 last:border-none dark:border-slate-800">
+                <tr
+                  key={attempt.id}
+                  className="border-b border-slate-100 last:border-none dark:border-slate-800"
+                >
                   <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
-                    {formatValue(attempt.completedAtLabel || attempt.CompletedAt || attempt._createdTime)}
+                    {formatValue(
+                      attempt.completedAtLabel ||
+                        attempt.CompletedAt ||
+                        attempt._createdTime
+                    )}
                   </td>
                   <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
                     {formatValue(attempt.level || attempt.EstimatedLevel)}
                   </td>
                   <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
-                    {formatValue(attempt.confidenceLabel ?? attempt.Confidence ?? attempt.confidence)}
+                    {formatValue(
+                      attempt.confidenceLabel ??
+                        attempt.Confidence ??
+                        attempt.confidence
+                    )}
                   </td>
                   <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
                     {formatValue(attempt.items ?? attempt.TotalItems)}
                   </td>
                   <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
-                    {formatValue(attempt.durationLabel ?? (attempt.DurationSec ? `${attempt.DurationSec}s` : null))}
+                    {formatValue(
+                      attempt.durationLabel ??
+                        (attempt.DurationSec ? `${attempt.DurationSec}s` : null)
+                    )}
                   </td>
                   <td className="px-3 py-3 text-right">
                     <button

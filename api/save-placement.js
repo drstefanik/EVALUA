@@ -8,28 +8,35 @@ function toISOOrNull(v) {
   return isNaN(d.getTime()) ? null : d.toISOString();
 }
 
+// Test ID es: QAT-251112-AX7
 function genTestId() {
   const d = new Date();
   const yy = String(d.getFullYear()).slice(2);
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   const dd = String(d.getDate()).padStart(2, "0");
-  const suffix = Math.floor(Math.random() * 900) + 100;
-  return `TST-${yy}${mm}${dd}-${suffix}`;
-}
 
-function genCandidateId(userId, userEmail) {
-  let base = null;
-  if (userId) base = String(userId);
-  else if (userEmail) base = String(userEmail).split("@")[0];
+  const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // niente I/O confondenti
+  const nums = "23456789";
+  const pool = letters + nums;
 
-  if (!base) {
-    const rnd = Math.floor(Math.random() * 9000) + 1000;
-    return `CAND-${rnd}`;
+  let suffix = "";
+  for (let i = 0; i < 3; i++) {
+    const idx = Math.floor(Math.random() * pool.length);
+    suffix += pool[idx];
   }
 
-  const cleaned = base.replace(/[^A-Za-z0-9]/g, "").toUpperCase() || base.toUpperCase();
-  const short = cleaned.slice(-4) || cleaned.slice(0, 4);
-  return `CAND-${short}`;
+  return `QAT-${yy}${mm}${dd}-${suffix}`;
+}
+
+// Candidate ID es: CND-7FK2XM
+function genCandidateId() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "";
+  for (let i = 0; i < 6; i++) {
+    const idx = Math.floor(Math.random() * chars.length);
+    code += chars[idx];
+  }
+  return `CND-${code}`;
 }
 
 export default async function handler(req, res) {
@@ -52,8 +59,8 @@ export default async function handler(req, res) {
     const cookie = (name) =>
       (req.headers.cookie || "")
         .split(";")
-        .map(s => s.trim())
-        .find(c => c.startsWith(name + "="))?.split("=")[1] || "";
+        .map((s) => s.trim())
+        .find((c) => c.startsWith(name + "="))?.split("=")[1] || "";
 
     let claims = null;
     const bearer = header("authorization");
@@ -84,7 +91,7 @@ export default async function handler(req, res) {
         ? Number(String(body.confidence).replace("%", "").trim()) || null
         : (typeof body.confidence === "number" ? body.confidence : null);
 
-    const totalItems = (body.totalItems ?? null);
+    const totalItems = body.totalItems ?? null;
 
     const startedAtISO = toISOOrNull(body.startedAt) || new Date().toISOString();
     // CompletedAt è un campo computed in Airtable, quindi NON lo inviamo
@@ -94,8 +101,9 @@ export default async function handler(req, res) {
         ? body.askedByLevel
         : JSON.stringify(body.askedByLevel || {});
 
-    const testId = body.testId || genTestId();
-    const candidateId = body.candidateId || genCandidateId(normalizedUserId, normalizedUserEmail);
+    // ID “umani”, sempre generati qui
+    const testId = genTestId();
+    const candidateId = genCandidateId();
 
     const fields = {
       UserId: normalizedUserId,
@@ -110,10 +118,11 @@ export default async function handler(req, res) {
       CandidateId: candidateId,
     };
 
-    // NON esiste AskedBySkill in Airtable, quindi non lo mandiamo
     if (body.studentRecordId) fields.Student = [body.studentRecordId];
 
-    const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_PLACEMENTS)}`;
+    const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(
+      AIRTABLE_TABLE_PLACEMENTS
+    )}`;
 
     const resp = await fetch(url, {
       method: "POST",
@@ -135,9 +144,9 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       ok: true,
-      id: created?.id || null,
-      testId,
-      candidateId,
+      id: created?.id || null,      // record Airtable (solo per uso interno)
+      testId,                       // ID figo da mostrare allo studente
+      candidateId,                  // ID figo da mostrare allo studente
       airtable: data,
     });
   } catch (e) {

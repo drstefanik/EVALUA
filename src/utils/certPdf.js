@@ -150,6 +150,30 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     throw new Error('generateCertificatePDF must be called in the browser')
   }
 
+  // --- normalizziamo subito ID e campi che ci servono ---
+  // da Airtable arrivano probabilmente come TestId / CandidateId
+  const testId =
+    result?.testId ||
+    result?.TestId ||
+    result?.id ||
+    '-'
+
+  const candidateId =
+    result?.candidateId ||
+    result?.CandidateId ||
+    user?.candidateId ||
+    user?.CandidateId ||
+    user?.id ||
+    user?.recordId ||
+    '-'
+
+  const completedAt =
+    result?.completedAt ||
+    result?.CompletedAt ||
+    null
+
+  const levelText = String(result?.level || result?.estimatedLevel || result?.EstimatedLevel || '-').toUpperCase()
+
   const doc = new jsPDF({ unit: 'pt', format: 'A4' })
   const margin = 56
   const pageW = doc.internal.pageSize.getWidth()
@@ -177,7 +201,6 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   doc.text('Official Result Certificate', margin, 156)
 
   // CEFR badge
-  const levelText = String(result?.level || result?.estimatedLevel || '-').toUpperCase()
   drawCefrBadge(doc, levelText, margin)
 
   // Limite destro riga sezione = bordo sinistro badge - 12px
@@ -209,28 +232,34 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   y = drawLabelValue(
     doc,
     'Confidence',
-    typeof result?.confidence === 'number' ? `${result.confidence}%` : (result?.confidence || '-'),
+    typeof result?.confidence === 'number'
+      ? `${result.confidence}%`
+      : (result?.confidence || result?.Confidence || '-'),
     margin, y
   )
-  y = drawLabelValue(doc, 'Items administered', result?.items ?? '-', margin, y)
-  if (result?.duration) y = drawLabelValue(doc, 'Duration', result.duration, margin, y)
-  y = drawLabelValue(doc, 'Completed', formatDate(result?.completedAt), margin, y)
+  y = drawLabelValue(doc, 'Items administered', result?.items ?? result?.TotalItems ?? '-', margin, y)
+  if (result?.duration || result?.DurationSec) {
+    const dLabel = result?.duration || (result?.DurationSec ? `${result.DurationSec}s` : '-')
+    y = drawLabelValue(doc, 'Duration', dLabel, margin, y)
+  }
+  y = drawLabelValue(doc, 'Completed', formatDate(completedAt), margin, y)
 
   // Right side summary card — dynamic height + wrapping
-  const hasTestId = !!(result?.testId || result?.id)
-  const hasCandId = !!(user?.id || user?.recordId)
+  const hasTestId = !!(testId && testId !== '-')
+  const hasCandId = !!(candidateId && candidateId !== '-')
   const rightX = badge.x
   const innerPad = 14
   const innerW = badge.w - innerPad * 2
   let cardY = 280
+
   if (hasTestId || hasCandId) {
     // Pre-calc line counts to size the card
     doc.setFont('helvetica', 'normal'); doc.setFontSize(10)
     const testLines = hasTestId
-      ? doc.splitTextToSize(String(result?.testId || result?.id || '-'), innerW)
+      ? doc.splitTextToSize(String(testId), innerW)
       : []
     const candLines = hasCandId
-      ? doc.splitTextToSize(String(user?.id || user?.recordId || '-'), innerW)
+      ? doc.splitTextToSize(String(candidateId), innerW)
       : []
     const lineHeight = 12
 
@@ -250,7 +279,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
       doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor('#555555')
       doc.text('Test ID', rightX + innerPad, cy)
       cy += 18
-      const r1 = textInBox(doc, String(result?.testId || result?.id || '-'), rightX + innerPad, cy, innerW, {
+      const r1 = textInBox(doc, String(testId), rightX + innerPad, cy, innerW, {
         size: 10, color: BRAND.text, lineHeight,
       })
       cy = r1.nextY + 6
@@ -259,7 +288,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
       doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor('#555555')
       doc.text('Candidate ID', rightX + innerPad, cy)
       cy += 18
-      const r2 = textInBox(doc, String(user?.id || user?.recordId || '-'), rightX + innerPad, cy, innerW, {
+      const r2 = textInBox(doc, String(candidateId), rightX + innerPad, cy, innerW, {
         size: 10, color: BRAND.text, lineHeight,
       })
       cy = r2.nextY + 6
@@ -298,7 +327,9 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   doc.setTextColor(BRAND.primary)
   doc.text('Verification', valX + 12, sigY - 10 + 18)
 
-  const code = (result?.verificationCode || `${(user?.id || 'U')}-${(result?.testId || 'T')}-${levelText}`).toUpperCase()
+  const code =
+    (result?.verificationCode ||
+      `Q-${String(testId).replaceAll(' ', '')}-${levelText}`).toUpperCase()
 
   // Code (wrapped)
   textInBox(doc, `Code: ${code}`, valX + 12, sigY - 10 + 34, valW - 24, {
@@ -326,7 +357,10 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
 
   // Safe filename
   const safeName = String(candidateName).trim().replace(/\s+/g, '_').replace(/[^\w\-]+/g, '')
-  const safeDate = String(result?.completedAt || new Date()).replaceAll(' ', '_').replaceAll(':', '-').replaceAll('/', '-')
+  const safeDate = String(completedAt || new Date())
+    .replaceAll(' ', '_')
+    .replaceAll(':', '-')
+    .replaceAll('/', '-')
   const fileName = `QUAET-Certificate_${levelText}_${safeName}_${safeDate}.pdf`
 
   doc.save(fileName)

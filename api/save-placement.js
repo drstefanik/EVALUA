@@ -1,5 +1,5 @@
 // api/save-placement.js
-import { verifyJWT } from "../../src/util.js";
+import { verifyJWT } from "../src/util.js";
 // helpers
 function toISOOrNull(v) {
   if (!v) return null;

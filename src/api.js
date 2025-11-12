@@ -122,12 +122,20 @@ export async function signupSchool({ name, email, password, otp_code }) {
   })
 }
 
-export async function signupStudent({ full_name, email, password, school_code }) {
-  const body = { full_name, email, password, school_code }
-  return request('/auth/signup-student', {
+export async function signupStudent(payload) {
+  const response = await fetch(`${API}/auth/signup-student`, {
     method: 'POST',
-    body,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
   })
+
+  if (!response.ok) {
+    const json = await response.json().catch(() => ({}))
+    const error = new ApiError(json?.error || response.statusText, response.status, json)
+    throw error
+  }
+
+  return response.json()
 }
 
 // -------- SESSION --------

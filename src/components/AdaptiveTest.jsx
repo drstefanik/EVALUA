@@ -42,6 +42,14 @@ function getToken() {
   return localStorage.getItem("authToken") || "";
 }
 
+// NEW: genera un TestId robusto
+function genTestId() {
+  try {
+    if (globalThis.crypto?.randomUUID) return crypto.randomUUID();
+  } catch {}
+  return `T-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
+}
+
 function AdaptiveTestContent() {
   const { items, error } = useItems();
 
@@ -118,20 +126,37 @@ function AdaptiveTestContent() {
     const token = getToken();
 
     const completedAtIso = new Date().toISOString();
+    const totalItemsSafe = (() => {
+      try {
+        const obj = result?.askedByLevel || {};
+        return Object.values(obj).reduce((a, b) => a + (Number(b) || 0), 0);
+      } catch {
+        return st?.askedCount || null;
+      }
+    })();
+
+    // NEW: genera TestId e fissa CandidateId
+    const testId = genTestId();
+    const candidateId = id || null;
 
     const payload = {
-      userId: id || null,
+      userId: candidateId,
       userEmail: email || null,
       estimatedLevel: result.estimatedLevel,
-      confidence: result.confidence,
+      confidence: result.confidence, // numero 0..1 o 0..100 (server lo normalizza)
       askedByLevel: result.askedByLevel,
       askedBySkill: askedBySkillRef.current,
-      totalItems: Object.values(result.askedByLevel).reduce((a, b) => a + b, 0),
+      totalItems: totalItemsSafe,
       startedAt: startedAtIsoRef.current,
       durationSec: Math.round((Date.now() - startedAtTsRef.current) / 1000),
       completedAt: completedAtIso,
+
+      // NEW
+      testId,
+      candidateId,
     };
 
+    // storage locale (cronologia)
     if (typeof window !== "undefined") {
       try {
         const storageKey = "evaluaAdaptiveResults";
@@ -142,7 +167,7 @@ function AdaptiveTestContent() {
           id: `${payload.startedAt || completedAtIso}-${payload.estimatedLevel}`,
           ...payload,
         };
-        const updated = [entry, ...list.filter((item) => item?.startedAt !== entry.startedAt)];
+        const updated = [entry, ...list.filter((it) => it?.startedAt !== entry.startedAt)];
         window.localStorage.setItem(storageKey, JSON.stringify(updated.slice(0, 20)));
         window.dispatchEvent(new CustomEvent("evalua:adaptive-result-saved", { detail: entry }));
       } catch (err) {
@@ -150,6 +175,7 @@ function AdaptiveTestContent() {
       }
     }
 
+    // invio a /api/save-placement (con TestId/CandidateId)
     (async () => {
       try {
         await fetch("/api/save-placement", {

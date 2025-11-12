@@ -1,3 +1,4 @@
+// api/get-current-user.js
 import Airtable from "airtable";
 
 function ensureEnv(value, name) {
@@ -16,6 +17,32 @@ const base = new Airtable({ apiKey: ensureEnv(AIRTABLE_API_KEY, "AIRTABLE_API_KE
 
 function escapeFormulaValue(value) {
   return String(value).replace(/"/g, '\\"');
+}
+
+// Helpers per leggere varianti di nomi campo
+function pickField(fields, keys = []) {
+  for (const k of keys) {
+    if (fields[k] !== undefined && fields[k] !== null && fields[k] !== "") {
+      return fields[k];
+    }
+  }
+  return null;
+}
+
+function toISODateYMD(value) {
+  if (!value) return "";
+  try {
+    // Airtable Date o stringa
+    const d = new Date(value);
+    if (!isNaN(d.getTime())) {
+      // solo YYYY-MM-DD
+      return d.toISOString().slice(0, 10);
+    }
+    // se è già una stringa tipo "12/11/2025" la lascio così (meglio non perdere info)
+    return String(value);
+  } catch {
+    return String(value);
+  }
 }
 
 async function findStudentById(id) {
@@ -53,17 +80,28 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const fields = record.fields || {};
+    const f = record.fields || {};
+
+    // Mappature flessibili
+    const fullName = pickField(f, ["full_name", "Full Name", "name", "Name"]) || "";
+    const school = pickField(f, ["school", "School"]) || "";
+    const nationality =
+      pickField(f, ["nationality", "Nationality", "country", "Country"]) || "";
+    const dateOfBirthRaw =
+      pickField(f, ["date_of_birth", "Date of birth", "Date Of Birth", "DOB", "dob"]) || "";
+    const dateOfBirth = toISODateYMD(dateOfBirthRaw);
 
     res.json({
       id: record.id,
-      name: fields.full_name || "",
-      email: fields.email || "",
-      school: fields.school || "",
+      name: fullName,
+      email: f.email || "",
+      school,
+      nationality,     // <-- NEW
+      dateOfBirth,     // <-- NEW (YYYY-MM-DD se possibile)
       features: {
-        courses: Boolean(fields.enable_courses),
-        quaet: Boolean(fields.enable_quaet),
-        results: Boolean(fields.enable_results),
+        courses: Boolean(f.enable_courses),
+        quaet: Boolean(f.enable_quaet),
+        results: Boolean(f.enable_results),
       },
     });
   } catch (error) {

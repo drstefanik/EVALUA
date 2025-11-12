@@ -115,6 +115,8 @@ export default function AdaptiveTest() {
     const { id, email } = getCurrentUserFromStorage();
     const token = getToken();
 
+    const completedAtIso = new Date().toISOString();
+
     const payload = {
       userId: id || null,
       userEmail: email || null,
@@ -125,7 +127,26 @@ export default function AdaptiveTest() {
       totalItems: Object.values(result.askedByLevel).reduce((a, b) => a + b, 0),
       startedAt: startedAtIsoRef.current,
       durationSec: Math.round((Date.now() - startedAtTsRef.current) / 1000),
+      completedAt: completedAtIso,
     };
+
+    if (typeof window !== "undefined") {
+      try {
+        const storageKey = "evaluaAdaptiveResults";
+        const raw = window.localStorage.getItem(storageKey);
+        const parsed = raw ? JSON.parse(raw) : [];
+        const list = Array.isArray(parsed) ? parsed : [];
+        const entry = {
+          id: `${payload.startedAt || completedAtIso}-${payload.estimatedLevel}`,
+          ...payload,
+        };
+        const updated = [entry, ...list.filter((item) => item?.startedAt !== entry.startedAt)];
+        window.localStorage.setItem(storageKey, JSON.stringify(updated.slice(0, 20)));
+        window.dispatchEvent(new CustomEvent("evalua:adaptive-result-saved", { detail: entry }));
+      } catch (err) {
+        console.error("adaptive-results storage failed:", err);
+      }
+    }
 
     (async () => {
       try {

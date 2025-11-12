@@ -7,6 +7,7 @@ import VideoModal from '../components/VideoModal'
 import FileListItem from '../components/FileListItem'
 
 const API_BASE = import.meta.env.VITE_AUTH_API ?? '/api'
+const ADAPTIVE_RESULTS_STORAGE_KEY = 'evaluaAdaptiveResults'
 
 /* ----------------------------- helpers ----------------------------- */
 function relationToId(value) {
@@ -116,10 +117,18 @@ export default function StudentDashboard() {
   const [selectedFolderId, setSelectedFolderId] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [adaptiveResults, setAdaptiveResults] = useState([])
 
   const { progress, upsert } = useProgress(token, studentId)
 
   const tree = useMemo(() => buildTree(folders), [folders])
+  const defaultFolderId = useMemo(() => {
+    if (!folders.length) return null
+    const roots = folders
+      .filter(f => !f.parent)
+      .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || (a.title || a.name || '').localeCompare(b.title || b.name || ''))
+    return roots[0]?.id ?? folders[0].id
+  }, [folders])
 
   const childrenOf = useCallback(
     (id) => folders
@@ -226,18 +235,102 @@ export default function StudentDashboard() {
     return !progress[prev.id]?.completed
   }, [progress])
 
-const [playing, setPlaying] = useState(null)
-const handleOpenVideo = (file) => setPlaying(file)
-const handleCloseVideo = () => setPlaying(null)
+  const [playing, setPlaying] = useState(null)
+  const handleOpenVideo = (file) => setPlaying(file)
+  const handleCloseVideo = () => setPlaying(null)
 
-// ✅ callback stabili: evitano re-render del modal/player
-const handleProgress = useCallback((fileId, seconds) => {
-  upsert(fileId, { seconds })
-}, [upsert])
+  // ✅ callback stabili: evitano re-render del modal/player
+  const handleProgress = useCallback((fileId, seconds) => {
+    upsert(fileId, { seconds })
+  }, [upsert])
 
-const handleComplete = useCallback((fileId) => {
-  upsert(fileId, { completed: true })
-}, [upsert])
+  const handleComplete = useCallback((fileId) => {
+    upsert(fileId, { completed: true })
+  }, [upsert])
+
+  const handleGoToDefaultFolder = useCallback(() => {
+    if (defaultFolderId) setSelectedFolderId(defaultFolderId)
+  }, [defaultFolderId])
+
+  const latestAdaptiveResult = useMemo(() => adaptiveResults[0] || null, [adaptiveResults])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined
+
+    const loadResults = () => {
+      try {
+        const raw = window.localStorage.getItem(ADAPTIVE_RESULTS_STORAGE_KEY)
+        if (!raw) { setAdaptiveResults([]); return }
+        const parsed = JSON.parse(raw)
+        if (!Array.isArray(parsed)) { setAdaptiveResults([]); return }
+        const normalized = parsed
+          .map((entry, index) => {
+            const startedAt = entry?.startedAt || null
+            const completedAt = entry?.completedAt || null
+            return {
+              id: entry?.id || `${startedAt || 'attempt'}-${index}`,
+              estimatedLevel: entry?.estimatedLevel || null,
+              confidence: typeof entry?.confidence === 'number' ? entry.confidence : null,
+              totalItems: typeof entry?.totalItems === 'number' ? entry.totalItems : null,
+              durationSec: typeof entry?.durationSec === 'number' ? entry.durationSec : null,
+              askedByLevel: typeof entry?.askedByLevel === 'object' && entry?.askedByLevel !== null
+                ? entry.askedByLevel
+                : {},
+              startedAt,
+              completedAt,
+            }
+          })
+          .sort((a, b) => {
+            const aTime = new Date(a.completedAt || a.startedAt || 0).getTime()
+            const bTime = new Date(b.completedAt || b.startedAt || 0).getTime()
+            return bTime - aTime
+          })
+        setAdaptiveResults(normalized)
+      } catch {
+        setAdaptiveResults([])
+      }
+    }
+
+    loadResults()
+
+    const handleStorage = (event) => {
+      if (event.key === ADAPTIVE_RESULTS_STORAGE_KEY) loadResults()
+    }
+    const handleCustom = () => loadResults()
+
+    window.addEventListener('storage', handleStorage)
+    window.addEventListener('evalua:adaptive-result-saved', handleCustom)
+
+    return () => {
+      window.removeEventListener('storage', handleStorage)
+      window.removeEventListener('evalua:adaptive-result-saved', handleCustom)
+    }
+  }, [])
+
+  const formatDateTime = useCallback((value) => {
+    if (!value) return '—'
+    try {
+      const date = new Date(value)
+      if (Number.isNaN(date.getTime())) return '—'
+      return date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
+    } catch {
+      return '—'
+    }
+  }, [])
+
+  const formatConfidence = useCallback((confidence) => {
+    if (typeof confidence !== 'number') return '—'
+    return `${Math.round(confidence * 100)}%`
+  }, [])
+
+  const formatDuration = useCallback((seconds) => {
+    if (typeof seconds !== 'number' || Number.isNaN(seconds)) return '—'
+    const minutes = Math.floor(seconds / 60)
+    const remaining = seconds % 60
+    const minLabel = minutes ? `${minutes}m` : ''
+    const secLabel = `${remaining}s`
+    return `${minLabel}${minLabel ? ' ' : ''}${secLabel}`.trim()
+  }, [])
 
   /* ------------------------------ UI ------------------------------ */
   return (
@@ -276,6 +369,51 @@ const handleComplete = useCallback((fileId) => {
 
           {/* Main content */}
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
+            <div className="mb-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              <div className="rounded-xl border border-slate-200 bg-white p-5 text-left shadow-sm dark:border-white/10 dark:bg-slate-900/70">
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">My courses</h2>
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                  Access the learning folders assigned to your profile and resume your progress where you left off.
+                </p>
+                <button
+                  type="button"
+                  onClick={handleGoToDefaultFolder}
+                  className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-binavy px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#001c5e] focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:hover:bg-[#16348f] dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f] disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={!defaultFolderId}
+                >
+                  Explore content
+                </button>
+              </div>
+
+              <div className="rounded-xl border border-slate-200 bg-white p-5 text-left shadow-sm dark:border-white/10 dark:bg-slate-900/70">
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">My Results</h2>
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                  {latestAdaptiveResult
+                    ? `Latest: ${latestAdaptiveResult.estimatedLevel || '—'} • ${formatConfidence(latestAdaptiveResult.confidence)} on ${formatDateTime(latestAdaptiveResult.completedAt || latestAdaptiveResult.startedAt)}`
+                    : 'Review your adaptive test attempts and keep track of your certification readiness.'}
+                </p>
+                <a
+                  href="#my-results"
+                  className="mt-4 inline-block w-full rounded-xl bg-slate-900 px-5 py-2.5 text-center text-sm font-semibold text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:bg-white dark:text-slate-900 dark:hover:opacity-90 dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f]"
+                >
+                  View history
+                </a>
+              </div>
+
+              <div className="rounded-xl border border-slate-200 bg-white p-5 text-center shadow-sm dark:border-white/10 dark:bg-slate-900/70">
+                <h2 className="mb-2 text-lg font-semibold text-slate-900 dark:text-white">Adaptive Test</h2>
+                <p className="mb-4 text-sm text-gray-600 dark:text-slate-300">
+                  Take the official <strong>QUAET</strong> Adaptive English Test to assess your current level.
+                </p>
+                <a
+                  href="/adaptive-test"
+                  className="inline-block w-full rounded-xl bg-black px-5 py-2.5 text-center text-sm font-semibold text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:bg-white dark:text-slate-900 dark:hover:opacity-90 dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f]"
+                >
+                  Start QUAET Test
+                </a>
+              </div>
+            </div>
+
             {error && !loading && (
               <div className="rounded-xl border border-bireg/30 bg-bireg/10 p-3 text-sm text-bireg">{error}</div>
             )}
@@ -353,6 +491,57 @@ const handleComplete = useCallback((fileId) => {
               </>
             )}
           </section>
+        </div>
+
+        <div
+          id="my-results"
+          className="mt-10 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70"
+        >
+          <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">My Results</h2>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+            Track the outcomes of your adaptive assessments and monitor your progress toward certification.
+          </p>
+
+          {adaptiveResults.length === 0 ? (
+            <div className="mt-6 rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-5 text-sm text-slate-600 dark:border-white/10 dark:bg-[#111a33] dark:text-slate-300">
+              No adaptive test results available yet. Launch your first attempt with the QUAET Adaptive Test above.
+            </div>
+          ) : (
+            <div className="mt-6 overflow-x-auto">
+              <table className="min-w-full border-collapse text-left text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200 text-slate-600 dark:border-slate-700 dark:text-slate-300">
+                    <th className="px-3 py-2 font-semibold">Completed</th>
+                    <th className="px-3 py-2 font-semibold">Estimated level</th>
+                    <th className="px-3 py-2 font-semibold">Confidence</th>
+                    <th className="px-3 py-2 font-semibold">Items</th>
+                    <th className="px-3 py-2 font-semibold">Duration</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {adaptiveResults.map((attempt) => (
+                    <tr key={attempt.id} className="border-b border-slate-100 last:border-none dark:border-slate-800">
+                      <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
+                        {formatDateTime(attempt.completedAt || attempt.startedAt)}
+                      </td>
+                      <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
+                        {attempt.estimatedLevel || '—'}
+                      </td>
+                      <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
+                        {formatConfidence(attempt.confidence)}
+                      </td>
+                      <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
+                        {typeof attempt.totalItems === 'number' ? attempt.totalItems : '—'}
+                      </td>
+                      <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
+                        {formatDuration(attempt.durationSec)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
 

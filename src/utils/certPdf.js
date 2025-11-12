@@ -4,7 +4,7 @@ import evaluaLogoUrl from '../assets/EVALUA.svg?url'
 
 // ---- Brand & layout helpers ----
 const BRAND = {
-  primary: '#0C3C4A', // Evalua/Next Group dark teal
+  primary: '#0C3C4A',
   text: '#111111',
   mute: '#555555',
   line: '#DADDE2',
@@ -13,15 +13,15 @@ const BRAND = {
 function formatDate(value) {
   if (!value) return '-'
   try {
-    // accetta ISO o stringa "12 nov 2025, 16:36"
     const d = new Date(value)
     if (!isNaN(d.getTime())) {
-      // es: 12 Nov 2025, 16:36 (Europe/Rome)
-      return d.toLocaleString('en-GB', {
-        timeZone: 'Europe/Rome',
-        day: '2-digit', month: 'short', year: 'numeric',
-        hour: '2-digit', minute: '2-digit',
-      }).replace(',', '')
+      return d
+        .toLocaleString('en-GB', {
+          timeZone: 'Europe/Rome',
+          day: '2-digit', month: 'short', year: 'numeric',
+          hour: '2-digit', minute: '2-digit',
+        })
+        .replace(',', '')
     }
     return String(value)
   } catch {
@@ -63,7 +63,7 @@ async function svgToPngDataUrl(svgUrl, maxW = 220, maxH = 60) {
   })
 
   const aspect = (img.width || maxW) / (img.height || maxH)
-  // calcola fit "contain"
+  // contain fit
   let drawW = maxW
   let drawH = drawW / aspect
   if (drawH > maxH) {
@@ -90,14 +90,13 @@ function getBadgeFrame(doc, margin) {
 }
 
 function drawSectionTitle(doc, text, x, y, rightLimitX) {
-  const BRAND = { primary: '#0C3C4A', line: '#DADDE2', text: '#111111' }
   doc.setTextColor(BRAND.primary)
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(13)
   doc.text(text, x, y)
   doc.setDrawColor(BRAND.line)
   doc.setLineWidth(0.6)
-  const maxLineX = Math.max(x + 120, rightLimitX) // non meno di 120px
+  const maxLineX = Math.max(x + 120, rightLimitX ?? x + 120)
   doc.line(x, y + 6, maxLineX, y + 6)
   doc.setTextColor(BRAND.text)
 }
@@ -117,29 +116,28 @@ function drawLabelValue(doc, label, value, x, y, opts = {}) {
 function drawRoundedRect(doc, x, y, w, h, r = 8, colorHex = '#FFFFFF') {
   doc.setFillColor(colorHex)
   doc.setDrawColor(BRAND.line)
-  doc.roundedRect(x, y, w, h, r, r, 'FD') // fill + stroke
+  doc.roundedRect(x, y, w, h, r, r, 'FD')
 }
 
-/**
- * Make a big CEFR badge (e.g., "B1") on the right side.
- */
+/** Big CEFR badge (e.g., "B1") on the right side. */
 function drawCefrBadge(doc, levelText = '-', margin) {
-  const BRAND = { primary: '#0C3C4A', mute: '#555555', line: '#DADDE2' }
   const { x, y, w, h } = getBadgeFrame(doc, margin)
-  // box badge
   doc.setFillColor('#F7F9FB'); doc.setDrawColor(BRAND.line)
   doc.roundedRect(x, y, w, h, 12, 12, 'FD')
-  // testo
   doc.setTextColor(BRAND.primary); doc.setFont('helvetica', 'bold')
   doc.setFontSize(46)
   const tw = doc.getTextWidth(levelText)
-  doc.text(levelText, x + w/2 - tw/2, y + 70)
+  doc.text(levelText, x + w / 2 - tw / 2, y + 70)
   doc.setFontSize(10); doc.setTextColor(BRAND.mute)
   const sub = 'CEFR LEVEL'; const tw2 = doc.getTextWidth(sub)
-  doc.text(sub, x + w/2 - tw2/2, y + 95)
+  doc.text(sub, x + w / 2 - tw2 / 2, y + 95)
 }
 
 export async function generateCertificatePDF({ user = {}, result = {} }) {
+  if (typeof window === 'undefined') {
+    throw new Error('generateCertificatePDF must be called in the browser')
+  }
+
   const doc = new jsPDF({ unit: 'pt', format: 'A4' })
   const margin = 56
   const pageW = doc.internal.pageSize.getWidth()
@@ -151,9 +149,9 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   // Header: logo + titles
   try {
     const { dataUrl, w, h } = await svgToPngDataUrl(evaluaLogoUrl, 220, 60)
-    // centra verticalmente nel box header
     doc.addImage(dataUrl, 'PNG', margin, 56, w, h)
   } catch (error) {
+    // Non bloccare il PDF se il logo fallisce
     console.error('Unable to load Evalua logo for certificate', error)
   }
 
@@ -167,9 +165,10 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   doc.setTextColor(BRAND.mute)
   doc.text('Official Result Certificate', margin, 156)
 
-  // Big CEFR badge at right
+  // CEFR badge
   const levelText = String(result?.level || result?.estimatedLevel || '-').toUpperCase()
-  drawCefrBadge(doc, levelText, margin))
+  drawCefrBadge(doc, levelText, margin) // <-- rimossa parentesi extra
+
   // Limite destro riga sezione = bordo sinistro badge - 12px
   const badge = getBadgeFrame(doc, margin)
   const rightLimitX = badge.x - 12
@@ -178,15 +177,13 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   let y = 195
   drawSectionTitle(doc, 'Candidate', margin, y, rightLimitX)
   y += 24
-  
-  // Candidate section
-  let y = 195
-  drawSectionTitle(doc, 'Candidate', margin, y)
-  y += 24
 
-  const candidateName = user?.fullName || user?.name || user?.givenName
-    ? [user?.fullName || `${user?.givenName || ''} ${user?.familyName || ''}`.trim()].join(' ')
-    : (user?.email || 'Candidate')
+  const candidateName =
+    user?.fullName ||
+    [user?.givenName, user?.familyName].filter(Boolean).join(' ') ||
+    user?.name ||
+    user?.email ||
+    'Candidate'
 
   y = drawLabelValue(doc, 'Full name', candidateName, margin, y)
   y = drawLabelValue(doc, 'Email', user?.email || '-', margin, y)
@@ -201,9 +198,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   y = drawLabelValue(
     doc,
     'Confidence',
-    (typeof result?.confidence === 'number')
-      ? `${result.confidence}%`
-      : (result?.confidence || '-'),
+    typeof result?.confidence === 'number' ? `${result.confidence}%` : (result?.confidence || '-'),
     margin, y
   )
   y = drawLabelValue(doc, 'Items administered', result?.items ?? '-', margin, y)
@@ -215,9 +210,9 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   // Right side summary card
   const hasTestId = !!(result?.testId || result?.id)
   const hasCandId = !!(user?.id || user?.recordId)
+  const cardY = 280 // <-- portato fuori dallo scope per usarlo sotto
   if (hasTestId || hasCandId) {
     const rightX = badge.x
-    const cardY = 280
     doc.setFillColor('#FFFFFF'); doc.setDrawColor('#DADDE2')
     doc.roundedRect(rightX, cardY, badge.w, 120, 10, 10, 'FD')
 
@@ -280,11 +275,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   doc.setTextColor(200, 205, 210)
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(48)
-  doc.text('E V A L U A', pageW / 2, pageH / 2, {
-    angle: 30,
-    align: 'center',
-  })
-  // Reset text color
+  doc.text('E V A L U A', pageW / 2, pageH / 2, { angle: 30, align: 'center' })
   doc.setTextColor(BRAND.text)
 
   // Safe filename

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ApiError, getDashboardPath, persistSession, signupStudent } from '../api'
+import { ApiError, getDashboardPath, persistSession, refreshCurrentUser, signupStudent } from '../api'
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/
@@ -52,7 +52,12 @@ export default function SignupStudent() {
       }
 
       const data = await signupStudent(payload)
-      persistSession(data)
+      persistSession({ ...data, email: email.trim().toLowerCase() })
+      try {
+        await refreshCurrentUser()
+      } catch (refreshError) {
+        console.error('Unable to refresh current user', refreshError)
+      }
       setPassword('')
       setConfirmPassword('')
       setSchoolCode('')

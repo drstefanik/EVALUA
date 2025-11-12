@@ -2,9 +2,13 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { getStoredSession } from '../api'
 import useProgress from '../hooks/useProgress'
+import { useCurrentUser } from '../hooks/useCurrentUser.js'
 import VideoCard from '../components/VideoCard'
 import VideoModal from '../components/VideoModal'
 import FileListItem from '../components/FileListItem'
+import DashboardCards from '../components/DashboardCards.jsx'
+import FeatureGate from '../components/FeatureGate.jsx'
+import MyResults from '../components/MyResults.jsx'
 
 const API_BASE = import.meta.env.VITE_AUTH_API ?? '/api'
 const ADAPTIVE_RESULTS_STORAGE_KEY = 'evaluaAdaptiveResults'
@@ -107,10 +111,12 @@ function FolderNode({ node, depth, onSelect, selectedId }) {
 /* --------------------------- main component --------------------------- */
 export default function StudentDashboard() {
   const navigate = useNavigate()
+  const { currentUser, loading: currentUserLoading } = useCurrentUser()
   const session = useMemo(() => getStoredSession(), [])
   const token = session?.token
   const studentId = session?.id || session?.email || 'student'
-  const studentName = session?.name || ''
+  const sessionName = session?.name || ''
+  const displayName = currentUser?.name || sessionName
 
   const [folders, setFolders] = useState([])
   const [files, setFiles] = useState([])
@@ -253,6 +259,19 @@ export default function StudentDashboard() {
   }, [defaultFolderId])
 
   const latestAdaptiveResult = useMemo(() => adaptiveResults[0] || null, [adaptiveResults])
+  const featureFlags = useMemo(() => {
+    if (currentUser) {
+      return {
+        courses: Boolean(currentUser?.features?.courses),
+        quaet: Boolean(currentUser?.features?.quaet),
+        results: Boolean(currentUser?.features?.results),
+      }
+    }
+    if (currentUserLoading) {
+      return { courses: true, quaet: true, results: true }
+    }
+    return { courses: false, quaet: false, results: false }
+  }, [currentUser, currentUserLoading])
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined
@@ -318,11 +337,6 @@ export default function StudentDashboard() {
     }
   }, [])
 
-  const formatConfidence = useCallback((confidence) => {
-    if (typeof confidence !== 'number') return '—'
-    return `${Math.round(confidence * 100)}%`
-  }, [])
-
   const formatDuration = useCallback((seconds) => {
     if (typeof seconds !== 'number' || Number.isNaN(seconds)) return '—'
     const minutes = Math.floor(seconds / 60)
@@ -332,6 +346,40 @@ export default function StudentDashboard() {
     return `${minLabel}${minLabel ? ' ' : ''}${secLabel}`.trim()
   }, [])
 
+  const latestResultCard = useMemo(() => {
+    if (!latestAdaptiveResult) return null
+    const completed = latestAdaptiveResult.completedAt || latestAdaptiveResult.startedAt
+    const confidencePct =
+      typeof latestAdaptiveResult.confidence === 'number'
+        ? Math.round(latestAdaptiveResult.confidence * 100)
+        : null
+    return {
+      level: latestAdaptiveResult.estimatedLevel || '—',
+      confidence: confidencePct !== null ? confidencePct : '—',
+      date: formatDateTime(completed),
+    }
+  }, [latestAdaptiveResult, formatDateTime])
+
+  const resultsForTable = useMemo(() => {
+    return adaptiveResults.map((attempt, index) => {
+      const completed = attempt.completedAt || attempt.startedAt || null
+      const confidencePct =
+        typeof attempt.confidence === 'number' ? Math.round(attempt.confidence * 100) : null
+      const durationSeconds = typeof attempt.durationSec === 'number' ? attempt.durationSec : null
+      return {
+        id: attempt.id || `result-${index}`,
+        level: attempt.estimatedLevel || '—',
+        confidence: confidencePct,
+        confidenceLabel: confidencePct !== null ? `${confidencePct}%` : '—',
+        items: typeof attempt.totalItems === 'number' ? attempt.totalItems : '—',
+        duration: durationSeconds,
+        durationLabel: formatDuration(durationSeconds),
+        completedAt: completed,
+        completedAtLabel: formatDateTime(completed),
+      }
+    })
+  }, [adaptiveResults, formatDateTime, formatDuration])
+
   /* ------------------------------ UI ------------------------------ */
   return (
     <div className="min-h-screen bg-gradient-to-b from-biwhite via-biwhite to-binavy/10 dark:from-[#0a0f1f] dark:via-[#0a0f1f] dark:to-[#001c5e]">
@@ -339,19 +387,36 @@ export default function StudentDashboard() {
         <div className="mb-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
           <h1 className="text-3xl font-semibold text-binavy dark:text-white">Student area</h1>
           <p className="mt-2 text-slate-600 dark:text-slate-300">
-            {studentName ? `Hi ${studentName}, welcome to your learning environment` : 'Explore your learning contents.'}
+            {displayName
+              ? `Hi ${displayName}, welcome to your learning environment`
+              : 'Explore your learning contents.'}
           </p>
           <div className="mt-3 text-sm">
             <Link to="/logout" className="font-semibold underline-offset-4 text-binavy hover:text-bireg dark:text-white">Logout</Link>
           </div>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[260px,1fr]">
-          {/* Sidebar */}
-          <aside className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-            <h2 className="px-2 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-300">Learning Hub</h2>
-            <div className="mt-2 space-y-1">
-              {tree.length ? (
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
+          <DashboardCards latestResult={latestResultCard} features={featureFlags} />
+        </div>
+
+        <FeatureGate
+          enabled={featureFlags.courses}
+          fallback={
+            <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm dark:border-white/10 dark:bg-slate-900/70 dark:text-slate-300">
+              <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Courses area unavailable</h2>
+              <p className="mt-2">
+                This area is not enabled for your account. Contact your school administrator for access to the learning content.
+              </p>
+            </div>
+          }
+        >
+          <div className="mt-6 grid gap-6 lg:grid-cols-[260px,1fr]">
+            {/* Sidebar */}
+            <aside className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
+              <h2 className="px-2 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-300">Learning Hub</h2>
+              <div className="mt-2 space-y-1">
+                {tree.length ? (
                 tree.map((node) => (
                   <FolderNode
                     key={node.id}
@@ -369,49 +434,15 @@ export default function StudentDashboard() {
 
           {/* Main content */}
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-            <div className="mb-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              <div className="rounded-xl border border-slate-200 bg-white p-5 text-left shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">My courses</h2>
-                <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-                  Access the learning folders assigned to your profile and resume your progress where you left off.
-                </p>
-                <button
-                  type="button"
-                  onClick={handleGoToDefaultFolder}
-                  className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-binavy px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#001c5e] focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:hover:bg-[#16348f] dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f] disabled:cursor-not-allowed disabled:opacity-60"
-                  disabled={!defaultFolderId}
-                >
-                  Explore content
-                </button>
-              </div>
-
-              <div className="rounded-xl border border-slate-200 bg-white p-5 text-left shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">My Results</h2>
-                <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-                  {latestAdaptiveResult
-                    ? `Latest: ${latestAdaptiveResult.estimatedLevel || '—'} • ${formatConfidence(latestAdaptiveResult.confidence)} on ${formatDateTime(latestAdaptiveResult.completedAt || latestAdaptiveResult.startedAt)}`
-                    : 'Review your adaptive test attempts and keep track of your certification readiness.'}
-                </p>
-                <a
-                  href="#my-results"
-                  className="mt-4 inline-block w-full rounded-xl bg-slate-900 px-5 py-2.5 text-center text-sm font-semibold text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:bg-white dark:text-slate-900 dark:hover:opacity-90 dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f]"
-                >
-                  View history
-                </a>
-              </div>
-
-              <div className="rounded-xl border border-slate-200 bg-white p-5 text-center shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-                <h2 className="mb-2 text-lg font-semibold text-slate-900 dark:text-white">Adaptive Test</h2>
-                <p className="mb-4 text-sm text-gray-600 dark:text-slate-300">
-                  Take the official <strong>QUAET</strong> Adaptive English Test to assess your current level.
-                </p>
-                <a
-                  href="/adaptive-test"
-                  className="inline-block w-full rounded-xl bg-black px-5 py-2.5 text-center text-sm font-semibold text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:bg-white dark:text-slate-900 dark:hover:opacity-90 dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f]"
-                >
-                  Start QUAET Test
-                </a>
-              </div>
+            <div className="mb-6">
+              <button
+                type="button"
+                onClick={handleGoToDefaultFolder}
+                className="inline-flex items-center rounded-xl bg-binavy px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#001c5e] focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:hover:bg-[#16348f] dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f] disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={!defaultFolderId}
+              >
+                Explore content
+              </button>
             </div>
 
             {error && !loading && (
@@ -492,57 +523,21 @@ export default function StudentDashboard() {
             )}
           </section>
         </div>
+        </FeatureGate>
 
-        <div
-          id="my-results"
-          className="mt-10 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70"
+        <FeatureGate
+          enabled={featureFlags.results}
+          fallback={
+            <div className="mt-10 rounded-3xl border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm dark:border-white/10 dark:bg-slate-900/70 dark:text-slate-300">
+              <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">My Results</h2>
+              <p className="mt-2">
+                This area is not enabled for your account. Contact your school or administrator if you believe this is an error.
+              </p>
+            </div>
+          }
         >
-          <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">My Results</h2>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-            Track the outcomes of your adaptive assessments and monitor your progress toward certification.
-          </p>
-
-          {adaptiveResults.length === 0 ? (
-            <div className="mt-6 rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-5 text-sm text-slate-600 dark:border-white/10 dark:bg-[#111a33] dark:text-slate-300">
-              No adaptive test results available yet. Launch your first attempt with the QUAET Adaptive Test above.
-            </div>
-          ) : (
-            <div className="mt-6 overflow-x-auto">
-              <table className="min-w-full border-collapse text-left text-sm">
-                <thead>
-                  <tr className="border-b border-slate-200 text-slate-600 dark:border-slate-700 dark:text-slate-300">
-                    <th className="px-3 py-2 font-semibold">Completed</th>
-                    <th className="px-3 py-2 font-semibold">Estimated level</th>
-                    <th className="px-3 py-2 font-semibold">Confidence</th>
-                    <th className="px-3 py-2 font-semibold">Items</th>
-                    <th className="px-3 py-2 font-semibold">Duration</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {adaptiveResults.map((attempt) => (
-                    <tr key={attempt.id} className="border-b border-slate-100 last:border-none dark:border-slate-800">
-                      <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
-                        {formatDateTime(attempt.completedAt || attempt.startedAt)}
-                      </td>
-                      <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
-                        {attempt.estimatedLevel || '—'}
-                      </td>
-                      <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
-                        {formatConfidence(attempt.confidence)}
-                      </td>
-                      <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
-                        {typeof attempt.totalItems === 'number' ? attempt.totalItems : '—'}
-                      </td>
-                      <td className="px-3 py-3 text-slate-700 dark:text-slate-200">
-                        {formatDuration(attempt.durationSec)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+          <MyResults results={resultsForTable} currentUser={currentUser} />
+        </FeatureGate>
       </div>
 
       {/* Video modal */}

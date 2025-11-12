@@ -72,6 +72,7 @@ export default async function handler(req, res) {
       role: "student",
       id,
       name: full_name,
+      email,
       schoolId: school.id,
       schoolName: school.name,
     };

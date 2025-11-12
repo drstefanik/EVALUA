@@ -57,6 +57,7 @@ export default async function handler(req, res) {
       role,
       id: user.id,
       name: user[nameField],
+      email: user.email,
       ...sanitizedExtra,
     });
     return true;
@@ -72,7 +73,13 @@ export default async function handler(req, res) {
       return;
 
     const student = await findStudentByEmail(email);
-    const studentExtras = {};
+    const studentExtras = {
+      features: {
+        courses: Boolean(student?.enable_courses),
+        quaet: Boolean(student?.enable_quaet),
+        results: Boolean(student?.enable_results),
+      },
+    };
     const schoolId = student?.school?.[0];
     if (schoolId) {
       studentExtras.schoolId = schoolId;

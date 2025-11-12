@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { initState, pickNextItem, gradeAnswer, computeResult } from "../engine/adaptive";
 import { useItems } from "../hooks/useItems";
 import AdaptiveIntro from "../components/AdaptiveIntro";
+import FeatureGate from "./FeatureGate.jsx";
+import { useCurrentUser } from "../hooks/useCurrentUser.js";
 import {
   Radar,
   RadarChart,
@@ -40,7 +42,7 @@ function getToken() {
   return localStorage.getItem("authToken") || "";
 }
 
-export default function AdaptiveTest() {
+function AdaptiveTestContent() {
   const { items, error } = useItems();
 
   // Fasi
@@ -342,4 +344,35 @@ export default function AdaptiveTest() {
       </div>
     </div>
   );
+}
+
+export default function AdaptiveTest() {
+  const { currentUser, loading } = useCurrentUser()
+  const enabled = loading ? true : currentUser ? Boolean(currentUser?.features?.quaet) : false
+
+  if (loading && !currentUser) {
+    return (
+      <div className="mx-auto max-w-2xl p-6 text-center text-sm text-slate-600 dark:text-slate-300">
+        Loading…
+      </div>
+    )
+  }
+
+  return (
+    <FeatureGate
+      enabled={enabled}
+      fallback={
+        <div className="mx-auto max-w-2xl p-6">
+          <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm dark:border-white/10 dark:bg-slate-900/70 dark:text-slate-200">
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Section unavailable</h2>
+            <p className="mt-2">
+              This area is not enabled for your account. Contact your administrator if you need access to the adaptive test.
+            </p>
+          </div>
+        </div>
+      }
+    >
+      <AdaptiveTestContent />
+    </FeatureGate>
+  )
 }

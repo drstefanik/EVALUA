@@ -81,14 +81,24 @@ async function svgToPngDataUrl(svgUrl, maxW = 220, maxH = 60) {
   return { dataUrl: canvas.toDataURL('image/png'), w: canvas.width, h: canvas.height }
 }
 
-function drawSectionTitle(doc, text, x, y) {
+function getBadgeFrame(doc, margin) {
+  const pageW = doc.internal.pageSize.getWidth()
+  const w = 120, h = 120
+  const x = pageW - margin - w
+  const y = 130
+  return { x, y, w, h }
+}
+
+function drawSectionTitle(doc, text, x, y, rightLimitX) {
+  const BRAND = { primary: '#0C3C4A', line: '#DADDE2', text: '#111111' }
   doc.setTextColor(BRAND.primary)
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(13)
   doc.text(text, x, y)
   doc.setDrawColor(BRAND.line)
   doc.setLineWidth(0.6)
-  doc.line(x, y + 6, x + 480, y + 6)
+  const maxLineX = Math.max(x + 120, rightLimitX) // non meno di 120px
+  doc.line(x, y + 6, maxLineX, y + 6)
   doc.setTextColor(BRAND.text)
 }
 
@@ -113,20 +123,20 @@ function drawRoundedRect(doc, x, y, w, h, r = 8, colorHex = '#FFFFFF') {
 /**
  * Make a big CEFR badge (e.g., "B1") on the right side.
  */
-function drawCefrBadge(doc, levelText = '-') {
-  const x = 420
-  const y = 130
-  drawRoundedRect(doc, x, y, 120, 120, 12, '#F7F9FB')
-  doc.setTextColor(BRAND.primary)
-  doc.setFont('helvetica', 'bold')
+function drawCefrBadge(doc, levelText = '-', margin) {
+  const BRAND = { primary: '#0C3C4A', mute: '#555555', line: '#DADDE2' }
+  const { x, y, w, h } = getBadgeFrame(doc, margin)
+  // box badge
+  doc.setFillColor('#F7F9FB'); doc.setDrawColor(BRAND.line)
+  doc.roundedRect(x, y, w, h, 12, 12, 'FD')
+  // testo
+  doc.setTextColor(BRAND.primary); doc.setFont('helvetica', 'bold')
   doc.setFontSize(46)
   const tw = doc.getTextWidth(levelText)
-  doc.text(levelText, x + 60 - tw / 2, y + 70)
-  doc.setFontSize(10)
-  doc.setTextColor(BRAND.mute)
-  const sub = 'CEFR LEVEL'
-  const tw2 = doc.getTextWidth(sub)
-  doc.text(sub, x + 60 - tw2 / 2, y + 95)
+  doc.text(levelText, x + w/2 - tw/2, y + 70)
+  doc.setFontSize(10); doc.setTextColor(BRAND.mute)
+  const sub = 'CEFR LEVEL'; const tw2 = doc.getTextWidth(sub)
+  doc.text(sub, x + w/2 - tw2/2, y + 95)
 }
 
 export async function generateCertificatePDF({ user = {}, result = {} }) {
@@ -159,8 +169,16 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
 
   // Big CEFR badge at right
   const levelText = String(result?.level || result?.estimatedLevel || '-').toUpperCase()
-  drawCefrBadge(doc, levelText)
+  drawCefrBadge(doc, levelText, margin))
+  // Limite destro riga sezione = bordo sinistro badge - 12px
+  const badge = getBadgeFrame(doc, margin)
+  const rightLimitX = badge.x - 12
 
+  // Candidate
+  let y = 195
+  drawSectionTitle(doc, 'Candidate', margin, y, rightLimitX)
+  y += 24
+  
   // Candidate section
   let y = 195
   drawSectionTitle(doc, 'Candidate', margin, y)
@@ -177,7 +195,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
 
   // Result section
   y += 12
-  drawSectionTitle(doc, 'Assessment Outcome', margin, y)
+  drawSectionTitle(doc, 'Assessment Outcome', margin, y, rightLimitX)
   y += 24
   y = drawLabelValue(doc, 'Estimated level (CEFR)', levelText, margin, y)
   y = drawLabelValue(
@@ -195,24 +213,24 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   y = drawLabelValue(doc, 'Completed', formatDate(result?.completedAt), margin, y)
 
   // Right side summary card
-  const rightX = 420
-  const cardY = 280
-  drawRoundedRect(doc, rightX, cardY, 120, 120, 10, '#FFFFFF')
-  doc.setFont('helvetica', 'bold')
-  doc.setFontSize(11)
-  doc.setTextColor(BRAND.mute)
-  doc.text('Test ID', rightX + 14, cardY + 24)
-  doc.setFont('helvetica', 'normal')
-  doc.setTextColor(BRAND.text)
-  doc.text(String(result?.testId || result?.id || '-'), rightX + 14, cardY + 42)
+  const hasTestId = !!(result?.testId || result?.id)
+  const hasCandId = !!(user?.id || user?.recordId)
+  if (hasTestId || hasCandId) {
+    const rightX = badge.x
+    const cardY = 280
+    doc.setFillColor('#FFFFFF'); doc.setDrawColor('#DADDE2')
+    doc.roundedRect(rightX, cardY, badge.w, 120, 10, 10, 'FD')
 
-  doc.setFont('helvetica', 'bold')
-  doc.setFontSize(11)
-  doc.setTextColor(BRAND.mute)
-  doc.text('Candidate ID', rightX + 14, cardY + 70)
-  doc.setFont('helvetica', 'normal')
-  doc.setTextColor(BRAND.text)
-  doc.text(String(user?.id || user?.recordId || '-'), rightX + 14, cardY + 88)
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor('#555555')
+    doc.text('Test ID', rightX + 14, cardY + 24)
+    doc.setFont('helvetica', 'normal'); doc.setTextColor('#111111')
+    doc.text(String(result?.testId || result?.id || '-'), rightX + 14, cardY + 42)
+
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor('#555555')
+    doc.text('Candidate ID', rightX + 14, cardY + 70)
+    doc.setFont('helvetica', 'normal'); doc.setTextColor('#111111')
+    doc.text(String(user?.id || user?.recordId || '-'), rightX + 14, cardY + 88)
+  }
 
   // Notes box
   const noteY = cardY + 150

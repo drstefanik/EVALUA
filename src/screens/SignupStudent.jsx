@@ -1,26 +1,86 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+// src/screens/SignupStudent.jsx
+import React, { useMemo, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { ApiError, getDashboardPath, persistSession, refreshCurrentUser, signupStudent } from '../api'
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/
 const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/
 
+// elenco paesi (ridotto: aggiungi/ordina secondo necessità)
+const COUNTRIES = [
+  "Afghanistan","Albania","Algeria","Andorra","Angola","Argentina","Armenia","Australia","Austria",
+  "Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin",
+  "Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso",
+  "Cambodia","Cameroon","Canada","Cape Verde","Chad","Chile","China","Colombia","Congo",
+  "Costa Rica","Croatia","Cuba","Cyprus","Czech Republic","Denmark","Dominican Republic",
+  "Ecuador","Egypt","El Salvador","Estonia","Ethiopia","Finland","France","Gabon","Georgia",
+  "Germany","Ghana","Greece","Guatemala","Honduras","Hong Kong","Hungary","Iceland","India",
+  "Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan",
+  "Kenya","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Libya","Liechtenstein","Lithuania",
+  "Luxembourg","Macau","Madagascar","Malaysia","Maldives","Mali","Malta","Mexico","Moldova",
+  "Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nepal",
+  "Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Macedonia","Norway","Oman",
+  "Pakistan","Panama","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania",
+  "Russia","Rwanda","San Marino","Saudi Arabia","Senegal","Serbia","Singapore","Slovakia",
+  "Slovenia","South Africa","South Korea","Spain","Sri Lanka","Sweden","Switzerland","Syria",
+  "Taiwan","Tajikistan","Tanzania","Thailand","Tunisia","Turkey","Turkmenistan","Uganda",
+  "Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan",
+  "Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"
+]
+
+// piccolo combobox ricercabile (senza librerie)
+function NationalitySelect({ value, onChange, disabled }) {
+  const [open, setOpen] = useState(false)
+  const [query, setQuery] = useState('')
+  const filtered = useMemo(() => {
+    const q = query.toLowerCase()
+    return COUNTRIES.filter(c => c.toLowerCase().includes(q)).slice(0, 50)
+  }, [query])
+
+  return (
+    <div className="relative">
+      <input
+        type="text"
+        role="combobox"
+        aria-expanded={open}
+        placeholder="Start typing…"
+        value={open ? query : value}
+        onFocus={() => setOpen(true)}
+        onChange={(e) => { setQuery(e.target.value); setOpen(true) }}
+        onBlur={() => setTimeout(() => setOpen(false), 120)} // lascia tempo al click
+        disabled={disabled}
+        className="mt-1 w-full rounded-xl border border-binavy/30 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-[#111a33] dark:text-slate-200"
+      />
+      {open && (
+        <div className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-xl border border-slate-200 bg-white shadow-lg dark:border-white/10 dark:bg-slate-900">
+          {(filtered.length ? filtered : ["No results"]).map((c) => (
+            <button
+              key={c}
+              type="button"
+              className="w-full px-3 py-2 text-left text-sm hover:bg-slate-50 dark:hover:bg-white/10"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => { onChange(c); setQuery(''); setOpen(false) }}
+              disabled={c === "No results"}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function SignupStudent() {
   const navigate = useNavigate()
-  const [params] = useSearchParams()
-  const preselectedSchoolId = params.get('schoolId') || ''
-
-  const [schools, setSchools] = useState([])
-  const [schoolId, setSchoolId] = useState(preselectedSchoolId)
-  const [schoolName, setSchoolName] = useState('')
-  const [resolving, setResolving] = useState(!!preselectedSchoolId)
 
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+
   const [dateOfBirth, setDob] = useState('')
   const [nationality, setNationality] = useState('')
   const [phone, setPhone] = useState('')
@@ -28,26 +88,6 @@ export default function SignupStudent() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
-
-  // carica scuole per dropdown (se non c'è preselected)
-  useEffect(() => {
-    async function load() {
-      try {
-        const r = await fetch('/api/schools')
-        const j = await r.json()
-        setSchools(j.items || [])
-        if (preselectedSchoolId) {
-          const s = (j.items || []).find(x => x.id === preselectedSchoolId)
-          setSchoolName(s?.name || '')
-        }
-      } catch (e) {
-        console.error(e)
-      } finally {
-        setResolving(false)
-      }
-    }
-    load()
-  }, [preselectedSchoolId])
 
   const isValid = useMemo(() => {
     const baseOk =
@@ -57,13 +97,11 @@ export default function SignupStudent() {
       passwordRegex.test(password) &&
       confirmPassword === password
 
-    const schoolOk = !!(schoolId || schoolName.trim().length > 1)
-
     const dobOk = !dateOfBirth || isoDateRegex.test(dateOfBirth) // opzionale ma se presente deve essere ISO
     const phoneOk = !phone || (phone.length >= 7 && phone.length <= 20)
 
-    return baseOk && schoolOk && dobOk && phoneOk
-  }, [firstName, lastName, email, password, confirmPassword, schoolId, schoolName, dateOfBirth, phone])
+    return baseOk && dobOk && phoneOk
+  }, [firstName, lastName, email, password, confirmPassword, dateOfBirth, phone])
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -79,12 +117,8 @@ export default function SignupStudent() {
         last_name: lastName.trim(),
         email: email.trim(),
         password,
-        // uno dei due:
-        schoolId: schoolId || undefined,
-        schoolName: !schoolId ? schoolName.trim() : undefined,
-        // nuovi campi
         date_of_birth: dateOfBirth || undefined, // "YYYY-MM-DD"
-        nationality: nationality || undefined,
+        nationality: nationality || undefined,    // single select in Airtable
         phone: phone || undefined,
       }
 
@@ -94,13 +128,12 @@ export default function SignupStudent() {
         await refreshCurrentUser()
       } catch (refreshError) {
         console.error('Unable to refresh current user', refreshError)
-      }
-      setPassword('')
+      }      
+      setPassword(''); 
       setConfirmPassword('')
-      setSchoolCode('')
+
       const destination = getDashboardPath(data?.role) || '/student'
-      const sName = data?.schoolName ? ` ${data.schoolName}` : ''
-      setSuccess(`Registration completed for${sName}. Redirecting…`)
+      setSuccess(`Registration completed. Redirecting…`)
       setTimeout(() => navigate(destination, { replace: true }), 600)
     } catch (err) {
       setPassword(''); setConfirmPassword('')
@@ -115,7 +148,7 @@ export default function SignupStudent() {
       <div className="mx-auto w-full max-w-xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm shadow-soft backdrop-blur dark:border-white/10 dark:bg-slate-900/70">
         <h1 className="text-3xl font-semibold text-center text-binavy dark:text-white">Create your student account</h1>
         <p className="mt-2 text-center text-sm text-slate-600 dark:text-slate-300">
-          Register with your email. Choose your school, then complete your profile.
+          Register with your email, then complete your profile.
         </p>
 
         {error && (
@@ -132,40 +165,6 @@ export default function SignupStudent() {
         )}
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-5" noValidate aria-busy={loading} aria-live="polite">
-          {/* School */}
-          {preselectedSchoolId ? (
-            <div>
-              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">School</label>
-              <div className="mt-1 rounded-xl border border-binavy/30 bg-slate-50 px-3 py-2 text-sm dark:border-white/10 dark:bg-[#111a33] dark:text-slate-200">
-                {resolving ? 'Loading…' : (schoolName || preselectedSchoolId)}
-              </div>
-            </div>
-          ) : (
-            <div>
-              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">School</label>
-              <select
-                className="mt-1 w-full rounded-xl border border-binavy/30 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-[#111a33] dark:text-slate-200"
-                value={schoolId}
-                onChange={(e) => setSchoolId(e.target.value)}
-                disabled={loading || !schools.length}
-              >
-                <option value="">Select your school…</option>
-                {schools.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-              </select>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                If you can’t find your school, type its name here:
-              </p>
-              <input
-                type="text"
-                className="mt-1 w-full rounded-xl border border-binavy/30 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-[#111a33] dark:text-slate-200"
-                value={schoolName}
-                onChange={(e) => setSchoolName(e.target.value)}
-                placeholder="School name (optional)"
-                disabled={loading}
-              />
-            </div>
-          )}
-
           {/* Names */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
@@ -213,9 +212,7 @@ export default function SignupStudent() {
             </div>
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Nationality</label>
-              <input type="text" value={nationality} onChange={(e)=>setNationality(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-binavy/30 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-[#111a33] dark:text-slate-200"
-                placeholder="e.g., Italy" disabled={loading}/>
+              <NationalitySelect value={nationality} onChange={setNationality} disabled={loading}/>
             </div>
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Phone</label>

@@ -275,7 +275,14 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   y += 12
   drawSectionTitle(doc, 'Assessment Outcome', margin, y, rightLimitX)
   y += 24
-  y = drawLabelValue(doc, 'Estimated level (CEFR)', levelText, margin, y)
+  y = drawLabelValue(
+    doc,
+    'Estimated level (CEFR)',
+    levelText,
+    margin,
+    y,
+    { wLabel: 170 }
+  )
   y = drawLabelValue(
     doc,
     'Confidence',
@@ -364,74 +371,77 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   doc.setTextColor(BRAND.text)
   doc.text('Authorized Signatory', margin, sigY + 16)
 
-  // Verification block (right) — wrapping
-  const valW = 260
-  const valX = pageW - margin - valW
-  drawRoundedRect(doc, valX, sigY - 28, valW, 92, 8, '#FFFFFF')
-
-  doc.setFont('helvetica', 'bold')
-  doc.setFontSize(10)
-  doc.setTextColor(BRAND.primary)
-  doc.text('Verification', valX + 12, sigY - 10 + 18)
-
+  // --- Online verification card (code + URL + QR) ---
   const verificationCode =
     (result?.verificationCode ||
       `Q-${String(testId).replaceAll(' ', '')}-${levelText}`).toUpperCase()
-  const verifyPath = `evaluaeducation.org/verify?code=${verificationCode}`
 
-  // Code (wrapped)
-  textInBox(doc, `Code: ${verificationCode}`, valX + 12, sigY - 10 + 34, valW - 24, {
-    size: 9, color: BRAND.text, lineHeight: 11,
-  })
+  const verifyUrl = `https://evaluaeducation.org/verify?code=${verificationCode}`
 
-  // Verify URL
-  textInBox(doc, `Verify at: ${result?.verificationUrl || verifyPath}`, valX + 12, sigY - 10 + 54, valW - 24, {
-    size: 9, color: BRAND.mute, lineHeight: 11,
-  })
-
-  // --- Premium QR verification card ---
+  let qrDataUrl = null
   try {
-    // URL completo per la verifica
-    const qrValue = `https://evaluaeducation.org/verify?code=${verificationCode}`
-    const qrDataUrl = await QRCode.toDataURL(qrValue, {
+    qrDataUrl = await QRCode.toDataURL(verifyUrl, {
       margin: 0,
       scale: 4,
     })
-
-    // Dimensioni e posizione della card
-    const qrCardW = 150
-    const qrCardH = 150
-    const qrCardX = pageW - margin - qrCardW
-    const qrCardY = pageH - margin - qrCardH - 12 // sopra il footer
-
-    // Cornice della card
-    doc.setFillColor('#F7F9FB')
-    doc.setDrawColor(BRAND.line)
-    doc.roundedRect(qrCardX, qrCardY, qrCardW, qrCardH, 10, 10, 'FD')
-
-    // Titolo card
-    doc.setFont('helvetica', 'bold')
-    doc.setFontSize(10)
-    doc.setTextColor(BRAND.primary)
-    doc.text('Scan to verify', qrCardX + 12, qrCardY + 18)
-
-    // QR centrato nella card
-    const qrSize = 86
-    const qrX = qrCardX + (qrCardW - qrSize) / 2
-    const qrY = qrCardY + 26
-    doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize)
-
-    // Mini URL sotto il QR
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(8)
-    doc.setTextColor(BRAND.mute)
-    const shortUrl = 'evaluaeducation.org/verify'
-    const urlWidth = doc.getTextWidth(shortUrl)
-    const urlX = qrCardX + (qrCardW - urlWidth) / 2
-    const urlY = qrCardY + qrCardH - 12
-    doc.text(shortUrl, urlX, urlY)
   } catch (error) {
     console.error('QR generation failed', error)
+  }
+
+  // Geometria card: in basso a destra, dentro la cornice
+  const vCardW = 280
+  const vCardH = 140
+  const vCardX = pageW - margin - vCardW
+  const vCardY = sigY - 32 // poco sopra la linea "Authorized Signatory"
+
+  // Cornice card
+  doc.setFillColor('#F7F9FB')
+  doc.setDrawColor(BRAND.line)
+  doc.roundedRect(vCardX, vCardY, vCardW, vCardH, 10, 10, 'FD')
+
+  const vCardPad = 14
+
+  // Titolo
+  doc.setFont('helvetica', 'bold')
+  doc.setFontSize(10)
+  doc.setTextColor(BRAND.primary)
+  doc.text('Online verification', vCardX + vCardPad, vCardY + 18)
+
+  // Area testo (sinistra)
+  const textMaxW =
+    vCardW - vCardPad * 2 - (qrDataUrl ? 96 : 0) - (qrDataUrl ? 8 : 0)
+  let tvY = vCardY + 36
+
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(9)
+  doc.setTextColor(BRAND.text)
+
+  const rCode = textInBox(
+    doc,
+    `Code: ${verificationCode}`,
+    vCardX + vCardPad,
+    tvY,
+    textMaxW,
+    { size: 9, color: BRAND.text, lineHeight: 11 }
+  )
+  tvY = rCode.nextY + 4
+
+  doc.setTextColor(BRAND.mute)
+  textInBox(
+    doc,
+    `Verify at: ${verifyUrl}`,
+    vCardX + vCardPad,
+    tvY,
+    textMaxW,
+    { size: 9, color: BRAND.mute, lineHeight: 11 }
+  )
+
+  // QR (destra), centrato verticalmente nella card
+  if (qrDataUrl) {
+    const qrSize = 96
+    const qrX = vCardX + vCardW - vCardPad - qrSize
+    const qrY = vCardY + (vCardH - qrSize) / 2
+    doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize)
   }
 
   // Footer

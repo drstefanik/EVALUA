@@ -360,9 +360,12 @@ export default function SignupStudent() {
           <button
             type="submit"
             disabled={!isValid || loading}
-            className="w-full rounded-full bg-binavy py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-[#001c5e] focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60 dark:hover:bg-[#16348f] dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f]"
+            className="mt-8 w-full rounded-xl bg-[#0C3C4A] py-3 text-sm font-semibold text-white shadow-sm
+             hover:bg-[#092c36] focus-visible:outline-none focus-visible:ring-2
+             focus-visible:ring-offset-2 focus-visible:ring-[#0C3C4A]
+             disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {loading ? 'Creating…' : 'Create student account'}
+            {loading ? 'Creating account…' : 'Create student account'}
           </button>
         </form>
 

@@ -1,4 +1,18 @@
-const API = import.meta.env.VITE_AUTH_API ?? '/api'
+const API_BASE = (import.meta.env.VITE_AUTH_API || '').replace(/\/$/, '')
+
+function buildApiUrl(path = '') {
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`
+
+  if (!API_BASE) {
+    return normalizedPath
+  }
+
+  if (normalizedPath.startsWith(API_BASE)) {
+    return normalizedPath
+  }
+
+  return `${API_BASE}${normalizedPath}`
+}
 
 export class ApiError extends Error {
   constructor(message, status, payload) {
@@ -29,9 +43,10 @@ async function request(path, { method = 'GET', body, headers = {}, withAuth = fa
     }
   }
 
+  const url = buildApiUrl(path)
   let response
   try {
-    response = await fetch(`${API}${path}`, {
+    response = await fetch(url, {
       method,
       headers: finalHeaders,
       body: body ? JSON.stringify(body) : undefined,
@@ -116,21 +131,21 @@ export function persistCurrentUser(user) {
 // -------- AUTH --------
 
 export async function login({ email, password }) {
-  return request('/auth/login', {
+  return request('/api/auth/login', {
     method: 'POST',
     body: { email, password },
   })
 }
 
 export async function signupSchool({ name, email, password, otp_code }) {
-  return request('/auth/signup-school', {
+  return request('/api/auth/signup-school', {
     method: 'POST',
     body: { name, email, password, otp_code },
   })
 }
 
 export async function signupStudent(payload) {
-  const response = await fetch(`${API}/auth/signup-student`, {
+  const response = await fetch(buildApiUrl('/api/auth/signup-student'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -317,7 +332,7 @@ export function buildAuthHeaders(headers = {}) {
 }
 
 export async function fetchSchoolCode() {
-  return request('/school/code', { method: 'GET', withAuth: true })
+  return request('/api/school/code', { method: 'GET', withAuth: true })
 }
 
 export async function fetchStudentsBySchool(code) {
@@ -325,7 +340,7 @@ export async function fetchStudentsBySchool(code) {
     throw new Error('Missing school code')
   }
 
-  return request(`/get-students-by-school?code=${encodeURIComponent(code)}`)
+  return request(`/api/get-students-by-school?code=${encodeURIComponent(code)}`)
 }
 
 export async function fetchSchoolByCode(code) {
@@ -333,7 +348,7 @@ export async function fetchSchoolByCode(code) {
     throw new Error('Missing school code')
   }
 
-  return request(`/get-school-by-code?code=${encodeURIComponent(code)}`)
+  return request(`/api/get-school-by-code?code=${encodeURIComponent(code)}`)
 }
 
 export async function fetchCurrentUser(params = {}) {
@@ -341,7 +356,7 @@ export async function fetchCurrentUser(params = {}) {
   if (params.id) query.set('id', params.id)
   if (params.email) query.set('email', params.email)
   const qs = query.toString()
-  const url = `/get-current-user${qs ? `?${qs}` : ''}`
+  const url = `/api/get-current-user${qs ? `?${qs}` : ''}`
   return request(url, { method: 'GET', withAuth: true })
 }
 
@@ -390,7 +405,7 @@ export async function refreshCurrentUser() {
 }
 
 export async function updateStudentProfile(payload) {
-  return request('/student/update-profile', {
+  return request('/api/student/update-profile', {
     method: 'PATCH',
     withAuth: true,
     body: payload,

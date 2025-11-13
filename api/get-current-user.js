@@ -1,5 +1,6 @@
 // api/get-current-user.js
 import Airtable from "airtable";
+import { handleCors } from "./_lib/cors.js";
 
 function ensureEnv(value, name) {
   if (!value) {
@@ -70,6 +71,7 @@ async function findStudentByEmail(email) {
 }
 
 export default async function handler(req, res) {
+  if (handleCors(req, res)) return;
   try {
     const id = req.query?.id || req.body?.id;
     const email = req.query?.email || req.body?.email;

@@ -102,9 +102,12 @@ export default function Login(){
           <button
             type="submit"
             disabled={!isValid || loading}
-            className="w-full rounded-xl bg-binavy py-2 text-sm font-semibold text-white transition focus:outline-none focus:ring-2 focus:ring-binavy focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-6 w-full rounded-xl bg-[#0C3C4A] py-3 text-sm font-semibold text-white shadow-sm
+             hover:bg-[#092c36] focus-visible:outline-none focus-visible:ring-2
+             focus-visible:ring-offset-2 focus-visible:ring-[#0C3C4A]
+             disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {loading ? 'Checking…' : 'Log in'}
+            {loading ? 'Please wait…' : 'Log in'}
           </button>
         </form>
 

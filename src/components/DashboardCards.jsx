@@ -17,7 +17,7 @@ function renderLatestResult(latestResult) {
   )
 }
 
-export default function DashboardCards({ latestResult, features }) {
+export default function DashboardCards({ latestResult, features, onGoToCourses, onGoToResults }) {
   return (
     <div className="grid gap-6 md:grid-cols-3">
       {features?.courses && (
@@ -27,12 +27,14 @@ export default function DashboardCards({ latestResult, features }) {
             Access the learning folders assigned to your profile and resume your progress where you left off.
           </p>
           <div className="mt-auto pt-4">
-            <Link
-              to="/content"
-              className="inline-flex w-full items-center justify-center rounded-xl bg-indigo-900 px-5 py-3 text-white hover:opacity-90"
+            <button
+              type="button"
+              onClick={onGoToCourses}
+              disabled={!onGoToCourses}
+              className="inline-flex w-full items-center justify-center rounded-xl bg-indigo-900 px-5 py-3 text-white hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               Explore content
-            </Link>
+            </button>
           </div>
         </div>
       )}
@@ -60,12 +62,14 @@ export default function DashboardCards({ latestResult, features }) {
           <h3 className="text-xl font-semibold mb-2">My Results</h3>
           <p className="text-sm text-slate-600">{renderLatestResult(latestResult)}</p>
           <div className="mt-auto pt-4">
-            <Link
-              to="/student#results"
-              className="inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-5 py-3 text-white hover:opacity-90"
+            <button
+              type="button"
+              onClick={onGoToResults}
+              disabled={!onGoToResults}
+              className="inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-5 py-3 text-white hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               View history
-            </Link>
+            </button>
           </div>
         </div>
       )}

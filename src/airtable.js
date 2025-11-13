@@ -5,5 +5,5 @@ const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY })
 
 export function tbl(name) {
   if (!name) throw new Error("Missing table name");
-  return base.table(name);
+  return base(name);
 }

@@ -63,6 +63,7 @@ function normalizeFeatures(features) {
     courses: Boolean(features.courses),
     quaet: Boolean(features.quaet),
     results: Boolean(features.results),
+    personal_details: Boolean(features.personal_details || features.personalDetails),
   }
 }
 
@@ -94,6 +95,12 @@ export function persistCurrentUser(user) {
     next.features = normalizeFeatures(user.features)
   } else if (existing.features && !next.features) {
     next.features = existing.features
+  }
+
+  if (user.student_photo !== undefined) {
+    next.student_photo = Array.isArray(user.student_photo)
+      ? user.student_photo
+      : []
   }
 
   Object.keys(next).forEach((key) => {
@@ -363,6 +370,8 @@ export async function refreshCurrentUser() {
       schoolId: schoolField || session.schoolId || null,
       schoolName: session.schoolName || null,
       schoolCode: session.schoolCode || null,
+      firstName: data?.firstName ?? data?.first_name ?? null,
+      lastName: data?.lastName ?? data?.last_name ?? null,
       nationality: data?.nationality ?? null,
       dateOfBirth: data?.dateOfBirth ?? null,
       placeOfBirth: data?.placeOfBirth ?? data?.place_birth ?? null,
@@ -370,10 +379,20 @@ export async function refreshCurrentUser() {
       identificationDocument:
         data?.identificationDocument ?? data?.identification_document ?? null,
       documentNumber: data?.documentNumber ?? data?.document_number ?? null,
+      phone: data?.phone ?? null,
+      student_photo: Array.isArray(data?.student_photo) ? data.student_photo : [],
       features: data?.features,
     })
   } catch (error) {
     console.error('refreshCurrentUser failed', error)
     throw error
   }
+}
+
+export async function updateStudentProfile(payload) {
+  return request('/student/update-profile', {
+    method: 'PATCH',
+    withAuth: true,
+    body: payload,
+  })
 }

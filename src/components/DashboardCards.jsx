@@ -17,7 +17,13 @@ function renderLatestResult(latestResult) {
   )
 }
 
-export default function DashboardCards({ latestResult, features, onGoToCourses, onGoToResults }) {
+export default function DashboardCards({
+  latestResult,
+  features,
+  onGoToCourses,
+  onGoToResults,
+  onGoToPersonalDetails,
+}) {
   return (
     <div className="grid gap-6 md:grid-cols-3">
       {features?.courses && (
@@ -69,6 +75,23 @@ export default function DashboardCards({ latestResult, features, onGoToCourses, 
               className="btn-ghost inline-flex w-full items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed"
             >
               View history
+            </button>
+          </div>
+        </div>
+      )}
+
+      {features?.personal_details && (
+        <div className="card p-6 flex flex-col">
+          <h3 className="text-xl font-semibold mb-2 text-primary">Personal details</h3>
+          <p className="text-sm text-secondary">Review and update your personal information</p>
+          <div className="mt-auto pt-4">
+            <button
+              type="button"
+              onClick={onGoToPersonalDetails}
+              disabled={!onGoToPersonalDetails}
+              className="btn-primary inline-flex w-full items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              Manage
             </button>
           </div>
         </div>

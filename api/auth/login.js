@@ -80,6 +80,7 @@ export default async function handler(req, res) {
         courses: Boolean(student?.enable_courses),
         quaet: Boolean(student?.enable_quaet),
         results: Boolean(student?.enable_results),
+        personal_details: Boolean(student?.feature_personal_details),
       },
     };
     const schoolId = student?.school?.[0];

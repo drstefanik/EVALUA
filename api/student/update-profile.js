@@ -21,6 +21,7 @@ function buildFullName(firstName, lastName) {
   return [firstName, lastName].filter(Boolean).join(" ")
 }
 
+// 🔧 aggiornata: ora NON lancia errore se Airtable ritorna NOT_FOUND
 async function uploadStudentPhoto(upload) {
   if (!upload || typeof upload !== "object") return null
   const base64 = typeof upload.base64 === "string" ? upload.base64.trim() : ""
@@ -36,21 +37,34 @@ async function uploadStudentPhoto(upload) {
   const form = new FormData()
   form.append("file", blob, filename)
 
-  const response = await fetch(
-    `https://content.airtable.com/v0/bases/${AIRTABLE_BASE_ID}/tables/${encodeURIComponent(
-      studentsTableName
-    )}/attachments`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${AIRTABLE_API_KEY}`,
-      },
-      body: form,
-    }
-  )
+  let response
+  try {
+    response = await fetch(
+      `https://content.airtable.com/v0/bases/${AIRTABLE_BASE_ID}/tables/${encodeURIComponent(
+        studentsTableName
+      )}/attachments`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${AIRTABLE_API_KEY}`,
+        },
+        body: form,
+      }
+    )
+  } catch (networkError) {
+    console.error("uploadStudentPhoto network error", networkError)
+    // se c'è un problema di rete, non blocchiamo l'update anagrafica
+    return null
+  }
 
   if (!response.ok) {
     const text = await response.text().catch(() => "")
+    // se Airtable risponde con {"error":"NOT_FOUND"} non blocchiamo tutto
+    if (text && text.includes('"NOT_FOUND"')) {
+      console.warn("uploadStudentPhoto: Airtable returned NOT_FOUND, skipping attachment upload", text)
+      return null
+    }
+    console.error("uploadStudentPhoto: unexpected Airtable error", text)
     throw new Error(text || "Unable to upload attachment to Airtable")
   }
 

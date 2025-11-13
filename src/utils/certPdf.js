@@ -399,16 +399,17 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   doc.setDrawColor(BRAND.line)
   doc.roundedRect(vCardX, vCardY, vCardW, vCardH, 10, 10, 'FD')
 
-  const innerPad = 14
+  const vCardPad = 14
 
   // Titolo
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(10)
   doc.setTextColor(BRAND.primary)
-  doc.text('Online verification', vCardX + innerPad, vCardY + 18)
+  doc.text('Online verification', vCardX + vCardPad, vCardY + 18)
 
   // Area testo (sinistra)
-  const textMaxW = vCardW - innerPad * 2 - (qrDataUrl ? 96 : 0) - (qrDataUrl ? 8 : 0)
+  const textMaxW =
+    vCardW - vCardPad * 2 - (qrDataUrl ? 96 : 0) - (qrDataUrl ? 8 : 0)
   let tvY = vCardY + 36
 
   doc.setFont('helvetica', 'normal')
@@ -418,7 +419,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   const rCode = textInBox(
     doc,
     `Code: ${verificationCode}`,
-    vCardX + innerPad,
+    vCardX + vCardPad,
     tvY,
     textMaxW,
     { size: 9, color: BRAND.text, lineHeight: 11 }
@@ -429,7 +430,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   textInBox(
     doc,
     `Verify at: ${verifyUrl}`,
-    vCardX + innerPad,
+    vCardX + vCardPad,
     tvY,
     textMaxW,
     { size: 9, color: BRAND.mute, lineHeight: 11 }
@@ -438,7 +439,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   // QR (destra), centrato verticalmente nella card
   if (qrDataUrl) {
     const qrSize = 96
-    const qrX = vCardX + vCardW - innerPad - qrSize
+    const qrX = vCardX + vCardW - vCardPad - qrSize
     const qrY = vCardY + (vCardH - qrSize) / 2
     doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize)
   }

@@ -9,6 +9,12 @@ export default {
           DEFAULT: 'var(--brand-primary)',
           contrast: 'var(--brand-primary-contrast)',
         },
+        // Legacy aliases kept so existing utility classes like `bg-binavy`
+        // continue to work while we gradually migrate screens to the new
+        // design tokens.
+        binavy: '#00247D',
+        bireg: '#CF142B',
+        biwhite: '#FFFFFF',
         surface: {
           base: 'var(--surface-base)',
           muted: 'var(--surface-muted)',

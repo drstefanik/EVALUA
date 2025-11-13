@@ -2,6 +2,9 @@ import { ensureMethod, sendError } from "../_lib/http.js";
 import { verifyJWT } from "../../src/util.js";
 import { tbl } from "../../src/airtable.js";
 
+const foldersTable = tbl("Folders");
+const filesTable = tbl("Files");
+
 // ---- helpers ---------------------------------------------------------------
 function extractToken(req) {
   const header = req.headers?.authorization || req.headers?.Authorization;
@@ -103,7 +106,7 @@ export default async function handler(req, res) {
 
   try {
     // Folders (visibility esiste qui)
-    const folderRecords = await tbl.FOLDERS.select({
+    const folderRecords = await foldersTable.select({
       filterByFormula: '{visibility} = "student"',
       sort: [{ field: "order", direction: "asc" }],
       fields: ["name", "slug", "visibility", "parent", "order"],
@@ -123,7 +126,7 @@ export default async function handler(req, res) {
     // Files (niente filtro Airtable: filtriamo in memoria sugli ID cartella)
     let files = [];
     if (folderIdSet.size > 0) {
-      const fileRecords = await tbl.FILES.select({
+      const fileRecords = await filesTable.select({
         fields: ["title", "type", "url", "size", "folder", "order", "duration", "thumb", "prereq"],
         sort: [{ field: "order", direction: "asc" }],
       }).all();
@@ -145,7 +148,7 @@ files = await Promise.all(
       const thumb = await fetchVimeoThumb(f.url)
       if (thumb) f.thumb = thumb
       // opzionale: salva in Airtable per cache
-      // try { await tbl.FILES.update(f.id, { thumb }) } catch {}
+      // try { await filesTable.update(f.id, { thumb }) } catch {}
     }
     return f
   })

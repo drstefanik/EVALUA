@@ -3,6 +3,9 @@ import { hashPassword, signJWT } from "../../src/util.js";
 import { tbl } from "../../src/airtable.js";
 import { findOTP, findSchoolByCode, findSchoolByEmail } from "../../src/finders.js";
 
+const schoolsTable = tbl("Schools");
+const schoolOtpTable = tbl("SchoolOTP");
+
 const SCHOOL_CODE_LENGTH = 8;
 const SCHOOL_CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
@@ -61,7 +64,7 @@ export default async function handler(req, res) {
     const password_hash = await hashPassword(password);
     const school_code = await generateUniqueSchoolCode();
 
-    const created = await tbl.SCHOOLS.create([
+    const created = await schoolsTable.create([
       {
         fields: { name, email, password_hash, status: "active", school_code },
       },
@@ -73,7 +76,7 @@ export default async function handler(req, res) {
       return sendError(res, 500, "Unable to create the school");
     }
 
-    await tbl.SCHOOL_OTP.update([
+    await schoolOtpTable.update([
       { id: otp.id, fields: { used: true, school: [schoolId] } },
     ]);
 

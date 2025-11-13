@@ -1,29 +1,9 @@
 import Airtable from "airtable";
 
-const { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } = process.env;
+const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY })
+  .base(process.env.AIRTABLE_BASE_ID);
 
-function ensureEnv(varName, value) {
-  if (!value) {
-    throw new Error(`Missing required environment variable: ${varName}`);
-  }
-  return value;
-}
-
-const base = new Airtable({
-  apiKey: ensureEnv("AIRTABLE_API_KEY", AIRTABLE_API_KEY),
-}).base(ensureEnv("AIRTABLE_BASE_ID", AIRTABLE_BASE_ID));
-
-export const tbl = Object.freeze({
-  ADMIN: base("Admin"),
-  SCHOOLS: base("Schools"),
-  STUDENTS: base("Students"),
-  SCHOOL_OTP: base("SchoolOTP"),
-  FOLDERS: base("Folders"),
-  FILES: base("Files"),
-  PROGRESS: base("Progress"),
-  CERTIFICATES: base("Certificates"),
-});
-
-export function getBase() {
-  return base;
+export function tbl(name) {
+  if (!name) throw new Error("Missing table name");
+  return base.table(name);
 }

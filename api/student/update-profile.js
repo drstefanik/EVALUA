@@ -195,26 +195,9 @@ export default async function handler(req, res) {
       }
     }
 
-    if (hasFirstName || hasLastName) {
-      let existingFirstName
-      let existingLastName
-
-      if (!(hasFirstName && hasLastName)) {
-        try {
-          const existingRecord = await studentsTable.find(studentId)
-          existingFirstName = existingRecord?.fields?.first_name
-          existingLastName = existingRecord?.fields?.last_name
-        } catch (fetchError) {
-          console.error("update-profile existing name lookup failed", fetchError)
-        }
-      }
-
-      const computedFullName = buildFullName(
-        hasFirstName ? firstName : existingFirstName,
-        hasLastName ? lastName : existingLastName
-      )
-      fields.full_name = computedFullName
-    }
+    // ⚠️ IMPORTANTE:
+    // Non impostiamo più fields.full_name perché il campo in Airtable è computed (formula)
+    // quindi Airtable rifiuta l'update con INVALID_VALUE_FOR_COLUMN.
 
     const sanitizedFields = Object.fromEntries(
       Object.entries(fields).filter(([, value]) => value !== undefined)

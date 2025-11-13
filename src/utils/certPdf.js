@@ -194,16 +194,16 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     throw new Error('generateCertificatePDF must be called in the browser')
   }
 
-  // Foto studente (diversi possibili campi da Airtable/DB)
+  // Foto studente (usiamo più varianti possibili, inclusa thumbnail Airtable)
+  const studentAttachment = Array.isArray(user?.student_photo) ? user.student_photo[0] : null
   const studentPhotoUrl =
     user?.photoUrl ||
     user?.studentPhotoUrl ||
-    (Array.isArray(user?.student_photo) ? user.student_photo[0]?.url : null) ||
-    (Array.isArray(user?.photo) ? user.photo[0]?.url : null) ||
+    (studentAttachment?.thumbnails?.large?.url || studentAttachment?.url) ||
+    (Array.isArray(user?.photo) ? (user.photo[0]?.thumbnails?.large?.url || user.photo[0]?.url) : null) ||
     null
 
   // --- normalizziamo subito ID e campi che ci servono ---
-  // da Airtable arrivano probabilmente come TestId / CandidateId
   const testId =
     result?.testId ||
     result?.TestId ||
@@ -246,7 +246,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   const headerTop = margin
   const headerInnerTop = headerTop + 10
 
-  // 4.1 Foto studente (se disponibile)
+  // 4.1 Foto studente (se disponibile) con placeholder se manca
   const photoBoxSize = 90
   const photoX = margin
   const photoY = headerInnerTop
@@ -274,7 +274,24 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
       }
     } catch (err) {
       console.error('Unable to load student photo for certificate', err)
+      // Placeholder in caso di errore
+      doc.setFillColor('#F7F9FB')
+      doc.setDrawColor(BRAND.line)
+      doc.roundedRect(photoX - 4, photoY - 4, photoBoxSize + 8, photoBoxSize + 8, 50, 50, 'FD')
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(8)
+      doc.setTextColor(BRAND.mute)
+      doc.text('No photo', photoX + 20, photoY + photoBoxSize / 2)
     }
+  } else {
+    // Placeholder quando non c'è proprio la foto
+    doc.setFillColor('#F7F9FB')
+    doc.setDrawColor(BRAND.line)
+    doc.roundedRect(photoX - 4, photoY - 4, photoBoxSize + 8, photoBoxSize + 8, 50, 50, 'FD')
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(8)
+    doc.setTextColor(BRAND.mute)
+    doc.text('No photo', photoX + 20, photoY + photoBoxSize / 2)
   }
 
   // 4.2 Logo Evalua in alto a destra (più nitido)
@@ -287,7 +304,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     console.error('Unable to load Evalua logo for certificate', error)
   }
 
-  // 4.3 Titoli centrati rispetto al contenuto, sotto foto/logo
+  // 4.3 Titoli sotto foto/logo
   const titleY = headerInnerTop + photoBoxSize + 24
 
   doc.setFont('helvetica', 'bold')
@@ -398,6 +415,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   const innerPad = 14
   const innerW = badge.w - innerPad * 2
   let cardY = 280
+  let rightCardBottom = cardY // ci servirà per la nota sotto
 
   if (hasTestId || hasCandId) {
     // Pre-calc line counts to size the card
@@ -415,6 +433,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
       (hasCandId ? (24 /*label gap*/ + candLines.length * lineHeight + 6) : 0)
 
     const cardHeight = Math.max(96, blockHeights + innerPad * 2)
+    rightCardBottom = cardY + cardHeight
 
     // Draw card
     doc.setFillColor('#FFFFFF'); doc.setDrawColor('#DADDE2')
@@ -442,15 +461,16 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     }
   }
 
-  // Notes box
-  const noteY = cardY + 160
-  drawRoundedRect(doc, margin, noteY, pageW - margin * 2, 84, 8, '#F7F9FB')
+  // Notes box: la mettiamo sempre sotto sia alla sezione Outcome (y) sia alla card destra
+  const noteTop = Math.max(y + 16, rightCardBottom + 24)
+  const noteHeight = 84
+  drawRoundedRect(doc, margin, noteTop, pageW - margin * 2, noteHeight, 8, '#F7F9FB')
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(10)
   doc.setTextColor(BRAND.mute)
   doc.text(
     'This certificate reports the outcome of an adaptive placement procedure (QUAET). Results indicate the estimated CEFR level for placement purposes.',
-    margin + 12, noteY + 24, { maxWidth: pageW - margin * 2 - 24 }
+    margin + 12, noteTop + 24, { maxWidth: pageW - margin * 2 - 24 }
   )
 
   // Signature / validation area

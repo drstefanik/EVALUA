@@ -1,0 +1,43 @@
+/* Light theme (default) */
+:root{
+  /* Brand */
+  --brand-primary: #0C3C4A;          /* deep teal/green usato in Home (CTA) */
+  --brand-primary-contrast: #FFFFFF; /* testo su primary */
+  --brand-accent: #D4AF37;           /* gold elegante (Home gradient) */
+
+  /* Surface & borders */
+  --surface-base: #FFFFFF;
+  --surface-muted: #F5F7F9;
+  --surface-elevated: #FFFFFF;
+  --border-subtle: #DADDE2;
+  --border-strong: #B9C3C9;
+
+  /* Text */
+  --text-primary: #0D1B1F;
+  --text-secondary: #3B4951;
+  --text-muted: #6B7A85;
+
+  /* Focus & shadows */
+  --ring: rgba(12,60,74,0.25);
+  --shadow-soft: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+/* Dark theme */
+[data-theme="dark"]{
+  --surface-base: #0F1A1C;
+  --surface-muted: #0C1517;
+  --surface-elevated: #121F22;
+  --border-subtle: #223338;
+  --border-strong: #2F464D;
+
+  --text-primary: #EAF2F4;
+  --text-secondary: #C7D4D9;
+  --text-muted: #8EA3A9;
+
+  /* Brand resta coerente per accessibilità su sfondi scuri */
+  --brand-primary: #0C3C4A;
+  --brand-primary-contrast: #FFFFFF;
+
+  --ring: rgba(218,221,226,0.24);
+  --shadow-soft: 0 10px 30px rgba(0,0,0,0.35);
+}

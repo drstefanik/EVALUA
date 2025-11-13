@@ -86,17 +86,17 @@ function FolderNode({ node, depth, onSelect, selectedId }) {
       <button
         type="button"
         onClick={() => onSelect(node.id)}
-        className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#0a0f1f] ${
+        className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm transition focus-visible:outline-none focus-visible:[box-shadow:0_0_0_3px_var(--ring)] ${
           isActive
-            ? 'bg-binavy text-white focus-visible:ring-bireg dark:bg-[#001c5e]'
-            : 'text-slate-600 hover:bg-biwhite focus-visible:ring-binavy/40 dark:text-slate-300 dark:hover:bg-[#111a33] dark:focus-visible:ring-[#6a87ff]/60'
+            ? 'bg-brand text-brand-contrast'
+            : 'text-textc-secondary hover:bg-surface-muted'
         }`}
         style={{ paddingLeft: `${depth * 16 + 12}px` }}
       >
         <span className="font-medium truncate">
           {node.title || node.name || 'Untitled folder'}
         </span>
-        <span className="text-xs text-slate-400">{node.children.length}</span>
+        <span className="text-xs text-textc-muted">{node.children.length}</span>
       </button>
 
       {node.children.length > 0 && (
@@ -552,13 +552,13 @@ export default function StudentDashboard() {
 
   /* ------------------------------ UI ------------------------------ */
   return (
-    <div className="min-h-screen bg-gradient-to-b from-biwhite via-biwhite to-binavy/10 dark:from-[#0a0f1f] dark:via-[#0a0f1f] dark:to-[#001c5e]">
+    <div className="min-h-screen bg-surface-muted">
       <div className="mx-auto max-w-6xl px-4 py-10">
-        <div className="mb-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-          <h1 className="text-3xl font-semibold text-binavy dark:text-white">
+        <div className="card mb-6 rounded-3xl p-6">
+          <h1 className="text-3xl font-semibold text-primary">
             Student area
           </h1>
-          <p className="mt-2 text-slate-600 dark:text-slate-300">
+          <p className="mt-2 text-secondary">
             {displayName
               ? `Hi ${displayName}, welcome to your learning environment`
               : 'Explore your learning contents.'}
@@ -566,14 +566,14 @@ export default function StudentDashboard() {
           <div className="mt-3 text-sm">
             <Link
               to="/logout"
-              className="font-semibold underline-offset-4 text-binavy hover:text-bireg dark:text-white"
+              className="link-brand"
             >
               Logout
             </Link>
           </div>
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
+        <div className="card rounded-3xl p-6">
           <DashboardCards
             latestResult={latestResultCard}
             features={featureFlags}
@@ -585,8 +585,8 @@ export default function StudentDashboard() {
         <FeatureGate
           enabled={featureFlags.courses}
           fallback={
-            <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm dark:border-white/10 dark:bg-slate-900/70 dark:text-slate-300">
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
+            <div className="card mt-6 rounded-3xl p-6 text-sm text-secondary">
+              <h2 className="text-xl font-semibold text-primary">
                 Courses area unavailable
               </h2>
               <p className="mt-2">
@@ -601,8 +601,8 @@ export default function StudentDashboard() {
             className="mt-6 grid gap-6 lg:grid-cols-[260px,1fr]"
           >
             {/* Sidebar */}
-            <aside className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-              <h2 className="px-2 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-300">
+            <aside className="card rounded-3xl p-4">
+              <h2 className="px-2 text-sm font-semibold uppercase tracking-wider text-textc-muted">
                 Learning Hub
               </h2>
               <div className="mt-2 space-y-1">
@@ -617,7 +617,7 @@ export default function StudentDashboard() {
                     />
                   ))
                 ) : (
-                  <p className="px-3 py-2 text-sm text-slate-500">
+                  <p className="px-3 py-2 text-sm text-textc-muted">
                     No folders available.
                   </p>
                 )}
@@ -625,12 +625,12 @@ export default function StudentDashboard() {
             </aside>
 
             {/* Main content */}
-            <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
+            <section className="card rounded-3xl p-6">
               <div className="mb-6">
                 <button
                   type="button"
                   onClick={handleGoToDefaultFolder}
-                  className="inline-flex items-center rounded-xl bg-binavy px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#001c5e] focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:hover:bg-[#16348f] dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="btn-primary inline-flex items-center px-5 py-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-60"
                   disabled={!defaultFolderId}
                 >
                   Explore content
@@ -638,7 +638,7 @@ export default function StudentDashboard() {
               </div>
 
               {error && !loading && (
-                <div className="rounded-xl border border-bireg/30 bg-bireg/10 p-3 text-sm text-bireg">
+                <div className="rounded-xl border border-border-strong bg-surface-muted p-3 text-sm text-primary">
                   {error}
                 </div>
               )}
@@ -648,12 +648,12 @@ export default function StudentDashboard() {
                   {Array.from({ length: 8 }).map((_, i) => (
                     <div
                       key={i}
-                      className="aspect-[16/9] animate-pulse rounded-2xl bg-slate-200/50 dark:bg-white/10"
+                      className="aspect-[16/9] animate-pulse rounded-2xl bg-surface-muted"
                     />
                   ))}
                 </div>
               ) : !selectedFolderId ? (
-                <p className="text-sm text-slate-600 dark:text-slate-300">
+                <p className="text-sm text-secondary">
                   Select a folder to view content.
                 </p>
               ) : filteredFiles.length === 0 ? (
@@ -661,14 +661,14 @@ export default function StudentDashboard() {
                   const subs = childrenOf(selectedFolderId)
                   if (subs.length === 0) {
                     return (
-                      <p className="text-sm text-slate-600 dark:text-slate-300">
+                      <p className="text-sm text-secondary">
                         This section is empty.
                       </p>
                     )
                   }
                   return (
                     <div>
-                      <p className="mb-3 text-sm text-slate-600 dark:text-slate-300">
+                      <p className="mb-3 text-sm text-secondary">
                         Select a subsection:
                       </p>
                       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -676,12 +676,12 @@ export default function StudentDashboard() {
                           <button
                             key={s.id}
                             onClick={() => setSelectedFolderId(s.id)}
-                            className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-slate-900/70"
+                            className="card flex items-center justify-between rounded-xl px-4 py-3 text-left text-sm transition hover:-translate-y-0.5 hover:shadow-md"
                           >
                             <span className="font-medium truncate">
                               {s.title || s.name || 'Untitled'}
                             </span>
-                            <span className="ml-3 inline-flex min-w-[1.5rem] items-center justify-center rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600 dark:bg-white/10 dark:text-slate-300">
+                            <span className="ml-3 inline-flex min-w-[1.5rem] items-center justify-center rounded-full bg-surface-muted px-2 py-0.5 text-xs text-textc-muted">
                               {fileCountOf(s.id)}
                             </span>
                           </button>
@@ -746,8 +746,8 @@ export default function StudentDashboard() {
         <FeatureGate
           enabled={featureFlags.results}
           fallback={
-            <div className="mt-10 rounded-3xl border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm dark:border-white/10 dark:bg-slate-900/70 dark:text-slate-300">
-              <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">
+            <div className="card mt-10 rounded-3xl p-6 text-sm text-secondary">
+              <h2 className="text-2xl font-semibold text-primary">
                 My Results
               </h2>
               <p className="mt-2">

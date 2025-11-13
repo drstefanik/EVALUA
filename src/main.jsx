@@ -1,6 +1,8 @@
 import React, { lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import './styles/tokens.css'
+import './styles/utilities.css'
 import './styles.css'
 import Layout from './components/Layout.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'

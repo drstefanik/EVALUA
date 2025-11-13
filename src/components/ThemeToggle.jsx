@@ -32,8 +32,10 @@ export default function ThemeToggle() {
     const root = document.documentElement
     if (isDark) {
       root.classList.add('dark')
+      root.setAttribute('data-theme', 'dark')
     } else {
       root.classList.remove('dark')
+      root.setAttribute('data-theme', 'light')
     }
 
     if (hasUserPreference && typeof window !== 'undefined') {
@@ -66,7 +68,7 @@ export default function ThemeToggle() {
     <button
       type="button"
       onClick={toggleTheme}
-      className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--surface-elevated)] text-[var(--brand-primary)] transition hover:border-[var(--border-strong)] hover:bg-[var(--brand-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-base)]"
+      className="relative flex h-10 w-10 items-center justify-center rounded-full border border-border-subtle bg-surface-elevated text-brand transition hover:border-border-strong hover:bg-surface-muted focus-visible:outline-none focus-visible:[box-shadow:0_0_0_3px_var(--ring)]"
       aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
     >
       <span className="sr-only">{isDark ? 'Dark theme active' : 'Light theme active'}</span>

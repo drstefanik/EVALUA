@@ -21,9 +21,9 @@ export default function DashboardCards({ latestResult, features, onGoToCourses, 
   return (
     <div className="grid gap-6 md:grid-cols-3">
       {features?.courses && (
-        <div className="rounded-2xl border bg-white p-6 shadow-sm flex flex-col">
-          <h3 className="text-xl font-semibold mb-2">My courses</h3>
-          <p className="text-sm text-slate-600">
+        <div className="card p-6 flex flex-col">
+          <h3 className="text-xl font-semibold mb-2 text-primary">My courses</h3>
+          <p className="text-sm text-secondary">
             Access the learning folders assigned to your profile and resume your progress where you left off.
           </p>
           <div className="mt-auto pt-4">
@@ -31,7 +31,7 @@ export default function DashboardCards({ latestResult, features, onGoToCourses, 
               type="button"
               onClick={onGoToCourses}
               disabled={!onGoToCourses}
-              className="inline-flex w-full items-center justify-center rounded-xl bg-indigo-900 px-5 py-3 text-white hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="btn-primary inline-flex w-full items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed"
             >
               Explore content
             </button>
@@ -40,16 +40,16 @@ export default function DashboardCards({ latestResult, features, onGoToCourses, 
       )}
 
       {features?.quaet && (
-        <div className="rounded-2xl border bg-white p-6 shadow-sm flex flex-col">
-          <h3 className="text-xl font-semibold mb-2">Adaptive Test</h3>
-          <p className="text-sm text-slate-600">
+        <div className="card p-6 flex flex-col">
+          <h3 className="text-xl font-semibold mb-2 text-primary">Adaptive Test</h3>
+          <p className="text-sm text-secondary">
             Take the official <span className="font-semibold">QUAET</span> Adaptive English Test
             to assess your current level.
           </p>
           <div className="mt-auto pt-4">
             <Link
               to="/adaptive-test"
-              className="inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-5 py-3 text-white hover:opacity-90"
+              className="btn-primary inline-flex w-full items-center justify-center"
             >
               Start QUAET Test
             </Link>
@@ -58,15 +58,15 @@ export default function DashboardCards({ latestResult, features, onGoToCourses, 
       )}
 
       {features?.results && (
-        <div className="rounded-2xl border bg-white p-6 shadow-sm flex flex-col">
-          <h3 className="text-xl font-semibold mb-2">My Results</h3>
-          <p className="text-sm text-slate-600">{renderLatestResult(latestResult)}</p>
+        <div className="card p-6 flex flex-col">
+          <h3 className="text-xl font-semibold mb-2 text-primary">My Results</h3>
+          <p className="text-sm text-secondary">{renderLatestResult(latestResult)}</p>
           <div className="mt-auto pt-4">
             <button
               type="button"
               onClick={onGoToResults}
               disabled={!onGoToResults}
-              className="inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-5 py-3 text-white hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="btn-ghost inline-flex w-full items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed"
             >
               View history
             </button>

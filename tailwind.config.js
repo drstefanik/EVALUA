@@ -5,12 +5,27 @@ export default {
   theme: {
     extend: {
       colors: {
-        binavy: "#00247D",
-        bireg: "#CF142B",
-        biwhite: "#FFFFFF",
+        brand: {
+          DEFAULT: 'var(--brand-primary)',
+          contrast: 'var(--brand-primary-contrast)',
+        },
+        surface: {
+          base: 'var(--surface-base)',
+          muted: 'var(--surface-muted)',
+          elevated: 'var(--surface-elevated)',
+        },
+        border: {
+          subtle: 'var(--border-subtle)',
+          strong: 'var(--border-strong)',
+        },
+        textc: {
+          primary: 'var(--text-primary)',
+          secondary: 'var(--text-secondary)',
+          muted: 'var(--text-muted)',
+        },
       },
       boxShadow: {
-        soft: "0 18px 45px -15px rgba(0, 36, 125, 0.35)",
+        soft: 'var(--shadow-soft)',
       },
       backgroundImage: {
         "hero-gradient": "linear-gradient(180deg,rgba(0,36,125,0.08),transparent 60%)",

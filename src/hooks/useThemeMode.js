@@ -7,7 +7,8 @@ export function useThemeMode() {
     if (typeof document === 'undefined') {
       return false
     }
-    return document.documentElement.classList.contains('dark')
+    const root = document.documentElement
+    return root.classList.contains('dark') || root.getAttribute('data-theme') === 'dark'
   }
 
   const [isDark, setIsDark] = useState(getIsDark)
@@ -20,20 +21,20 @@ export function useThemeMode() {
     const root = document.documentElement
 
     const observer = new MutationObserver(() => {
-      setIsDark(root.classList.contains('dark'))
+      setIsDark(getIsDark())
     })
 
-    observer.observe(root, { attributes: true, attributeFilter: ['class'] })
+    observer.observe(root, { attributes: true, attributeFilter: ['class', 'data-theme'] })
 
     const handleStorage = (event) => {
       if (event.key === STORAGE_KEY) {
-        setIsDark(root.classList.contains('dark'))
+        setIsDark(getIsDark())
       }
     }
 
     window.addEventListener('storage', handleStorage)
 
-    setIsDark(root.classList.contains('dark'))
+    setIsDark(getIsDark())
 
     return () => {
       observer.disconnect()

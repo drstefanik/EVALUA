@@ -1,12 +1,10 @@
 import { ensureMethod, parseJsonBody, sendError } from "../_lib/http.js"
 import { verifyJWT } from "../../src/util.js"
 import { tbl } from "../../src/airtable.js"
+import { put } from "@vercel/blob"
 
 const studentsTableName = process.env.AIRTABLE_TABLE_STUDENTS || "Students"
-// 👇 nuovo: usiamo un env opzionale con l'ID della tabella (tblXXXXXXXX)
-const studentsTableId = process.env.AIRTABLE_TABLE_STUDENTS_ID || studentsTableName
 const studentsTable = tbl(studentsTableName)
-const { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } = process.env
 
 function extractToken(req) {
   const header = req.headers?.authorization || req.headers?.Authorization
@@ -19,94 +17,51 @@ function sanitizeString(value) {
   return typeof value === "string" ? value.trim() : ""
 }
 
-// Tenuto per eventuali usi futuri
-function buildFullName(firstName, lastName) {
-  return [firstName, lastName].filter(Boolean).join(" ")
-}
-
-// Upload foto studente
-// Se Airtable risponde NOT_FOUND, logghiamo e NON blocchiamo l'update anagrafico
-async function uploadStudentPhoto(upload) {
+// Upload foto studente su Vercel Blob
+// Ritorna un array di attachment compatibili con Airtable: [{ url, filename }]
+async function uploadStudentPhoto(upload, studentId) {
   if (!upload || typeof upload !== "object") return null
+
   const base64 = typeof upload.base64 === "string" ? upload.base64.trim() : ""
   if (!base64) return null
-  if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
-    throw new Error("Missing Airtable configuration for attachments")
-  }
 
-  const filename = upload.filename || "student-photo.jpg"
-  const contentType = upload.contentType || "application/octet-stream"
-  const buffer = Buffer.from(base64, "base64")
-  const blob = new Blob([buffer], { type: contentType })
-  const form = new FormData()
-  form.append("file", blob, filename)
-
-  let response
-  try {
-    response = await fetch(
-      `https://content.airtable.com/v0/bases/${AIRTABLE_BASE_ID}/tables/${encodeURIComponent(
-        studentsTableId
-      )}/attachments`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${AIRTABLE_API_KEY}`,
-        },
-        body: form,
-      }
-    )
-  } catch (networkError) {
-    console.error("uploadStudentPhoto network error", networkError)
-    // Non blocchiamo l'update se l'attachments API è giù
+  const token = process.env.BLOB_READ_WRITE_TOKEN
+  if (!token) {
+    console.warn("uploadStudentPhoto: missing BLOB_READ_WRITE_TOKEN, skipping upload")
     return null
   }
 
-  if (!response.ok) {
-    const text = await response.text().catch(() => "")
-    if (text && text.includes('"NOT_FOUND"')) {
-      console.warn(
-        "uploadStudentPhoto: Airtable returned NOT_FOUND, skipping attachment upload",
-        text
-      )
-      return null
-    }
-    console.error("uploadStudentPhoto: unexpected Airtable error", text)
-    throw new Error(text || "Unable to upload attachment to Airtable")
-  }
+  const originalName = upload.filename || "student-photo.jpg"
+  const contentType = upload.contentType || "image/jpeg"
 
-  const json = await response.json().catch(() => null)
-  if (!json) {
-    throw new Error("Empty response from Airtable attachment upload")
-  }
+  // nome file un po' unico
+  const safeStudentId = (studentId || "student").toString().replace(/[^a-zA-Z0-9_-]/g, "_")
+  const ext = originalName.includes(".")
+    ? originalName.slice(originalName.lastIndexOf(".") + 1)
+    : "jpg"
+  const filename = `students/${safeStudentId}/${Date.now()}.${ext}`
 
-  if (Array.isArray(json)) {
-    const mapped = json
-      .map((item) =>
-        item?.url ? { url: item.url, filename: item.filename || filename } : null
-      )
-      .filter(Boolean)
-    if (mapped.length) return mapped
-  }
+  const buffer = Buffer.from(base64, "base64")
 
-  if (Array.isArray(json?.attachments)) {
-    const mapped = json.attachments
-      .map((item) =>
-        item?.url ? { url: item.url, filename: item.filename || filename } : null
-      )
-      .filter(Boolean)
-    if (mapped.length) return mapped
-  }
+  try {
+    const blob = await put(filename, buffer, {
+      access: "public",
+      contentType,
+      token,
+    })
 
-  if (json?.url) {
+    // Airtable attachment compatibile
     return [
       {
-        url: json.url,
-        filename: json.filename || filename,
+        url: blob.url,
+        filename: originalName,
       },
     ]
+  } catch (err) {
+    console.error("uploadStudentPhoto: Blob upload failed", err)
+    // Non blocchiamo l'update anagrafico se la foto fallisce
+    return null
   }
-
-  throw new Error("Unexpected Airtable attachment response")
 }
 
 export default async function handler(req, res) {
@@ -151,16 +106,13 @@ export default async function handler(req, res) {
   const hasFirstName = Object.prototype.hasOwnProperty.call(payload, "first_name")
   const hasLastName = Object.prototype.hasOwnProperty.call(payload, "last_name")
 
-  let firstName
-  let lastName
-
   if (hasFirstName) {
-    firstName = sanitizeString(payload.first_name)
+    const firstName = sanitizeString(payload.first_name)
     fields.first_name = firstName
   }
 
   if (hasLastName) {
-    lastName = sanitizeString(payload.last_name)
+    const lastName = sanitizeString(payload.last_name)
     fields.last_name = lastName
   }
 
@@ -199,13 +151,13 @@ export default async function handler(req, res) {
 
   try {
     if (payload?.student_photo_upload) {
-      const attachments = await uploadStudentPhoto(payload.student_photo_upload)
+      const attachments = await uploadStudentPhoto(payload.student_photo_upload, studentId)
       if (attachments) {
         fields.student_photo = attachments
       }
     }
 
-    // ❗ Non scriviamo full_name perché in Airtable è un campo formula/computed.
+    // NON scriviamo più full_name: in Airtable è un campo formula/computed.
 
     const sanitizedFields = Object.fromEntries(
       Object.entries(fields).filter(([, value]) => value !== undefined)

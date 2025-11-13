@@ -115,6 +115,12 @@ function drawRoundedRect(doc, x, y, w, h, r = 8, colorHex = '#FFFFFF') {
   doc.roundedRect(x, y, w, h, r, r, 'FD')
 }
 
+function normalizeText(value) {
+  if (value === null || value === undefined) return ''
+  const str = String(value)
+  return str.trim()
+}
+
 /** Write text with automatic wrapping inside a max width */
 function textInBox(doc, text, x, y, maxWidth, {
   font = 'helvetica',
@@ -223,6 +229,46 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   y = drawLabelValue(doc, 'Email', user?.email || '-', margin, y)
   y = drawLabelValue(doc, 'Nationality', user?.nationality || '-', margin, y)
   y = drawLabelValue(doc, 'Date of birth', formatDateOnly(user?.dateOfBirth), margin, y)
+
+  const placeBirthParts = [
+    normalizeText(
+      user?.placeOfBirth ||
+        user?.place_birth ||
+        user?.placeBirth ||
+        user?.birthPlace
+    ),
+    normalizeText(
+      user?.countryOfBirth ||
+        user?.country_birth ||
+        user?.birthCountry
+    ),
+  ].filter(Boolean)
+
+  const placeBirthValue = placeBirthParts.length > 0 ? placeBirthParts.join(', ') : '-'
+  y = drawLabelValue(doc, 'Place of birth', placeBirthValue, margin, y)
+
+  const idDocType = normalizeText(
+    user?.identificationDocument ||
+      user?.identification_document ||
+      user?.identityDocument
+  )
+  const idDocNumber = normalizeText(
+    user?.documentNumber ||
+      user?.document_number ||
+      user?.identificationNumber ||
+      user?.idNumber
+  )
+
+  let idDocValue = 'Not provided'
+  if (idDocType && idDocNumber) {
+    idDocValue = `${idDocType} – ${idDocNumber}`
+  } else if (idDocType) {
+    idDocValue = idDocType
+  } else if (idDocNumber) {
+    idDocValue = idDocNumber
+  }
+
+  y = drawLabelValue(doc, 'ID document', idDocValue, margin, y)
 
   // Result section
   y += 12

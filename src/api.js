@@ -365,6 +365,11 @@ export async function refreshCurrentUser() {
       schoolCode: session.schoolCode || null,
       nationality: data?.nationality ?? null,
       dateOfBirth: data?.dateOfBirth ?? null,
+      placeOfBirth: data?.placeOfBirth ?? data?.place_birth ?? null,
+      countryOfBirth: data?.countryOfBirth ?? data?.country_birth ?? null,
+      identificationDocument:
+        data?.identificationDocument ?? data?.identification_document ?? null,
+      documentNumber: data?.documentNumber ?? data?.document_number ?? null,
       features: data?.features,
     })
   } catch (error) {

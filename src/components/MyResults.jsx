@@ -95,6 +95,16 @@ export default function MyResults({ results, currentUser }) {
         attempt.id ||
         null
 
+      const issuedAtIso =
+        attempt.CompletedAt ||
+        attempt.completedAt ||
+        attempt._createdTime ||
+        new Date().toISOString()
+
+      const completedAtDisplay =
+        attempt.completedAtLabel ||
+        issuedAtIso
+
       const resultPayload = {
         level:
           attempt.level ||
@@ -113,21 +123,52 @@ export default function MyResults({ results, currentUser }) {
           attempt.durationLabel ||
           attempt.duration ||
           (attempt.DurationSec ? `${attempt.DurationSec}s` : '—'),
-        completedAt:
-          attempt.completedAtLabel ||
-          attempt.CompletedAt ||
-          attempt.completedAt ||
-          attempt._createdTime ||
-          new Date().toISOString(),
+        completedAt: completedAtDisplay,
 
         // NEW: ID coerenti con Placements
         testId,
         candidateId: candidateIdResolved || undefined,
       }
 
+      const certificateRequest = {
+        studentId:
+          currentUser?.recordId ||
+          currentUser?.id ||
+          null,
+        name: userPayload.fullName,
+        testName:
+          attempt.testName ||
+          attempt.TestName ||
+          attempt.placementTestName ||
+          'QUAET Adaptive Test',
+        level: String(resultPayload.level || '').toUpperCase(),
+        issuedAt: issuedAtIso,
+      }
+
+      const issueResponse = await fetch('/api/certificates/issue', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(certificateRequest),
+      })
+
+      const certificateMeta = await issueResponse.json().catch(() => null)
+      if (!issueResponse.ok || !certificateMeta) {
+        const message =
+          (certificateMeta && certificateMeta.error) ||
+          'Unable to register certificate verification.'
+        throw new Error(message)
+      }
+
+      const resultWithCertificate = {
+        ...resultPayload,
+        verificationCode: certificateMeta.code,
+        verificationUrl: certificateMeta.verificationUrl,
+        issuedAt: certificateMeta.issuedAt,
+      }
+
       await generateCertificatePDF({
         user: userPayload,
-        result: resultPayload,
+        result: resultWithCertificate,
       })
     } catch (error) {
       console.error('Unable to generate certificate PDF', error)

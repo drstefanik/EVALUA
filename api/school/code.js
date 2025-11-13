@@ -2,6 +2,8 @@ import { ensureMethod, sendError } from "../_lib/http.js";
 import { tbl } from "../../src/airtable.js";
 import { verifyJWT } from "../../src/util.js";
 
+const schoolsTable = tbl("Schools");
+
 function extractToken(req) {
   const authHeader = req.headers?.authorization || req.headers?.Authorization;
   if (!authHeader) return null;
@@ -31,7 +33,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const record = await tbl.SCHOOLS.find(payload.id);
+    const record = await schoolsTable.find(payload.id);
     const schoolCode = record?.fields?.school_code;
     const schoolName = record?.fields?.name;
     if (!schoolCode) {

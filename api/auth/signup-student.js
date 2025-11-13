@@ -4,6 +4,8 @@ import { hashPassword, signJWT } from "../../src/util.js";
 import { tbl } from "../../src/airtable.js";
 import { findStudentByEmail } from "../../src/finders.js";
 
+const studentsTable = tbl("Students");
+
 const ALLOWED_IDENTIFICATION_DOCUMENTS = new Set([
   "Passport",
   "National ID",
@@ -68,7 +70,7 @@ export default async function handler(req, res) {
     // crea utente
     const password_hash = await hashPassword(password);
 
-    const created = await tbl.STUDENTS.create([
+    const created = await studentsTable.create([
       {
         fields: {
           first_name: firstName,

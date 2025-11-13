@@ -2,6 +2,8 @@ import { sendError } from "../_lib/http.js";
 import { verifyJWT } from "../../src/util.js";
 import { tbl } from "../../src/airtable.js";
 
+const progressTable = tbl("Progress");
+
 /* ---------------------------- helpers ---------------------------- */
 function extractToken(req) {
   const header = req.headers?.authorization || req.headers?.Authorization;
@@ -53,7 +55,7 @@ export default async function handler(req, res) {
   try {
     if (req.method === "GET") {
       // GET /content/progress
-      const rows = await tbl.PROGRESS.select({
+      const rows = await progressTable.select({
         // niente formula fragile: prendiamo tutto e filtriamo in memoria
         fields: ["UserId", "FileId", "Seconds", "Completed"],
         pageSize: 100,
@@ -91,7 +93,7 @@ if (!completed && seconds && duration && duration > 0) {
 
 
     // cerca un record esistente (per il tuo schema: entrambi testo)
-    const existing = await tbl.PROGRESS.select({
+    const existing = await progressTable.select({
       maxRecords: 1,
       filterByFormula: `AND({UserId}='${esc(userKey)}',{FileId}='${esc(fileId)}')`,
       fields: ["UserId", "FileId"],
@@ -105,9 +107,9 @@ if (!completed && seconds && duration && duration > 0) {
     };
 
     if (existing && existing[0]) {
-      await tbl.PROGRESS.update(existing[0].id, writeFields);
+      await progressTable.update(existing[0].id, writeFields);
     } else {
-      await tbl.PROGRESS.create({
+      await progressTable.create({
         Seconds: 0,
         Completed: false,
         ...writeFields,

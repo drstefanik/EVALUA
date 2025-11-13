@@ -7,6 +7,8 @@ import {
   findStudentByEmail,
 } from "../../src/finders.js";
 
+const schoolsTable = tbl("Schools");
+
 function sanitizeExtras(extras = {}) {
   return Object.fromEntries(
     Object.entries(extras).filter(([, value]) => value !== undefined)
@@ -84,7 +86,7 @@ export default async function handler(req, res) {
     if (schoolId) {
       studentExtras.schoolId = schoolId;
       try {
-        const schoolRecord = await tbl.SCHOOLS.find(schoolId);
+        const schoolRecord = await schoolsTable.find(schoolId);
         const schoolName = schoolRecord?.fields?.name;
         if (schoolName) {
           studentExtras.schoolName = schoolName;

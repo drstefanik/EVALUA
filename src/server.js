@@ -5,6 +5,10 @@ import { tbl } from "./airtable.js";
 import { hashPassword, comparePassword, signJWT } from "./util.js";
 import { findAdminByEmail, findSchoolByEmail, findStudentByEmail, findOTP } from "./finders.js";
 
+const schoolsTable = tbl("Schools");
+const studentsTable = tbl("Students");
+const schoolOtpTable = tbl("SchoolOTP");
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -65,7 +69,7 @@ app.post("/auth/signup-student", async (req, res) => {
 
     const password_hash = await hashPassword(password);
 
-    const created = await tbl.STUDENTS.create([
+    const created = await studentsTable.create([
       { fields: { full_name, email, password_hash, status: "active", school: schoolId ? [schoolId] : [] } }
     ]);
 
@@ -91,10 +95,10 @@ app.post("/auth/signup-school", async (req, res) => {
 
     const password_hash = await hashPassword(password);
 
-    const created = await tbl.SCHOOLS.create([{ fields: { name, email, password_hash, status: "active" } }]);
+    const created = await schoolsTable.create([{ fields: { name, email, password_hash, status: "active" } }]);
     const schoolId = created[0].id;
 
-    await tbl.SCHOOL_OTP.update([{ id: otp.id, fields: { used: true, school: [schoolId] } }]);
+    await schoolOtpTable.update([{ id: otp.id, fields: { used: true, school: [schoolId] } }]);
 
     const token = signJWT({ role: "school", id: schoolId, email });
     res.status(201).json({ token, role: "school", id: schoolId });

@@ -373,20 +373,20 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   doc.setTextColor(BRAND.primary)
   doc.text('Verification', valX + 12, sigY - 10 + 18)
 
-  const code =
+  const verificationCode =
     (result?.verificationCode ||
       `Q-${String(testId).replaceAll(' ', '')}-${levelText}`).toUpperCase()
+  const verifyPath = `evalua.education/verify?code=${verificationCode}`
 
   // Code (wrapped)
-  textInBox(doc, `Code: ${code}`, valX + 12, sigY - 10 + 34, valW - 24, {
+  textInBox(doc, `Code: ${verificationCode}`, valX + 12, sigY - 10 + 34, valW - 24, {
     size: 9, color: BRAND.text, lineHeight: 11,
   })
 
   // Verify URL
-  doc.setFont('helvetica', 'normal')
-  doc.setFontSize(9)
-  doc.setTextColor(BRAND.mute)
-  doc.text('Verify at: evaluaeducation.org/verify', valX + 12, sigY - 10 + 70)
+  textInBox(doc, `Verify at: ${result?.verificationUrl || verifyPath}`, valX + 12, sigY - 10 + 54, valW - 24, {
+    size: 9, color: BRAND.mute, lineHeight: 11,
+  })
 
   // Footer
   doc.setFont('helvetica', 'normal')

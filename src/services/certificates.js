@@ -1,5 +1,8 @@
 import { tbl } from "../airtable.js";
 
+const CERT_TABLE_NAME =
+  process.env.AIRTABLE_TABLE_CERTIFICATES || "Certificates";
+
 export function generateVerificationCode() {
   // UUID v4 corto + checksum base36 a 2 char
   const u = crypto.randomUUID(); // Node 18+ / browser
@@ -11,7 +14,7 @@ export function generateVerificationCode() {
 
 export async function upsertCertificate({ code, studentId, name, testName, level, issuedAt, pdfUrl, status='Active' }) {
   const safe = code.replace(/'/g, "''");
-  const table = tbl(process.env.AIRTABLE_TABLE_CERTIFICATES);
+  const table = tbl(CERT_TABLE_NAME);
   const existing = await table.select({
     filterByFormula: `{VerificationCode} = '${safe}'`,
     maxRecords: 1,

@@ -9,6 +9,7 @@ import FileListItem from '../components/FileListItem'
 import DashboardCards from '../components/DashboardCards.jsx'
 import FeatureGate from '../components/FeatureGate.jsx'
 import MyResults from '../components/MyResults.jsx'
+import PersonalDetails from '../components/PersonalDetails.jsx'
 
 const API_BASE = import.meta.env.VITE_AUTH_API ?? '/api'
 const ADAPTIVE_RESULTS_STORAGE_KEY = 'evaluaAdaptiveResults'
@@ -119,7 +120,7 @@ function FolderNode({ node, depth, onSelect, selectedId }) {
 /* --------------------------- main component --------------------------- */
 export default function StudentDashboard() {
   const navigate = useNavigate()
-  const { currentUser, loading: currentUserLoading } = useCurrentUser()
+  const { currentUser, loading: currentUserLoading, refresh: refreshCurrentUser } = useCurrentUser()
   const session = useMemo(() => getStoredSession(), [])
   const token = session?.token
   const studentId = session?.id || session?.email || 'student'
@@ -328,12 +329,13 @@ export default function StudentDashboard() {
         courses: Boolean(currentUser?.features?.courses),
         quaet: Boolean(currentUser?.features?.quaet),
         results: Boolean(currentUser?.features?.results),
+        personal_details: Boolean(currentUser?.features?.personal_details),
       }
     }
     if (currentUserLoading) {
-      return { courses: true, quaet: true, results: true }
+      return { courses: true, quaet: true, results: true, personal_details: true }
     }
-    return { courses: false, quaet: false, results: false }
+    return { courses: false, quaet: false, results: false, personal_details: false }
   }, [currentUser, currentUserLoading])
 
   useEffect(() => {
@@ -579,8 +581,15 @@ export default function StudentDashboard() {
             features={featureFlags}
             onGoToCourses={() => scrollToSection('learning-hub')}
             onGoToResults={() => scrollToSection('results-section')}
+            onGoToPersonalDetails={() => scrollToSection('personal-details-section')}
           />
         </div>
+
+        {featureFlags.personal_details && (
+          <section id="personal-details-section" className="mt-10 card rounded-3xl p-6">
+            <PersonalDetails currentUser={currentUser} onProfileUpdated={refreshCurrentUser} />
+          </section>
+        )}
 
         <FeatureGate
           enabled={featureFlags.courses}

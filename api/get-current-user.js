@@ -99,21 +99,33 @@ export default async function handler(req, res) {
     const documentNumber =
       pickField(f, ["document_number", "Document number", "Document Number", "ID number", "Identification number"]) || "";
 
+    const firstName =
+      pickField(f, ["first_name", "First name", "First Name", "FirstName"]) || "";
+    const lastName =
+      pickField(f, ["last_name", "Last name", "Last Name", "LastName"]) || "";
+    const phone = pickField(f, ["phone", "Phone", "mobile", "Mobile"]) || "";
+    const studentPhoto = Array.isArray(f.student_photo) ? f.student_photo : [];
+
     res.json({
       id: record.id,
       name: fullName,
       email: f.email || "",
       school,
+      firstName,
+      lastName,
+      phone,
       nationality,     // <-- NEW
       dateOfBirth,     // <-- NEW (YYYY-MM-DD se possibile)
       placeOfBirth,
       countryOfBirth,
       identificationDocument,
       documentNumber,
+      student_photo: studentPhoto,
       features: {
         courses: Boolean(f.enable_courses),
         quaet: Boolean(f.enable_quaet),
         results: Boolean(f.enable_results),
+        personal_details: Boolean(f.feature_personal_details),
       },
     });
   } catch (error) {

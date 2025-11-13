@@ -6,6 +6,15 @@ function formatValue(value) {
   return value
 }
 
+function pickField(...values) {
+  for (const value of values) {
+    if (value !== undefined && value !== null && value !== '') {
+      return value
+    }
+  }
+  return undefined
+}
+
 // fallback per recuperare id/email se non arrivano via props
 function getLocalUser() {
   try {
@@ -52,6 +61,30 @@ export default function MyResults({ results, currentUser }) {
         email: currentUser?.email || local.email || '',
         nationality: currentUser?.nationality || currentUser?.Nationality || '-',
         dateOfBirth: currentUser?.dateOfBirth || currentUser?.DateOfBirth || null,
+        placeOfBirth:
+          pickField(
+            currentUser?.placeOfBirth,
+            currentUser?.place_birth,
+            currentUser?.PlaceOfBirth
+          ) || '',
+        countryOfBirth:
+          pickField(
+            currentUser?.countryOfBirth,
+            currentUser?.country_birth,
+            currentUser?.CountryOfBirth
+          ) || '',
+        identificationDocument:
+          pickField(
+            currentUser?.identificationDocument,
+            currentUser?.identification_document,
+            currentUser?.IdentificationDocument
+          ) || '',
+        documentNumber:
+          pickField(
+            currentUser?.documentNumber,
+            currentUser?.document_number,
+            currentUser?.DocumentNumber
+          ) || '',
       }
 
       // ---- Result data (normalizzato per il PDF) ----

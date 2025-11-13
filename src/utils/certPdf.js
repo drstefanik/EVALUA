@@ -498,7 +498,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   doc.setTextColor(BRAND.mute)
   textInBox(
     doc,
-    `Verify at: ${verifyUrl}`,
+    `Verify at: www.evaluaeducation.org/verify,
     vCardX + vCardPad,
     tvY,
     textMaxW,

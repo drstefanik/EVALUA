@@ -12,6 +12,23 @@ export function generateVerificationCode() {
   return `Q-${core}-${chk}`;
 }
 
+function toAirtableDate(value) {
+  const ensureDate = (input) => {
+    if (!input) return new Date();
+    const parsed = new Date(input);
+    if (Number.isNaN(parsed.getTime())) {
+      return new Date();
+    }
+    return parsed;
+  };
+
+  const date = ensureDate(value);
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 export async function upsertCertificate({ code, studentId, name, testName, level, issuedAt, pdfUrl, status='Active' }) {
   const safe = code.replace(/'/g, "''");
   const table = tbl(CERT_TABLE_NAME);
@@ -22,10 +39,9 @@ export async function upsertCertificate({ code, studentId, name, testName, level
 
   const fields = {
     VerificationCode: code,
-    CandidateName: name,
     TestName: testName,
     Level: level,
-    IssuedAt: issuedAt,
+    IssuedAt: toAirtableDate(issuedAt),
     Status: status,
     PdfUrl: pdfUrl || null,
     ...(studentId ? { Student: [studentId] } : {}),

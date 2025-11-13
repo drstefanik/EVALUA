@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function CollapsibleSection({ id, title, defaultOpen = true, children }) {
   const [isOpen, setIsOpen] = useState(defaultOpen)
@@ -8,6 +8,23 @@ export default function CollapsibleSection({ id, title, defaultOpen = true, chil
   }
 
   const contentId = id ? `${id}-content` : undefined
+
+  // APRI AUTOMATICAMENTE LA SEZIONE SE L'URL MATCHA L'ANCORA (#id)
+  useEffect(() => {
+    if (!id || typeof window === 'undefined') return
+
+    const handleHashChange = () => {
+      if (window.location.hash === `#${id}`) {
+        setIsOpen(true)
+      }
+    }
+
+    // controllo immediato al mount
+    handleHashChange()
+
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [id])
 
   return (
     <section id={id} className="card rounded-3xl">
@@ -23,6 +40,7 @@ export default function CollapsibleSection({ id, title, defaultOpen = true, chil
           {isOpen ? 'Hide section' : 'Show section'}
         </span>
       </button>
+
       {isOpen && (
         <div id={contentId} className="border-t border-border-strong px-6 py-6">
           {children}

@@ -21,6 +21,7 @@ export const tbl = Object.freeze({
   FOLDERS: base("Folders"),
   FILES: base("Files"),
   PROGRESS: base("Progress"),
+  CERTIFICATES: base("Certificates"),
 });
 
 export function getBase() {

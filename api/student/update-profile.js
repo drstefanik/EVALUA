@@ -3,6 +3,8 @@ import { verifyJWT } from "../../src/util.js"
 import { tbl } from "../../src/airtable.js"
 
 const studentsTableName = process.env.AIRTABLE_TABLE_STUDENTS || "Students"
+// 👇 nuovo: usiamo un env opzionale con l'ID della tabella (tblXXXXXXXX)
+const studentsTableId = process.env.AIRTABLE_TABLE_STUDENTS_ID || studentsTableName
 const studentsTable = tbl(studentsTableName)
 const { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } = process.env
 
@@ -17,11 +19,13 @@ function sanitizeString(value) {
   return typeof value === "string" ? value.trim() : ""
 }
 
+// Tenuto per eventuali usi futuri
 function buildFullName(firstName, lastName) {
   return [firstName, lastName].filter(Boolean).join(" ")
 }
 
-// 🔧 aggiornata: ora NON lancia errore se Airtable ritorna NOT_FOUND
+// Upload foto studente
+// Se Airtable risponde NOT_FOUND, logghiamo e NON blocchiamo l'update anagrafico
 async function uploadStudentPhoto(upload) {
   if (!upload || typeof upload !== "object") return null
   const base64 = typeof upload.base64 === "string" ? upload.base64.trim() : ""
@@ -41,7 +45,7 @@ async function uploadStudentPhoto(upload) {
   try {
     response = await fetch(
       `https://content.airtable.com/v0/bases/${AIRTABLE_BASE_ID}/tables/${encodeURIComponent(
-        studentsTableName
+        studentsTableId
       )}/attachments`,
       {
         method: "POST",
@@ -53,15 +57,17 @@ async function uploadStudentPhoto(upload) {
     )
   } catch (networkError) {
     console.error("uploadStudentPhoto network error", networkError)
-    // se c'è un problema di rete, non blocchiamo l'update anagrafica
+    // Non blocchiamo l'update se l'attachments API è giù
     return null
   }
 
   if (!response.ok) {
     const text = await response.text().catch(() => "")
-    // se Airtable risponde con {"error":"NOT_FOUND"} non blocchiamo tutto
     if (text && text.includes('"NOT_FOUND"')) {
-      console.warn("uploadStudentPhoto: Airtable returned NOT_FOUND, skipping attachment upload", text)
+      console.warn(
+        "uploadStudentPhoto: Airtable returned NOT_FOUND, skipping attachment upload",
+        text
+      )
       return null
     }
     console.error("uploadStudentPhoto: unexpected Airtable error", text)
@@ -75,14 +81,18 @@ async function uploadStudentPhoto(upload) {
 
   if (Array.isArray(json)) {
     const mapped = json
-      .map((item) => (item?.url ? { url: item.url, filename: item.filename || filename } : null))
+      .map((item) =>
+        item?.url ? { url: item.url, filename: item.filename || filename } : null
+      )
       .filter(Boolean)
     if (mapped.length) return mapped
   }
 
   if (Array.isArray(json?.attachments)) {
     const mapped = json.attachments
-      .map((item) => (item?.url ? { url: item.url, filename: item.filename || filename } : null))
+      .map((item) =>
+        item?.url ? { url: item.url, filename: item.filename || filename } : null
+      )
       .filter(Boolean)
     if (mapped.length) return mapped
   }
@@ -195,9 +205,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // ⚠️ IMPORTANTE:
-    // Non impostiamo più fields.full_name perché il campo in Airtable è computed (formula)
-    // quindi Airtable rifiuta l'update con INVALID_VALUE_FOR_COLUMN.
+    // ❗ Non scriviamo full_name perché in Airtable è un campo formula/computed.
 
     const sanitizedFields = Object.fromEntries(
       Object.entries(fields).filter(([, value]) => value !== undefined)

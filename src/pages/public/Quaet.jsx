@@ -7,7 +7,7 @@ export default function Quaet() {
   return (
     <PublicPageLayout
       title="QuAET"
-      description="The Quality & Assessment Toolkit for schools: track student progress, align teaching, and deliver measurable results in external exams."
+      description="Adaptive English assessment and clear reporting for schools: placement, progress checks and end-of-course tests, all aligned to the CEFR."
       eyebrow="QuAET"
       path="/quaet"
     >
@@ -15,25 +15,26 @@ export default function Quaet() {
       <section className="mb-6 grid items-center gap-6 rounded-3xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-8 shadow-soft md:grid-cols-[1.2fr,0.8fr]">
         <div className="space-y-4">
           <h1 className="text-3xl font-semibold leading-tight text-[var(--text-primary)]">
-            Measure. Understand. Improve.
+            A clear English level for every student.
           </h1>
           <p className="text-[var(--text-secondary)]">
-            QuAET turns data into decisions for school leaders, coordinators, and teachers:
-            CEFR-aligned periodic tests, item analysis, class comparisons, and targeted catch-up plans.
-            From delivery to reporting in one simple flow.
+            QuAET is an adaptive English test and reporting toolkit for schools.
+            Use it for placement, mid-year checks and end-of-course exams, with
+            CEFR-linked results that teachers, leaders and families can actually
+            understand.
           </p>
-          <div className="flex gap-3 pt-2">
+          <div className="flex flex-wrap gap-3 pt-2">
             <Link
               to="/contact"
-              className="rounded-2xl bg-[var(--brand)] px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+              className="rounded-2xl bg-[var(--brand)] px-4 py-2 text-sm font-medium text-white shadow-sm hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--brand)]"
             >
-              Request a demo
+              Book a demo
             </Link>
             <Link
               to="/docs/quaet"
-              className="rounded-2xl border border-[var(--border-strong)] px-4 py-2 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--surface-alt)]"
+              className="rounded-2xl border border-[var(--border-strong)] px-4 py-2 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--surface-alt)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--border-strong)]"
             >
-              Learn more
+              View sample reports
             </Link>
           </div>
         </div>
@@ -47,21 +48,23 @@ export default function Quaet() {
         </div>
       </section>
 
-      {/* WHAT IT MEASURES */}
+      {/* WHAT IT DOES */}
       <section className="grid gap-6 rounded-3xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-8 shadow-soft md:grid-cols-2">
         <div className="space-y-4">
-          <h2 className="text-2xl font-semibold text-[var(--text-primary)]">What it measures</h2>
+          <h2 className="text-2xl font-semibold text-[var(--text-primary)]">What QuAET does</h2>
           <ul className="space-y-3 text-sm text-[var(--text-secondary)]">
             {[
-              'Language competence by skill (Listening, Reading, Use of English, Writing, Speaking) with CEFR rubrics.',
-              'Progress by class, cohort, and ability group, with trend analysis.',
-              'Teaching coherence and syllabus coverage against period objectives.',
-              'Test reliability and item analysis (difficulty, discrimination, distractors).',
-              'Engagement and attendance during test delivery.',
-              'Internal benchmarks across campuses and comparison with external standards (CEFR / INVALSI where applicable).',
+              'Places students on the right CEFR level (A1–C1) before starting a course.',
+              'Checks progress during the year with comparable results over time.',
+              'Shows strengths and weaknesses by skill (Listening, Reading, Writing, Speaking).',
+              'Highlights students and classes that need support before final exams.',
+              'Gives coordinators a simple overview of classes, levels and test history.',
+              'Exports data that can be shared with families and school owners in a clear way.',
             ].map((item) => (
               <li key={item} className="flex items-start gap-3">
-                <span className="mt-1 text-lg">✅</span>
+                <span className="mt-1 text-lg" aria-hidden>
+                  ✅
+                </span>
                 <span>{item}</span>
               </li>
             ))}
@@ -70,28 +73,39 @@ export default function Quaet() {
 
         {/* HOW SCHOOLS USE IT */}
         <div className="space-y-4 rounded-2xl bg-[var(--surface-alt)] p-6">
-          <h3 className="text-lg font-semibold text-[var(--text-primary)]">How schools use it</h3>
+          <h3 className="text-lg font-semibold text-[var(--text-primary)]">
+            How schools use QuAET
+          </h3>
           <ol className="list-decimal space-y-2 pl-5 text-sm text-[var(--text-secondary)]">
-            <li><strong>Plan</strong>: build an assessment calendar by term and class.</li>
-            <li><strong>Deliver</strong>: ready-made tests, clear instructions, standard timings.</li>
-            <li><strong>Analyse</strong>: class and network reports; deep dive on items and micro-skills.</li>
-            <li><strong>Intervene</strong>: targeted catch-up micro-units and clinics.</li>
-            <li><strong>Monitor</strong>: campus comparisons and improvement trends over time.</li>
+            <li>
+              <strong>Placement:</strong> test new students and create groups with consistent CEFR levels.
+            </li>
+            <li>
+              <strong>Mid-year check:</strong> verify if classes are on track and identify who needs extra help.
+            </li>
+            <li>
+              <strong>End-of-course:</strong> confirm the final level and prepare students for external exams.
+            </li>
+            <li>
+              <strong>Reporting:</strong> share simple, visual reports with teachers, families and school owners.
+            </li>
           </ol>
         </div>
       </section>
 
       {/* OUTCOMES */}
       <section className="grid gap-6 rounded-3xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-8 shadow-soft">
-        <h2 className="text-2xl font-semibold text-[var(--text-primary)]">Expected outcomes</h2>
+        <h2 className="text-2xl font-semibold text-[var(--text-primary)]">Why it matters</h2>
         <div className="grid gap-4 md:grid-cols-3">
           {[
-            'Measurable gains in external exams thanks to targeted work on weak areas.',
-            'Greater teaching coherence across classes and campuses with shared, trackable goals.',
-            'Clear, role-based reporting for leaders, teachers, and families: understandable data, faster decisions.',
+            'Correct groups from day one, thanks to objective CEFR placement.',
+            'Less guesswork for teachers and clearer expectations for families.',
+            'Concrete evidence for school leaders when planning courses and staffing.',
           ].map((item) => (
             <div key={item} className="space-y-2 rounded-2xl bg-[var(--surface-alt)] p-6">
-              <span className="text-2xl" aria-hidden>📈</span>
+              <span className="text-2xl" aria-hidden>
+                📊
+              </span>
               <p className="text-sm text-[var(--text-secondary)]">{item}</p>
             </div>
           ))}
@@ -101,11 +115,11 @@ export default function Quaet() {
       {/* FINAL CTA */}
       <section className="mt-6 rounded-3xl border border-[var(--border-subtle)] bg-[var(--surface-base)] p-6 text-center shadow-soft">
         <p className="mb-3 text-sm text-[var(--text-secondary)]">
-          Want to preview sample reports and an item-analysis walkthrough?
+          Want to see the adaptive test and the reports as your teachers would use them?
         </p>
         <Link
           to="/contact"
-          className="inline-block rounded-2xl bg-[var(--brand)] px-5 py-2 text-sm font-medium text-white hover:opacity-90"
+          className="inline-block rounded-2xl border border-[var(--brand)] px-5 py-2 text-sm font-medium text-[var(--brand)] hover:bg-[var(--brand)] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--brand)]"
         >
           Book a QuAET demo
         </Link>

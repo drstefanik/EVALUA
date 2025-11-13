@@ -376,7 +376,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   const verificationCode =
     (result?.verificationCode ||
       `Q-${String(testId).replaceAll(' ', '')}-${levelText}`).toUpperCase()
-  const verifyPath = `evalua.education/verify?code=${verificationCode}`
+  const verifyPath = `evaluaeducation.org/verify?code=${verificationCode}`
 
   // Code (wrapped)
   textInBox(doc, `Code: ${verificationCode}`, valX + 12, sigY - 10 + 34, valW - 24, {

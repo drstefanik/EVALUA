@@ -29,8 +29,16 @@ const COUNTRIES = [
   "Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"
 ]
 
+const IDENTIFICATION_DOCUMENT_OPTIONS = [
+  'Passport',
+  'National ID',
+  'Residence Permit',
+  'Driver License',
+  'Other',
+]
+
 // piccolo combobox ricercabile (senza librerie)
-function NationalitySelect({ value, onChange, disabled }) {
+function NationalitySelect({ value, onChange, disabled, name, ariaInvalid, ariaDescribedBy }) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const filtered = useMemo(() => {
@@ -44,6 +52,9 @@ function NationalitySelect({ value, onChange, disabled }) {
         type="text"
         role="combobox"
         aria-expanded={open}
+        name={name}
+        aria-invalid={ariaInvalid}
+        aria-describedby={ariaDescribedBy}
         placeholder="Start typing…"
         value={open ? query : value}
         onFocus={() => setOpen(true)}
@@ -83,11 +94,16 @@ export default function SignupStudent() {
 
   const [dateOfBirth, setDob] = useState('')
   const [nationality, setNationality] = useState('')
+  const [placeOfBirth, setPlaceOfBirth] = useState('')
+  const [countryOfBirth, setCountryOfBirth] = useState('')
   const [phone, setPhone] = useState('')
+  const [identificationDocument, setIdentificationDocument] = useState('')
+  const [documentNumber, setDocumentNumber] = useState('')
 
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
+  const [clientErrors, setClientErrors] = useState({})
 
   const isValid = useMemo(() => {
     const baseOk =
@@ -99,17 +115,54 @@ export default function SignupStudent() {
 
     const dobOk = !dateOfBirth || isoDateRegex.test(dateOfBirth) // opzionale ma se presente deve essere ISO
     const phoneOk = !phone || (phone.length >= 7 && phone.length <= 20)
+    const placeOk = placeOfBirth.trim().length > 0
+    const countryOk = countryOfBirth.trim().length > 0
+    const documentTypeOk = identificationDocument.trim().length > 0
+    const documentNumberOk = documentNumber.trim().length > 0
 
-    return baseOk && dobOk && phoneOk
-  }, [firstName, lastName, email, password, confirmPassword, dateOfBirth, phone])
+    const validDocumentSelection =
+      !identificationDocument || IDENTIFICATION_DOCUMENT_OPTIONS.includes(identificationDocument)
+
+    return baseOk && dobOk && phoneOk && placeOk && countryOk && documentTypeOk && documentNumberOk && validDocumentSelection
+  }, [firstName, lastName, email, password, confirmPassword, dateOfBirth, phone, placeOfBirth, countryOfBirth, identificationDocument, documentNumber])
+
+  const clearClientError = (key) => {
+    setClientErrors((prev) => {
+      if (!prev?.[key]) return prev
+      const next = { ...prev }
+      delete next[key]
+      return next
+    })
+  }
 
   async function handleSubmit(event) {
     event.preventDefault()
-    if (loading || !isValid) return
+    if (loading) return
+
+    const trimmedPlace = placeOfBirth.trim()
+    const trimmedDocument = documentNumber.trim()
+    const selectedCountry = countryOfBirth.trim()
+    const selectedDocument = identificationDocument.trim()
+
+    const fieldErrors = {}
+    if (!trimmedPlace) fieldErrors.place_birth = 'Place of birth is required'
+    if (!selectedCountry) fieldErrors.country_birth = 'Country of birth is required'
+    if (!selectedDocument || !IDENTIFICATION_DOCUMENT_OPTIONS.includes(selectedDocument)) {
+      fieldErrors.identification_document = 'Please select an identification document'
+    }
+    if (!trimmedDocument) fieldErrors.document_number = 'Document number is required'
+
+    if (Object.keys(fieldErrors).length) {
+      setClientErrors(fieldErrors)
+      return
+    }
+
+    if (!isValid) return
 
     setError('')
     setSuccess('')
     setLoading(true)
+    setClientErrors({})
 
     try {
       const payload = {
@@ -119,6 +172,10 @@ export default function SignupStudent() {
         password,
         date_of_birth: dateOfBirth || undefined, // "YYYY-MM-DD"
         nationality: nationality || undefined,    // single select in Airtable
+        place_birth: trimmedPlace,
+        country_birth: selectedCountry,
+        identification_document: selectedDocument,
+        document_number: trimmedDocument,
         phone: phone || undefined,
       }
 
@@ -129,8 +186,12 @@ export default function SignupStudent() {
       } catch (refreshError) {
         console.error('Unable to refresh current user', refreshError)
       }      
-      setPassword(''); 
+      setPassword('');
       setConfirmPassword('')
+      setPlaceOfBirth('')
+      setCountryOfBirth('')
+      setIdentificationDocument('')
+      setDocumentNumber('')
 
       const destination = getDashboardPath(data?.role) || '/student'
       setSuccess(`Registration completed. Redirecting…`)
@@ -211,8 +272,44 @@ export default function SignupStudent() {
                 placeholder="YYYY-MM-DD" disabled={loading}/>
             </div>
             <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Place of birth</label>
+              <input
+                type="text"
+                value={placeOfBirth}
+                onChange={(e) => { setPlaceOfBirth(e.target.value); clearClientError('place_birth') }}
+                className="mt-1 w-full rounded-xl border border-binavy/30 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-[#111a33] dark:text-slate-200"
+                placeholder="City of birth"
+                name="place_birth"
+                aria-invalid={Boolean(clientErrors.place_birth)}
+                aria-describedby={clientErrors.place_birth ? 'place_birth-error' : undefined}
+                disabled={loading}
+              />
+              {clientErrors.place_birth && (
+                <p className="mt-1 text-xs text-bireg" id="place_birth-error">{clientErrors.place_birth}</p>
+              )}
+            </div>
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Country of birth</label>
+              <NationalitySelect
+                value={countryOfBirth}
+                onChange={(value) => { setCountryOfBirth(value); clearClientError('country_birth') }}
+                disabled={loading}
+                name="country_birth"
+                ariaInvalid={Boolean(clientErrors.country_birth)}
+                ariaDescribedBy={clientErrors.country_birth ? 'country_birth-error' : undefined}
+              />
+              {clientErrors.country_birth && (
+                <p className="mt-1 text-xs text-bireg" id="country_birth-error">{clientErrors.country_birth}</p>
+              )}
+            </div>
+            <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Nationality</label>
-              <NationalitySelect value={nationality} onChange={setNationality} disabled={loading}/>
+              <NationalitySelect
+                value={nationality}
+                onChange={setNationality}
+                disabled={loading}
+                name="nationality"
+              />
             </div>
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Phone</label>
@@ -220,6 +317,44 @@ export default function SignupStudent() {
                 className="mt-1 w-full rounded-xl border border-binavy/30 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-[#111a33] dark:text-slate-200"
                 placeholder="+39 333 1234567" disabled={loading}/>
             </div>
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Identification document</label>
+              <select
+                value={identificationDocument}
+                onChange={(event) => { setIdentificationDocument(event.target.value); clearClientError('identification_document') }}
+                className="mt-1 w-full rounded-xl border border-binavy/30 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-[#111a33] dark:text-slate-200"
+                name="identification_document"
+                aria-invalid={Boolean(clientErrors.identification_document)}
+                aria-describedby={clientErrors.identification_document ? 'identification_document-error' : undefined}
+                disabled={loading}
+              >
+                <option value="" disabled hidden>Select document</option>
+                {IDENTIFICATION_DOCUMENT_OPTIONS.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+              {clientErrors.identification_document && (
+                <p className="mt-1 text-xs text-bireg" id="identification_document-error">{clientErrors.identification_document}</p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Document number</label>
+            <input
+              type="text"
+              value={documentNumber}
+              onChange={(event) => { setDocumentNumber(event.target.value); clearClientError('document_number') }}
+              className="mt-1 w-full rounded-xl border border-binavy/30 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-[#111a33] dark:text-slate-200"
+              placeholder="Document number"
+              name="document_number"
+              aria-invalid={Boolean(clientErrors.document_number)}
+              aria-describedby={clientErrors.document_number ? 'document_number-error' : undefined}
+              disabled={loading}
+            />
+            {clientErrors.document_number && (
+              <p className="mt-1 text-xs text-bireg" id="document_number-error">{clientErrors.document_number}</p>
+            )}
           </div>
 
           <button

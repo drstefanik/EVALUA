@@ -90,6 +90,14 @@ export default async function handler(req, res) {
     const dateOfBirthRaw =
       pickField(f, ["date_of_birth", "Date of birth", "Date Of Birth", "DOB", "dob"]) || "";
     const dateOfBirth = toISODateYMD(dateOfBirthRaw);
+    const placeOfBirth =
+      pickField(f, ["place_birth", "Place of birth", "Place Of Birth", "Birthplace", "birth_place"]) || "";
+    const countryOfBirth =
+      pickField(f, ["country_birth", "Country of birth", "Country Of Birth", "birth_country"]) || "";
+    const identificationDocument =
+      pickField(f, ["identification_document", "Identification document", "Identification Document", "ID document"]) || "";
+    const documentNumber =
+      pickField(f, ["document_number", "Document number", "Document Number", "ID number", "Identification number"]) || "";
 
     res.json({
       id: record.id,
@@ -98,6 +106,10 @@ export default async function handler(req, res) {
       school,
       nationality,     // <-- NEW
       dateOfBirth,     // <-- NEW (YYYY-MM-DD se possibile)
+      placeOfBirth,
+      countryOfBirth,
+      identificationDocument,
+      documentNumber,
       features: {
         courses: Boolean(f.enable_courses),
         quaet: Boolean(f.enable_quaet),

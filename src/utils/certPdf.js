@@ -1,5 +1,6 @@
 // src/utils/certPdf.js
 import { jsPDF } from 'jspdf'
+import QRCode from 'qrcode'
 import evaluaLogoUrl from '../assets/EVALUA.svg?url'
 
 // ---- Brand & layout helpers ----
@@ -387,6 +388,51 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   textInBox(doc, `Verify at: ${result?.verificationUrl || verifyPath}`, valX + 12, sigY - 10 + 54, valW - 24, {
     size: 9, color: BRAND.mute, lineHeight: 11,
   })
+
+  // --- Premium QR verification card ---
+  try {
+    // URL completo per la verifica
+    const qrValue = `https://evaluaeducation.org/verify?code=${verificationCode}`
+    const qrDataUrl = await QRCode.toDataURL(qrValue, {
+      margin: 0,
+      scale: 4,
+    })
+
+    // Dimensioni e posizione della card
+    const qrCardW = 150
+    const qrCardH = 150
+    const qrCardX = pageW - margin - qrCardW
+    const qrCardY = pageH - margin - qrCardH - 12 // sopra il footer
+
+    // Cornice della card
+    doc.setFillColor('#F7F9FB')
+    doc.setDrawColor(BRAND.line)
+    doc.roundedRect(qrCardX, qrCardY, qrCardW, qrCardH, 10, 10, 'FD')
+
+    // Titolo card
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(10)
+    doc.setTextColor(BRAND.primary)
+    doc.text('Scan to verify', qrCardX + 12, qrCardY + 18)
+
+    // QR centrato nella card
+    const qrSize = 86
+    const qrX = qrCardX + (qrCardW - qrSize) / 2
+    const qrY = qrCardY + 26
+    doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize)
+
+    // Mini URL sotto il QR
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(8)
+    doc.setTextColor(BRAND.mute)
+    const shortUrl = 'evaluaeducation.org/verify'
+    const urlWidth = doc.getTextWidth(shortUrl)
+    const urlX = qrCardX + (qrCardW - urlWidth) / 2
+    const urlY = qrCardY + qrCardH - 12
+    doc.text(shortUrl, urlX, urlY)
+  } catch (error) {
+    console.error('QR generation failed', error)
+  }
 
   // Footer
   doc.setFont('helvetica', 'normal')

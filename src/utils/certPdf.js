@@ -394,13 +394,6 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   doc.setTextColor(BRAND.mute)
   doc.text('Issuer: Evalua', margin, pageH - 56)
 
-  // Watermark
-  doc.setTextColor(200, 205, 210)
-  doc.setFont('helvetica', 'bold')
-  doc.setFontSize(48)
-  doc.text('E V A L U A', pageW / 2, pageH / 2, { angle: 30, align: 'center' })
-  doc.setTextColor(BRAND.text)
-
   // Safe filename
   const safeName = String(candidateName).trim().replace(/\s+/g, '_').replace(/[^\w\-]+/g, '')
   const safeDate = String(completedAt || new Date())

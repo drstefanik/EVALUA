@@ -329,7 +329,7 @@ export default function StudentDashboard() {
         courses: Boolean(currentUser?.features?.courses),
         quaet: Boolean(currentUser?.features?.quaet),
         results: Boolean(currentUser?.features?.results),
-        personal_details: Boolean(currentUser?.features?.personal_details),
+        personal_details: true,
       }
     }
     if (currentUserLoading) {

@@ -78,6 +78,34 @@ async function svgToPngDataUrl(svgUrl, maxW = 220, maxH = 60) {
   return { dataUrl: canvas.toDataURL('image/png'), w: canvas.width, h: canvas.height }
 }
 
+async function rasterToPngDataUrl(imgUrl, maxW = 90, maxH = 90) {
+  if (!imgUrl) return null
+  const img = new Image()
+  img.crossOrigin = 'anonymous'
+  img.src = imgUrl
+
+  await new Promise((resolve, reject) => {
+    img.onload = resolve
+    img.onerror = reject
+  })
+
+  const aspect = (img.width || maxW) / (img.height || maxH)
+  let drawW = maxW
+  let drawH = drawW / aspect
+  if (drawH > maxH) {
+    drawH = maxH
+    drawW = drawH * aspect
+  }
+
+  const canvas = document.createElement('canvas')
+  canvas.width = Math.max(1, Math.round(drawW))
+  canvas.height = Math.max(1, Math.round(drawH))
+  const ctx = canvas.getContext('2d')
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+  return { dataUrl: canvas.toDataURL('image/png'), w: canvas.width, h: canvas.height }
+}
+
 function getBadgeFrame(doc, margin) {
   const pageW = doc.internal.pageSize.getWidth()
   const w = 120, h = 120
@@ -157,6 +185,14 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     throw new Error('generateCertificatePDF must be called in the browser')
   }
 
+  // Foto candidato (da Airtable / user)
+  const studentPhotoUrl =
+    user?.photoUrl ||
+    user?.studentPhotoUrl ||
+    (Array.isArray(user?.student_photo) ? user.student_photo[0]?.url : null) ||
+    (Array.isArray(user?.photo) ? user.photo[0]?.url : null) ||
+    null
+
   // --- normalizziamo subito ID e campi che ci servono ---
   // da Airtable arrivano probabilmente come TestId / CandidateId
   const testId =
@@ -189,23 +225,56 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   // Background frame
   drawRoundedRect(doc, margin - 18, margin - 18, pageW - (margin - 18) * 2, pageH - (margin - 18) * 2, 14, '#FFFFFF')
 
-  // Header: logo + titles
+  // --- Header: photo (left) + logo (right) + titles ---
+  const headerTop = margin
+  const headerInnerTop = headerTop + 10
+
+  // 3.1 Foto candidato (se presente) – in alto a sinistra
+  const photoBoxSize = 80
+  const photoX = margin
+  const photoY = headerInnerTop
+
+  if (studentPhotoUrl) {
+    try {
+      const photo = await rasterToPngDataUrl(studentPhotoUrl, photoBoxSize, photoBoxSize)
+      if (photo?.dataUrl) {
+        // Cornice chiara dietro la foto
+        doc.setFillColor('#F7F9FB')
+        doc.setDrawColor(BRAND.line)
+        doc.roundedRect(photoX - 4, photoY - 4, photoBoxSize + 8, photoBoxSize + 8, 10, 10, 'FD')
+
+        // Foto
+        const offsetX = photoX + (photoBoxSize - photo.w) / 2
+        const offsetY = photoY + (photoBoxSize - photo.h) / 2
+        doc.addImage(photo.dataUrl, 'PNG', offsetX, offsetY, photo.w, photo.h)
+      }
+    } catch (err) {
+      console.error('Unable to load student photo for certificate', err)
+    }
+  }
+
+  // 3.2 Logo Evalua – in alto a destra
   try {
-    const { dataUrl, w, h } = await svgToPngDataUrl(evaluaLogoUrl, 220, 60)
-    doc.addImage(dataUrl, 'PNG', margin, 56, w, h)
+    const { dataUrl, w, h } = await svgToPngDataUrl(evaluaLogoUrl, 200, 52)
+    const logoX = pageW - margin - w
+    const logoY = headerInnerTop
+    doc.addImage(dataUrl, 'PNG', logoX, logoY, w, h)
   } catch (error) {
     console.error('Unable to load Evalua logo for certificate', error)
   }
 
+  // 3.3 Titoli – leggermente più in basso per dare respiro
+  const titleY = headerInnerTop + photoBoxSize + 24
+
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(18)
   doc.setTextColor(BRAND.text)
-  doc.text('QUAET – Adaptive English Test', margin, 135)
+  doc.text('QUAET – Adaptive English Test', margin, titleY)
 
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(12)
   doc.setTextColor(BRAND.mute)
-  doc.text('Official Result Certificate', margin, 156)
+  doc.text('Official Result Certificate', margin, titleY + 18)
 
   // CEFR badge
   drawCefrBadge(doc, levelText, margin)
@@ -215,7 +284,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   const rightLimitX = badge.x - 12
 
   // Candidate
-  let y = 195
+  let y = 210
   drawSectionTitle(doc, 'Candidate', margin, y, rightLimitX)
   y += 24
 

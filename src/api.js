@@ -1,4 +1,5 @@
 const API_BASE = (import.meta.env.VITE_AUTH_API || '').replace(/\/$/, '')
+const API_SUFFIX = '/api'
 
 function buildApiUrl(path = '') {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`
@@ -9,6 +10,14 @@ function buildApiUrl(path = '') {
 
   if (normalizedPath.startsWith(API_BASE)) {
     return normalizedPath
+  }
+
+  if (
+    API_BASE.endsWith(API_SUFFIX) &&
+    (normalizedPath === API_SUFFIX || normalizedPath.startsWith(`${API_SUFFIX}/`))
+  ) {
+    const trimmedPath = normalizedPath.slice(API_SUFFIX.length) || ''
+    return `${API_BASE}${trimmedPath}`
   }
 
   return `${API_BASE}${normalizedPath}`

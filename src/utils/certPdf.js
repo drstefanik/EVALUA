@@ -386,7 +386,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(9)
   doc.setTextColor(BRAND.mute)
-  doc.text('Verify at: evalua.education/verify', valX + 12, sigY - 10 + 70)
+  doc.text('Verify at: evaluaeducation.org/verify', valX + 12, sigY - 10 + 70)
 
   // Footer
   doc.setFont('helvetica', 'normal')

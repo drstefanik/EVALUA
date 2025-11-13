@@ -26,6 +26,7 @@ import Resources from './pages/public/Resources.jsx'
 import Contact from './pages/public/Contact.jsx'
 import Privacy from './pages/public/Privacy.jsx'
 import Terms from './pages/public/Terms.jsx'
+import Verify from './pages/Verify.jsx'
 
 // Lazy load del test adattivo
 const AdaptiveTest = lazy(() => import('./components/AdaptiveTest.jsx'))
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
       { path: '/contact', element: <Contact /> },
       { path: '/privacy', element: <Privacy /> },
       { path: '/terms', element: <Terms /> },
+      { path: '/verify', element: <Verify /> },
       { path: '/login', element: <Login /> },
       { path: '/signup-school', element: <SignupSchool /> },
       { path: '/signup-student', element: <SignupStudent /> },

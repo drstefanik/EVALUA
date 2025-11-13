@@ -63,10 +63,16 @@ function buildTree(folders) {
     if (f.parent && map.has(f.parent)) map.get(f.parent).children.push(f)
   })
   const roots = []
-  map.forEach((f) => { if (!f.parent || !map.has(f.parent)) roots.push(f) })
+  map.forEach((f) => {
+    if (!f.parent || !map.has(f.parent)) roots.push(f)
+  })
 
   function sort(nodes) {
-    nodes.sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || (a.title || a.name || '').localeCompare(b.title || b.name || ''))
+    nodes.sort(
+      (a, b) =>
+        (a.order ?? 999) - (b.order ?? 999) ||
+        (a.title || a.name || '').localeCompare(b.title || b.name || '')
+    )
     nodes.forEach((n) => sort(n.children))
   }
   sort(roots)
@@ -87,7 +93,9 @@ function FolderNode({ node, depth, onSelect, selectedId }) {
         }`}
         style={{ paddingLeft: `${depth * 16 + 12}px` }}
       >
-        <span className="font-medium truncate">{node.title || node.name || 'Untitled folder'}</span>
+        <span className="font-medium truncate">
+          {node.title || node.name || 'Untitled folder'}
+        </span>
         <span className="text-xs text-slate-400">{node.children.length}</span>
       </button>
 
@@ -131,46 +139,66 @@ export default function StudentDashboard() {
   const defaultFolderId = useMemo(() => {
     if (!folders.length) return null
     const roots = folders
-      .filter(f => !f.parent)
-      .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || (a.title || a.name || '').localeCompare(b.title || b.name || ''))
+      .filter((f) => !f.parent)
+      .sort(
+        (a, b) =>
+          (a.order ?? 999) - (b.order ?? 999) ||
+          (a.title || a.name || '').localeCompare(b.title || b.name || '')
+      )
     return roots[0]?.id ?? folders[0].id
   }, [folders])
 
   const childrenOf = useCallback(
-    (id) => folders
-      .filter(f => f.parent === id)
-      .sort((a,b)=>(a.order??999)-(b.order??999) || (a.title||a.name||'').localeCompare(b.title||b.name||'')),
+    (id) =>
+      folders
+        .filter((f) => f.parent === id)
+        .sort(
+          (a, b) =>
+            (a.order ?? 999) - (b.order ?? 999) ||
+            (a.title || a.name || '').localeCompare(b.title || b.name || '')
+        ),
     [folders]
   )
 
   const fileCountOf = useCallback(
-    (id) => files.filter(f => f.folder === id).length,
+    (id) => files.filter((f) => f.folder === id).length,
     [files]
   )
 
-  const hasDescendantFiles = useCallback((id) => {
-    const stack = [...childrenOf(id)]
-    while (stack.length) {
-      const n = stack.pop()
-      if (fileCountOf(n.id) > 0) return true
-      stack.push(...childrenOf(n.id))
-    }
-    return false
-  }, [childrenOf, fileCountOf])
+  const hasDescendantFiles = useCallback(
+    (id) => {
+      const stack = [...childrenOf(id)]
+      while (stack.length) {
+        const n = stack.pop()
+        if (fileCountOf(n.id) > 0) return true
+        stack.push(...childrenOf(n.id))
+      }
+      return false
+    },
+    [childrenOf, fileCountOf]
+  )
 
   const filteredFiles = useMemo(() => {
     if (!selectedFolderId) return []
     return files
       .filter((f) => f.folder === selectedFolderId)
-      .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || (a.title || '').localeCompare(b.title || ''))
+      .sort(
+        (a, b) =>
+          (a.order ?? 999) - (b.order ?? 999) ||
+          (a.title || '').localeCompare(b.title || '')
+      )
   }, [files, selectedFolderId])
 
   // load data
   useEffect(() => {
-    if (!token) { navigate('/login', { replace: true }); return }
+    if (!token) {
+      navigate('/login', { replace: true })
+      return
+    }
     let active = true
     ;(async () => {
-      setLoading(true); setError('')
+      setLoading(true)
+      setError('')
       try {
         const r = await fetch(`${API_BASE}/content/tree`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -179,7 +207,8 @@ export default function StudentDashboard() {
         const payload = await r.json().catch(() => ({}))
         if (!r.ok) {
           setError(payload?.error || 'Unable to retrieve the content.')
-          setFolders([]); setFiles([])
+          setFolders([])
+          setFiles([])
           return
         }
         if (!active) return
@@ -199,21 +228,29 @@ export default function StudentDashboard() {
       } catch {
         if (active) {
           setError('Connection unavailable. Try again later.')
-          setFolders([]); setFiles([])
+          setFolders([])
+          setFiles([])
         }
       } finally {
         if (active) setLoading(false)
       }
     })()
-    return () => { active = false }
+    return () => {
+      active = false
+    }
   }, [navigate, token])
 
   // select default folder
   useEffect(() => {
-    if (!folders.length) { setSelectedFolderId(null); return }
-    setSelectedFolderId(prev => {
-      if (prev && folders.some(f => f.id === prev)) return prev
-      const root = folders.filter(f => !f.parent).sort((a,b) => (a.order ?? 999) - (b.order ?? 999))[0]
+    if (!folders.length) {
+      setSelectedFolderId(null)
+      return
+    }
+    setSelectedFolderId((prev) => {
+      if (prev && folders.some((f) => f.id === prev)) return prev
+      const root = folders
+        .filter((f) => !f.parent)
+        .sort((a, b) => (a.order ?? 999) - (b.order ?? 999))[0]
       return root?.id ?? folders[0].id
     })
   }, [folders])
@@ -223,42 +260,68 @@ export default function StudentDashboard() {
     if (!selectedFolderId) return
     if (filteredFiles.length > 0) return
     const kids = childrenOf(selectedFolderId)
-    const target = kids.find(k => fileCountOf(k.id) > 0) || kids.find(k => hasDescendantFiles(k.id))
+    const target =
+      kids.find((k) => fileCountOf(k.id) > 0) ||
+      kids.find((k) => hasDescendantFiles(k.id))
     if (target) setSelectedFolderId(target.id)
   }, [selectedFolderId, filteredFiles.length, childrenOf, fileCountOf, hasDescendantFiles])
 
   // propedeuticity
-  const isLocked = useCallback((file, list) => {
-    if (file.prereq) {
-      const pre = progress[file.prereq]
-      return !(pre && pre.completed)
-    }
-    const sorted = list.filter(f => f.type === 'video')
-      .sort((a,b) => (a.order ?? 999) - (b.order ?? 999))
-    const idx = sorted.findIndex(f => f.id === file.id)
-    if (idx <= 0) return false
-    const prev = sorted[idx - 1]
-    return !progress[prev.id]?.completed
-  }, [progress])
+  const isLocked = useCallback(
+    (file, list) => {
+      if (file.prereq) {
+        const pre = progress[file.prereq]
+        return !(pre && pre.completed)
+      }
+      const sorted = list
+        .filter((f) => f.type === 'video')
+        .sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
+      const idx = sorted.findIndex((f) => f.id === file.id)
+      if (idx <= 0) return false
+      const prev = sorted[idx - 1]
+      return !progress[prev.id]?.completed
+    },
+    [progress]
+  )
 
   const [playing, setPlaying] = useState(null)
   const handleOpenVideo = (file) => setPlaying(file)
   const handleCloseVideo = () => setPlaying(null)
 
   // ✅ callback stabili: evitano re-render del modal/player
-  const handleProgress = useCallback((fileId, seconds) => {
-    upsert(fileId, { seconds })
-  }, [upsert])
+  const handleProgress = useCallback(
+    (fileId, seconds) => {
+      upsert(fileId, { seconds })
+    },
+    [upsert]
+  )
 
-  const handleComplete = useCallback((fileId) => {
-    upsert(fileId, { completed: true })
-  }, [upsert])
+  const handleComplete = useCallback(
+    (fileId) => {
+      upsert(fileId, { completed: true })
+    },
+    [upsert]
+  )
 
   const handleGoToDefaultFolder = useCallback(() => {
     if (defaultFolderId) setSelectedFolderId(defaultFolderId)
   }, [defaultFolderId])
 
-  const latestAdaptiveResult = useMemo(() => adaptiveResults[0] || null, [adaptiveResults])
+  // scroll helper per i bottoni della dashboard
+  const scrollToSection = useCallback((id) => {
+    if (typeof document === 'undefined') return
+    const el = document.getElementById(id)
+    if (!el) return
+    const offset = 100 // altezza navbar + respiro
+    const y = el.getBoundingClientRect().top + window.scrollY - offset
+    window.scrollTo({ top: y, behavior: 'smooth' })
+  }, [])
+
+  const latestAdaptiveResult = useMemo(
+    () => adaptiveResults[0] || null,
+    [adaptiveResults]
+  )
+
   const featureFlags = useMemo(() => {
     if (currentUser) {
       return {
@@ -279,35 +342,56 @@ export default function StudentDashboard() {
     const loadResults = () => {
       try {
         const raw = window.localStorage.getItem(ADAPTIVE_RESULTS_STORAGE_KEY)
-        if (!raw) { setAdaptiveResults([]); return }
+        if (!raw) {
+          setAdaptiveResults([])
+          return
+        }
         const parsed = JSON.parse(raw)
-        if (!Array.isArray(parsed)) { setAdaptiveResults([]); return }
+        if (!Array.isArray(parsed)) {
+          setAdaptiveResults([])
+          return
+        }
         const normalized = parsed
           .map((entry, index) => {
             const startedAt = entry?.startedAt || entry?.StartedAt || null
-            const completedAt = entry?.completedAt || entry?.CompletedAt || startedAt || null
+            const completedAt =
+              entry?.completedAt || entry?.CompletedAt || startedAt || null
             const askedByLevel =
-              typeof entry?.askedByLevel === 'object' && entry?.askedByLevel !== null
+              typeof entry?.askedByLevel === 'object' &&
+              entry?.askedByLevel !== null
                 ? entry.askedByLevel
-                : (typeof entry?.AskedByLevel === 'object' && entry?.AskedByLevel !== null
-                  ? entry.AskedByLevel
-                  : {})
+                : typeof entry?.AskedByLevel === 'object' &&
+                  entry?.AskedByLevel !== null
+                ? entry.AskedByLevel
+                : {}
             const askedBySkill =
-              typeof entry?.askedBySkill === 'object' && entry?.askedBySkill !== null
+              typeof entry?.askedBySkill === 'object' &&
+              entry?.askedBySkill !== null
                 ? entry.askedBySkill
-                : (typeof entry?.AskedBySkill === 'object' && entry?.AskedBySkill !== null
-                  ? entry.AskedBySkill
-                  : {})
-            const totalItemsValue = typeof entry?.totalItems === 'number'
-              ? entry.totalItems
-              : (typeof entry?.TotalItems === 'number' ? entry.TotalItems : null)
-            const durationValue = typeof entry?.durationSec === 'number'
-              ? entry.durationSec
-              : (typeof entry?.DurationSec === 'number' ? entry.DurationSec : null)
-            const confidenceRaw = typeof entry?.confidence === 'number'
-              ? entry.confidence
-              : (typeof entry?.Confidence === 'number' ? entry.Confidence : null)
-            const estimatedLevelValue = entry?.estimatedLevel || entry?.EstimatedLevel || null
+                : typeof entry?.AskedBySkill === 'object' &&
+                  entry?.AskedBySkill !== null
+                ? entry.AskedBySkill
+                : {}
+            const totalItemsValue =
+              typeof entry?.totalItems === 'number'
+                ? entry.totalItems
+                : typeof entry?.TotalItems === 'number'
+                ? entry.TotalItems
+                : null
+            const durationValue =
+              typeof entry?.durationSec === 'number'
+                ? entry.durationSec
+                : typeof entry?.DurationSec === 'number'
+                ? entry.DurationSec
+                : null
+            const confidenceRaw =
+              typeof entry?.confidence === 'number'
+                ? entry.confidence
+                : typeof entry?.Confidence === 'number'
+                ? entry.Confidence
+                : null
+            const estimatedLevelValue =
+              entry?.estimatedLevel || entry?.EstimatedLevel || null
             const testId = entry?.TestId || entry?.testId || null
             const candidateId = entry?.CandidateId || entry?.candidateId || null
 
@@ -334,8 +418,12 @@ export default function StudentDashboard() {
             }
           })
           .sort((a, b) => {
-            const aTime = new Date(a.completedAt || a.startedAt || 0).getTime()
-            const bTime = new Date(b.completedAt || b.startedAt || 0).getTime()
+            const aTime = new Date(
+              a.completedAt || a.startedAt || 0
+            ).getTime()
+            const bTime = new Date(
+              b.completedAt || b.startedAt || 0
+            ).getTime()
             return bTime - aTime
           })
         setAdaptiveResults(normalized)
@@ -365,7 +453,10 @@ export default function StudentDashboard() {
     try {
       const date = new Date(value)
       if (Number.isNaN(date.getTime())) return '—'
-      return date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
+      return date.toLocaleString(undefined, {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      })
     } catch {
       return '—'
     }
@@ -382,7 +473,8 @@ export default function StudentDashboard() {
 
   const latestResultCard = useMemo(() => {
     if (!latestAdaptiveResult) return null
-    const completed = latestAdaptiveResult.completedAt || latestAdaptiveResult.startedAt
+    const completed =
+      latestAdaptiveResult.completedAt || latestAdaptiveResult.startedAt
     const confidencePct =
       typeof latestAdaptiveResult.confidence === 'number'
         ? Math.round(latestAdaptiveResult.confidence * 100)
@@ -397,21 +489,38 @@ export default function StudentDashboard() {
   const resultsForTable = useMemo(() => {
     return adaptiveResults.map((attempt, index) => {
       const completed = attempt.completedAt || attempt.startedAt || null
-      const confidenceRaw = typeof attempt.confidence === 'number'
-        ? attempt.confidence
-        : (typeof attempt.Confidence === 'number' ? attempt.Confidence : null)
-      const confidencePct = typeof confidenceRaw === 'number'
-        ? (confidenceRaw > 1 ? Math.round(confidenceRaw) : Math.round(confidenceRaw * 100))
-        : null
-      const totalItemsValue = typeof attempt.totalItems === 'number'
-        ? attempt.totalItems
-        : (typeof attempt.TotalItems === 'number' ? attempt.TotalItems : null)
-      const durationSeconds = typeof attempt.durationSec === 'number'
-        ? attempt.durationSec
-        : (typeof attempt.DurationSec === 'number' ? attempt.DurationSec : null)
+      const confidenceRaw =
+        typeof attempt.confidence === 'number'
+          ? attempt.confidence
+          : typeof attempt.Confidence === 'number'
+          ? attempt.Confidence
+          : null
+      const confidencePct =
+        typeof confidenceRaw === 'number'
+          ? confidenceRaw > 1
+            ? Math.round(confidenceRaw)
+            : Math.round(confidenceRaw * 100)
+          : null
+      const totalItemsValue =
+        typeof attempt.totalItems === 'number'
+          ? attempt.totalItems
+          : typeof attempt.TotalItems === 'number'
+          ? attempt.TotalItems
+          : null
+      const durationSeconds =
+        typeof attempt.durationSec === 'number'
+          ? attempt.durationSec
+          : typeof attempt.DurationSec === 'number'
+          ? attempt.DurationSec
+          : null
       const testId = attempt.TestId ?? attempt.testId ?? null
-      const candidateId = attempt.CandidateId ?? attempt.candidateId ?? null
-      const estimatedLevelValue = attempt.estimatedLevel ?? attempt.EstimatedLevel ?? attempt.level ?? null
+      const candidateId =
+        attempt.CandidateId ?? attempt.candidateId ?? null
+      const estimatedLevelValue =
+        attempt.estimatedLevel ??
+        attempt.EstimatedLevel ??
+        attempt.level ??
+        null
 
       return {
         ...attempt,
@@ -421,7 +530,8 @@ export default function StudentDashboard() {
         EstimatedLevel: estimatedLevelValue,
         confidence: confidencePct,
         Confidence: confidencePct,
-        confidenceLabel: confidencePct !== null ? `${confidencePct}%` : '—',
+        confidenceLabel:
+          confidencePct !== null ? `${confidencePct}%` : '—',
         items: totalItemsValue !== null ? totalItemsValue : '—',
         totalItems: totalItemsValue,
         TotalItems: totalItemsValue,
@@ -445,158 +555,211 @@ export default function StudentDashboard() {
     <div className="min-h-screen bg-gradient-to-b from-biwhite via-biwhite to-binavy/10 dark:from-[#0a0f1f] dark:via-[#0a0f1f] dark:to-[#001c5e]">
       <div className="mx-auto max-w-6xl px-4 py-10">
         <div className="mb-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-          <h1 className="text-3xl font-semibold text-binavy dark:text-white">Student area</h1>
+          <h1 className="text-3xl font-semibold text-binavy dark:text-white">
+            Student area
+          </h1>
           <p className="mt-2 text-slate-600 dark:text-slate-300">
             {displayName
               ? `Hi ${displayName}, welcome to your learning environment`
               : 'Explore your learning contents.'}
           </p>
           <div className="mt-3 text-sm">
-            <Link to="/logout" className="font-semibold underline-offset-4 text-binavy hover:text-bireg dark:text-white">Logout</Link>
+            <Link
+              to="/logout"
+              className="font-semibold underline-offset-4 text-binavy hover:text-bireg dark:text-white"
+            >
+              Logout
+            </Link>
           </div>
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-          <DashboardCards latestResult={latestResultCard} features={featureFlags} />
+          <DashboardCards
+            latestResult={latestResultCard}
+            features={featureFlags}
+            onGoToCourses={() => scrollToSection('learning-hub')}
+            onGoToResults={() => scrollToSection('results-section')}
+          />
         </div>
 
         <FeatureGate
           enabled={featureFlags.courses}
           fallback={
             <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm dark:border-white/10 dark:bg-slate-900/70 dark:text-slate-300">
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Courses area unavailable</h2>
+              <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
+                Courses area unavailable
+              </h2>
               <p className="mt-2">
-                This area is not enabled for your account. Contact your school administrator for access to the learning content.
+                This area is not enabled for your account. Contact your school
+                administrator for access to the learning content.
               </p>
             </div>
           }
         >
-          <div className="mt-6 grid gap-6 lg:grid-cols-[260px,1fr]">
+          <div
+            id="learning-hub"
+            className="mt-6 grid gap-6 lg:grid-cols-[260px,1fr]"
+          >
             {/* Sidebar */}
             <aside className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-              <h2 className="px-2 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-300">Learning Hub</h2>
+              <h2 className="px-2 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-300">
+                Learning Hub
+              </h2>
               <div className="mt-2 space-y-1">
                 {tree.length ? (
-                tree.map((node) => (
-                  <FolderNode
-                    key={node.id}
-                    node={node}
-                    depth={0}
-                    onSelect={setSelectedFolderId}
-                    selectedId={selectedFolderId}
-                  />
-                ))
-              ) : (
-                <p className="px-3 py-2 text-sm text-slate-500">No folders available.</p>
-              )}
-            </div>
-          </aside>
-
-          {/* Main content */}
-          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
-            <div className="mb-6">
-              <button
-                type="button"
-                onClick={handleGoToDefaultFolder}
-                className="inline-flex items-center rounded-xl bg-binavy px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#001c5e] focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:hover:bg-[#16348f] dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f] disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={!defaultFolderId}
-              >
-                Explore content
-              </button>
-            </div>
-
-            {error && !loading && (
-              <div className="rounded-xl border border-bireg/30 bg-bireg/10 p-3 text-sm text-bireg">{error}</div>
-            )}
-
-            {loading ? (
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="aspect-[16/9] animate-pulse rounded-2xl bg-slate-200/50 dark:bg-white/10" />
-                ))}
+                  tree.map((node) => (
+                    <FolderNode
+                      key={node.id}
+                      node={node}
+                      depth={0}
+                      onSelect={setSelectedFolderId}
+                      selectedId={selectedFolderId}
+                    />
+                  ))
+                ) : (
+                  <p className="px-3 py-2 text-sm text-slate-500">
+                    No folders available.
+                  </p>
+                )}
               </div>
-            ) : !selectedFolderId ? (
-              <p className="text-sm text-slate-600 dark:text-slate-300">Select a folder to view content.</p>
-            ) : filteredFiles.length === 0 ? (
-              (() => {
-                const subs = childrenOf(selectedFolderId)
-                if (subs.length === 0) {
-                  return <p className="text-sm text-slate-600 dark:text-slate-300">This section is empty.</p>
-                }
-                return (
-                  <div>
-                    <p className="mb-3 text-sm text-slate-600 dark:text-slate-300">
-                      Select a subsection:
-                    </p>
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                      {subs.map(s => (
-                        <button
-                          key={s.id}
-                          onClick={() => setSelectedFolderId(s.id)}
-                          className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-slate-900/70"
-                        >
-                          <span className="font-medium truncate">{s.title || s.name || 'Untitled'}</span>
-                          <span className="ml-3 inline-flex min-w-[1.5rem] items-center justify-center rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600 dark:bg-white/10 dark:text-slate-300">
-                            {fileCountOf(s.id)}
-                          </span>
-                        </button>
-                      ))}
+            </aside>
+
+            {/* Main content */}
+            <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70">
+              <div className="mb-6">
+                <button
+                  type="button"
+                  onClick={handleGoToDefaultFolder}
+                  className="inline-flex items-center rounded-xl bg-binavy px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#001c5e] focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:hover:bg-[#16348f] dark:focus-visible:ring-[#6a87ff] dark:focus-visible:ring-offset-[#0a0f1f] disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={!defaultFolderId}
+                >
+                  Explore content
+                </button>
+              </div>
+
+              {error && !loading && (
+                <div className="rounded-xl border border-bireg/30 bg-bireg/10 p-3 text-sm text-bireg">
+                  {error}
+                </div>
+              )}
+
+              {loading ? (
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="aspect-[16/9] animate-pulse rounded-2xl bg-slate-200/50 dark:bg-white/10"
+                    />
+                  ))}
+                </div>
+              ) : !selectedFolderId ? (
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  Select a folder to view content.
+                </p>
+              ) : filteredFiles.length === 0 ? (
+                (() => {
+                  const subs = childrenOf(selectedFolderId)
+                  if (subs.length === 0) {
+                    return (
+                      <p className="text-sm text-slate-600 dark:text-slate-300">
+                        This section is empty.
+                      </p>
+                    )
+                  }
+                  return (
+                    <div>
+                      <p className="mb-3 text-sm text-slate-600 dark:text-slate-300">
+                        Select a subsection:
+                      </p>
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                        {subs.map((s) => (
+                          <button
+                            key={s.id}
+                            onClick={() => setSelectedFolderId(s.id)}
+                            className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-slate-900/70"
+                          >
+                            <span className="font-medium truncate">
+                              {s.title || s.name || 'Untitled'}
+                            </span>
+                            <span className="ml-3 inline-flex min-w-[1.5rem] items-center justify-center rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600 dark:bg-white/10 dark:text-slate-300">
+                              {fileCountOf(s.id)}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )
-              })()
-            ) : (
-              <>
-                {filteredFiles.some(f => f.type === 'video') ? (
-                  <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                    {filteredFiles.filter(f => f.type === 'video').map(file => {
-                      const prog = progress[file.id]
-                      const pct = file.duration
-                        ? Math.min(100, Math.round(((prog?.seconds || 0) / file.duration) * 100))
-                        : (prog?.completed ? 100 : 0)
-                      const locked = isLocked(file, filteredFiles)
-                      return (
-                        <VideoCard
+                  )
+                })()
+              ) : (
+                <>
+                  {filteredFiles.some((f) => f.type === 'video') ? (
+                    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                      {filteredFiles
+                        .filter((f) => f.type === 'video')
+                        .map((file) => {
+                          const prog = progress[file.id]
+                          const pct = file.duration
+                            ? Math.min(
+                                100,
+                                Math.round(
+                                  ((prog?.seconds || 0) / file.duration) * 100
+                                )
+                              )
+                            : prog?.completed
+                            ? 100
+                            : 0
+                          const locked = isLocked(file, filteredFiles)
+                          return (
+                            <VideoCard
+                              key={file.id}
+                              file={file}
+                              locked={locked}
+                              progressPct={pct}
+                              onClick={() => handleOpenVideo(file)}
+                            />
+                          )
+                        })}
+                    </div>
+                  ) : (
+                    <ul className="space-y-3">
+                      {filteredFiles.map((file) => (
+                        <FileListItem
                           key={file.id}
                           file={file}
-                          locked={locked}
-                          progressPct={pct}
-                          onClick={() => handleOpenVideo(file)}
+                          onOpen={() =>
+                            window.open(file.url, '_blank', 'noopener')
+                          }
+                          onCopy={async () =>
+                            navigator.clipboard?.writeText(file.url)
+                          }
+                          isCopied={false}
                         />
-                      )
-                    })}
-                  </div>
-                ) : (
-                  <ul className="space-y-3">
-                    {filteredFiles.map(file => (
-                      <FileListItem
-                        key={file.id}
-                        file={file}
-                        onOpen={() => window.open(file.url, '_blank', 'noopener')}
-                        onCopy={async () => navigator.clipboard?.writeText(file.url)}
-                        isCopied={false}
-                      />
-                    ))}
-                  </ul>
-                )}
-              </>
-            )}
-          </section>
-        </div>
+                      ))}
+                    </ul>
+                  )}
+                </>
+              )}
+            </section>
+          </div>
         </FeatureGate>
 
         <FeatureGate
           enabled={featureFlags.results}
           fallback={
             <div className="mt-10 rounded-3xl border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm dark:border-white/10 dark:bg-slate-900/70 dark:text-slate-300">
-              <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">My Results</h2>
+              <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">
+                My Results
+              </h2>
               <p className="mt-2">
-                This area is not enabled for your account. Contact your school or administrator if you believe this is an error.
+                This area is not enabled for your account. Contact your school
+                or administrator if you believe this is an error.
               </p>
             </div>
           }
         >
-          <MyResults results={resultsForTable} currentUser={currentUser} />
+          <section id="results-section" className="mt-10">
+            <MyResults results={resultsForTable} currentUser={currentUser} />
+          </section>
         </FeatureGate>
       </div>
 

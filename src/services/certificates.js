@@ -13,12 +13,20 @@ export function generateVerificationCode() {
 }
 
 function toAirtableDate(value) {
-  if (!value) return new Date().toISOString();
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return new Date().toISOString();
-  }
-  return date.toISOString();
+  const ensureDate = (input) => {
+    if (!input) return new Date();
+    const parsed = new Date(input);
+    if (Number.isNaN(parsed.getTime())) {
+      return new Date();
+    }
+    return parsed;
+  };
+
+  const date = ensureDate(value);
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 export async function upsertCertificate({ code, studentId, name, testName, level, issuedAt, pdfUrl, status='Active' }) {

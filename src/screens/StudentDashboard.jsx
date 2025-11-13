@@ -10,6 +10,7 @@ import DashboardCards from '../components/DashboardCards.jsx'
 import FeatureGate from '../components/FeatureGate.jsx'
 import MyResults from '../components/MyResults.jsx'
 import PersonalDetails from '../components/PersonalDetails.jsx'
+import CollapsibleSection from '../components/CollapsibleSection.jsx'
 
 const API_BASE = import.meta.env.VITE_AUTH_API ?? '/api'
 const ADAPTIVE_RESULTS_STORAGE_KEY = 'evaluaAdaptiveResults'
@@ -580,15 +581,21 @@ export default function StudentDashboard() {
             latestResult={latestResultCard}
             features={featureFlags}
             onGoToCourses={() => scrollToSection('learning-hub')}
-            onGoToResults={() => scrollToSection('results-section')}
-            onGoToPersonalDetails={() => scrollToSection('personal-details-section')}
+            onGoToResults={() => scrollToSection('my-results')}
+            onGoToPersonalDetails={() => scrollToSection('personal-details')}
           />
         </div>
 
         {featureFlags.personal_details && (
-          <section id="personal-details-section" className="mt-10 card rounded-3xl p-6">
-            <PersonalDetails currentUser={currentUser} onProfileUpdated={refreshCurrentUser} />
-          </section>
+          <div className="mt-10">
+            <CollapsibleSection
+              id="personal-details"
+              title="Personal details"
+              defaultOpen={true}
+            >
+              <PersonalDetails currentUser={currentUser} onProfileUpdated={refreshCurrentUser} />
+            </CollapsibleSection>
+          </div>
         )}
 
         <FeatureGate
@@ -605,150 +612,155 @@ export default function StudentDashboard() {
             </div>
           }
         >
-          <div
-            id="learning-hub"
-            className="mt-6 grid gap-6 lg:grid-cols-[260px,1fr]"
-          >
-            {/* Sidebar */}
-            <aside className="card rounded-3xl p-4">
-              <h2 className="px-2 text-sm font-semibold uppercase tracking-wider text-textc-muted">
-                Learning Hub
-              </h2>
-              <div className="mt-2 space-y-1">
-                {tree.length ? (
-                  tree.map((node) => (
-                    <FolderNode
-                      key={node.id}
-                      node={node}
-                      depth={0}
-                      onSelect={setSelectedFolderId}
-                      selectedId={selectedFolderId}
-                    />
-                  ))
-                ) : (
-                  <p className="px-3 py-2 text-sm text-textc-muted">
-                    No folders available.
-                  </p>
-                )}
-              </div>
-            </aside>
-
-            {/* Main content */}
-            <section className="card rounded-3xl p-6">
-              <div className="mb-6">
-                <button
-                  type="button"
-                  onClick={handleGoToDefaultFolder}
-                  className="btn-primary inline-flex items-center px-5 py-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-60"
-                  disabled={!defaultFolderId}
-                >
-                  Explore content
-                </button>
-              </div>
-
-              {error && !loading && (
-                <div className="rounded-xl border border-border-strong bg-surface-muted p-3 text-sm text-primary">
-                  {error}
-                </div>
-              )}
-
-              {loading ? (
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="aspect-[16/9] animate-pulse rounded-2xl bg-surface-muted"
-                    />
-                  ))}
-                </div>
-              ) : !selectedFolderId ? (
-                <p className="text-sm text-secondary">
-                  Select a folder to view content.
-                </p>
-              ) : filteredFiles.length === 0 ? (
-                (() => {
-                  const subs = childrenOf(selectedFolderId)
-                  if (subs.length === 0) {
-                    return (
-                      <p className="text-sm text-secondary">
-                        This section is empty.
+          <div className="mt-6">
+            <CollapsibleSection
+              id="learning-hub"
+              title="Learning hub"
+              defaultOpen={false}
+            >
+              <div className="grid gap-6 lg:grid-cols-[260px,1fr]">
+                {/* Sidebar */}
+                <aside className="card rounded-3xl p-4">
+                  <h2 className="px-2 text-sm font-semibold uppercase tracking-wider text-textc-muted">
+                    Learning Hub
+                  </h2>
+                  <div className="mt-2 space-y-1">
+                    {tree.length ? (
+                      tree.map((node) => (
+                        <FolderNode
+                          key={node.id}
+                          node={node}
+                          depth={0}
+                          onSelect={setSelectedFolderId}
+                          selectedId={selectedFolderId}
+                        />
+                      ))
+                    ) : (
+                      <p className="px-3 py-2 text-sm text-textc-muted">
+                        No folders available.
                       </p>
-                    )
-                  }
-                  return (
-                    <div>
-                      <p className="mb-3 text-sm text-secondary">
-                        Select a subsection:
-                      </p>
-                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                        {subs.map((s) => (
-                          <button
-                            key={s.id}
-                            onClick={() => setSelectedFolderId(s.id)}
-                            className="card flex items-center justify-between rounded-xl px-4 py-3 text-left text-sm transition hover:-translate-y-0.5 hover:shadow-md"
-                          >
-                            <span className="font-medium truncate">
-                              {s.title || s.name || 'Untitled'}
-                            </span>
-                            <span className="ml-3 inline-flex min-w-[1.5rem] items-center justify-center rounded-full bg-surface-muted px-2 py-0.5 text-xs text-textc-muted">
-                              {fileCountOf(s.id)}
-                            </span>
-                          </button>
-                        ))}
-                      </div>
+                    )}
+                  </div>
+                </aside>
+
+                {/* Main content */}
+                <section className="card rounded-3xl p-6">
+                  <div className="mb-6">
+                    <button
+                      type="button"
+                      onClick={handleGoToDefaultFolder}
+                      className="btn-primary inline-flex items-center px-5 py-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-60"
+                      disabled={!defaultFolderId}
+                    >
+                      Explore content
+                    </button>
+                  </div>
+
+                  {error && !loading && (
+                    <div className="rounded-xl border border-border-strong bg-surface-muted p-3 text-sm text-primary">
+                      {error}
                     </div>
-                  )
-                })()
-              ) : (
-                <>
-                  {filteredFiles.some((f) => f.type === 'video') ? (
+                  )}
+
+                  {loading ? (
                     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                      {filteredFiles
-                        .filter((f) => f.type === 'video')
-                        .map((file) => {
-                          const prog = progress[file.id]
-                          const pct = file.duration
-                            ? Math.min(
-                                100,
-                                Math.round(
-                                  ((prog?.seconds || 0) / file.duration) * 100
-                                )
-                              )
-                            : prog?.completed
-                            ? 100
-                            : 0
-                          const locked = isLocked(file, filteredFiles)
-                          return (
-                            <VideoCard
-                              key={file.id}
-                              file={file}
-                              locked={locked}
-                              progressPct={pct}
-                              onClick={() => handleOpenVideo(file)}
-                            />
-                          )
-                        })}
-                    </div>
-                  ) : (
-                    <ul className="space-y-3">
-                      {filteredFiles.map((file) => (
-                        <FileListItem
-                          key={file.id}
-                          file={file}
-                          onOpen={() =>
-                            window.open(file.url, '_blank', 'noopener')
-                          }
-                          onCopy={async () =>
-                            navigator.clipboard?.writeText(file.url)
-                          }
-                          isCopied={false}
+                      {Array.from({ length: 8 }).map((_, i) => (
+                        <div
+                          key={i}
+                          className="aspect-[16/9] animate-pulse rounded-2xl bg-surface-muted"
                         />
                       ))}
-                    </ul>
+                    </div>
+                  ) : !selectedFolderId ? (
+                    <p className="text-sm text-secondary">
+                      Select a folder to view content.
+                    </p>
+                  ) : filteredFiles.length === 0 ? (
+                    (() => {
+                      const subs = childrenOf(selectedFolderId)
+                      if (subs.length === 0) {
+                        return (
+                          <p className="text-sm text-secondary">
+                            This section is empty.
+                          </p>
+                        )
+                      }
+                      return (
+                        <div>
+                          <p className="mb-3 text-sm text-secondary">
+                            Select a subsection:
+                          </p>
+                          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                            {subs.map((s) => (
+                              <button
+                                key={s.id}
+                                onClick={() => setSelectedFolderId(s.id)}
+                                className="card flex items-center justify-between rounded-xl px-4 py-3 text-left text-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                              >
+                                <span className="font-medium truncate">
+                                  {s.title || s.name || 'Untitled'}
+                                </span>
+                                <span className="ml-3 inline-flex min-w-[1.5rem] items-center justify-center rounded-full bg-surface-muted px-2 py-0.5 text-xs text-textc-muted">
+                                  {fileCountOf(s.id)}
+                                </span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )
+                    })()
+                  ) : (
+                    <>
+                      {filteredFiles.some((f) => f.type === 'video') ? (
+                        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                          {filteredFiles
+                            .filter((f) => f.type === 'video')
+                            .map((file) => {
+                              const prog = progress[file.id]
+                              const pct = file.duration
+                                ? Math.min(
+                                    100,
+                                    Math.round(
+                                      ((prog?.seconds || 0) / file.duration) * 100
+                                    )
+                                  )
+                                : prog?.completed
+                                ? 100
+                                : 0
+                              const locked = isLocked(file, filteredFiles)
+                              return (
+                                <VideoCard
+                                  key={file.id}
+                                  file={file}
+                                  locked={locked}
+                                  progressPct={pct}
+                                  onClick={() => handleOpenVideo(file)}
+                                />
+                              )
+                            })}
+                        </div>
+                      ) : (
+                        <ul className="space-y-3">
+                          {filteredFiles.map((file) => (
+                            <FileListItem
+                              key={file.id}
+                              file={file}
+                              onOpen={() =>
+                                window.open(file.url, '_blank', 'noopener')
+                              }
+                              onCopy={async () =>
+                                navigator.clipboard?.writeText(file.url)
+                              }
+                              isCopied={false}
+                            />
+                          ))}
+                        </ul>
+                      )}
+                    </>
                   )}
-                </>
-              )}
-            </section>
+                </section>
+              </div>
+            </CollapsibleSection>
           </div>
         </FeatureGate>
 
@@ -766,9 +778,15 @@ export default function StudentDashboard() {
             </div>
           }
         >
-          <section id="results-section" className="mt-10">
-            <MyResults results={resultsForTable} currentUser={currentUser} />
-          </section>
+          <div className="mt-10">
+            <CollapsibleSection
+              id="my-results"
+              title="My Results"
+              defaultOpen={false}
+            >
+              <MyResults results={resultsForTable} currentUser={currentUser} />
+            </CollapsibleSection>
+          </div>
         </FeatureGate>
       </div>
 

@@ -25,7 +25,23 @@ export default function DashboardCards({
   onGoToPersonalDetails,
 }) {
   return (
-    <div className="grid gap-6 md:grid-cols-3">
+    <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
+      {features?.personal_details && (
+        <div className="card p-6 flex flex-col">
+          <h3 className="text-xl font-semibold mb-2 text-primary">Personal details</h3>
+          <p className="text-sm text-secondary">Review and update your personal information.</p>
+          <div className="mt-auto pt-4">
+            <a
+              href="#personal-details"
+              onClick={() => onGoToPersonalDetails?.()}
+              className="btn-primary inline-flex w-full items-center justify-center"
+            >
+              Manage
+            </a>
+          </div>
+        </div>
+      )}
+
       {features?.courses && (
         <div className="card p-6 flex flex-col">
           <h3 className="text-xl font-semibold mb-2 text-primary">My courses</h3>
@@ -33,14 +49,13 @@ export default function DashboardCards({
             Access the learning folders assigned to your profile and resume your progress where you left off.
           </p>
           <div className="mt-auto pt-4">
-            <button
-              type="button"
-              onClick={onGoToCourses}
-              disabled={!onGoToCourses}
-              className="btn-primary inline-flex w-full items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed"
+            <a
+              href="#learning-hub"
+              onClick={() => onGoToCourses?.()}
+              className="btn-primary inline-flex w-full items-center justify-center"
             >
               Explore content
-            </button>
+            </a>
           </div>
         </div>
       )}
@@ -68,31 +83,13 @@ export default function DashboardCards({
           <h3 className="text-xl font-semibold mb-2 text-primary">My Results</h3>
           <p className="text-sm text-secondary">{renderLatestResult(latestResult)}</p>
           <div className="mt-auto pt-4">
-            <button
-              type="button"
-              onClick={onGoToResults}
-              disabled={!onGoToResults}
-              className="btn-ghost inline-flex w-full items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed"
+            <a
+              href="#my-results"
+              onClick={() => onGoToResults?.()}
+              className="btn-ghost inline-flex w-full items-center justify-center"
             >
               View history
-            </button>
-          </div>
-        </div>
-      )}
-
-      {features?.personal_details && (
-        <div className="card p-6 flex flex-col">
-          <h3 className="text-xl font-semibold mb-2 text-primary">Personal details</h3>
-          <p className="text-sm text-secondary">Review and update your personal information</p>
-          <div className="mt-auto pt-4">
-            <button
-              type="button"
-              onClick={onGoToPersonalDetails}
-              disabled={!onGoToPersonalDetails}
-              className="btn-primary inline-flex w-full items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              Manage
-            </button>
+            </a>
           </div>
         </div>
       )}

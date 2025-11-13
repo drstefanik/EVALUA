@@ -115,50 +115,96 @@ export default async function handler(req, res) {
     return sendError(res, 400, "Invalid payload")
   }
 
-  const firstName = sanitizeString(body?.first_name)
-  const lastName = sanitizeString(body?.last_name)
-  const phone = sanitizeString(body?.phone)
-  const placeOfBirth = sanitizeString(body?.place_birth)
-  const countryOfBirth = sanitizeString(body?.country_birth)
-  const identificationDocument = sanitizeString(body?.identification_document)
-  const documentNumber = sanitizeString(body?.document_number)
-  const nationality = sanitizeString(body?.nationality)
-  const dateOfBirth = sanitizeString(body?.date_of_birth)
+  const payload = body && typeof body === "object" ? body : {}
 
-  const fields = {
-    first_name: firstName,
-    last_name: lastName,
-    phone,
-    place_birth: placeOfBirth,
-    country_birth: countryOfBirth,
-    identification_document: identificationDocument,
-    document_number: documentNumber,
-    nationality,
-    full_name: buildFullName(firstName, lastName),
+  const studentId = claims.id || claims.sub || claims.recordId
+  if (!studentId) {
+    return sendError(res, 400, "Missing student identifier")
   }
 
-  if (dateOfBirth) {
-    fields.date_of_birth = dateOfBirth
-  } else {
-    fields.date_of_birth = null
+  const fields = {}
+
+  const hasFirstName = Object.prototype.hasOwnProperty.call(payload, "first_name")
+  const hasLastName = Object.prototype.hasOwnProperty.call(payload, "last_name")
+
+  let firstName
+  let lastName
+
+  if (hasFirstName) {
+    firstName = sanitizeString(payload.first_name)
+    fields.first_name = firstName
+  }
+
+  if (hasLastName) {
+    lastName = sanitizeString(payload.last_name)
+    fields.last_name = lastName
+  }
+
+  if (Object.prototype.hasOwnProperty.call(payload, "phone")) {
+    fields.phone = sanitizeString(payload.phone)
+  }
+
+  if (Object.prototype.hasOwnProperty.call(payload, "place_birth")) {
+    fields.place_birth = sanitizeString(payload.place_birth)
+  }
+
+  if (Object.prototype.hasOwnProperty.call(payload, "country_birth")) {
+    fields.country_birth = sanitizeString(payload.country_birth)
+  }
+
+  if (Object.prototype.hasOwnProperty.call(payload, "identification_document")) {
+    fields.identification_document = sanitizeString(payload.identification_document)
+  }
+
+  if (Object.prototype.hasOwnProperty.call(payload, "document_number")) {
+    fields.document_number = sanitizeString(payload.document_number)
+  }
+
+  if (Object.prototype.hasOwnProperty.call(payload, "nationality")) {
+    fields.nationality = sanitizeString(payload.nationality)
+  }
+
+  if (Object.prototype.hasOwnProperty.call(payload, "date_of_birth")) {
+    const dateOfBirth = sanitizeString(payload.date_of_birth)
+    if (dateOfBirth) {
+      fields.date_of_birth = dateOfBirth
+    } else {
+      fields.date_of_birth = null
+    }
   }
 
   try {
-    if (body?.student_photo_upload) {
-      const attachments = await uploadStudentPhoto(body.student_photo_upload)
+    if (payload?.student_photo_upload) {
+      const attachments = await uploadStudentPhoto(payload.student_photo_upload)
       if (attachments) {
         fields.student_photo = attachments
       }
     }
 
+    if (hasFirstName || hasLastName) {
+      let existingFirstName
+      let existingLastName
+
+      if (!(hasFirstName && hasLastName)) {
+        try {
+          const existingRecord = await studentsTable.find(studentId)
+          existingFirstName = existingRecord?.fields?.first_name
+          existingLastName = existingRecord?.fields?.last_name
+        } catch (fetchError) {
+          console.error("update-profile existing name lookup failed", fetchError)
+        }
+      }
+
+      const computedFullName = buildFullName(
+        hasFirstName ? firstName : existingFirstName,
+        hasLastName ? lastName : existingLastName
+      )
+      fields.full_name = computedFullName
+    }
+
     const sanitizedFields = Object.fromEntries(
       Object.entries(fields).filter(([, value]) => value !== undefined)
     )
-
-    const studentId = claims.id || claims.sub || claims.recordId
-    if (!studentId) {
-      return sendError(res, 400, "Missing student identifier")
-    }
 
     if (!Object.keys(sanitizedFields).length) {
       return res.status(200).json({ updated: false, fields: {} })

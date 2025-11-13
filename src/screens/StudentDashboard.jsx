@@ -193,7 +193,7 @@ export default function StudentDashboard() {
   // load data
   useEffect(() => {
     if (!token) {
-      navigate('/login', { replace: true })
+      navigate('/login-student', { replace: true })
       return
     }
     let active = true

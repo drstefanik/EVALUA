@@ -1,13 +1,13 @@
 import React, { lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { Navigate, createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './styles/tokens.css'
 import './styles/utilities.css'
 import './styles.css'
 import Layout from './components/Layout.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import Home from './screens/Home.jsx'
-import Login from './screens/Login.jsx'
+import LoginStudent from './screens/Login.jsx'
 import SignupSchool from './screens/SignupSchool.jsx'
 import SignupStudent from './screens/SignupStudent.jsx'
 import AdminDashboard from './screens/AdminDashboard.jsx'
@@ -48,7 +48,8 @@ const router = createBrowserRouter([
       { path: '/privacy', element: <Privacy /> },
       { path: '/terms', element: <Terms /> },
       { path: '/verify', element: <Verify /> },
-      { path: '/login', element: <Login /> },
+      { path: '/login', element: <Navigate to="/login-student" replace /> },
+      { path: '/login-student', element: <LoginStudent /> },
       { path: '/signup-school', element: <SignupSchool /> },
       { path: '/signup-student', element: <SignupStudent /> },
       { path: '/logout', element: <Logout /> },

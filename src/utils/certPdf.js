@@ -47,7 +47,7 @@ function formatDateOnly(value) {
 }
 
 /** Convert SVG to PNG (contain-fit) */
-async function svgToPngDataUrl(svgUrl, maxW = 220, maxH = 60) {
+async function svgToPngDataUrl(svgUrl, maxW = 260, maxH = 70) {
   const response = await fetch(svgUrl)
   const svgText = await response.text()
   const svgBlob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' })
@@ -68,14 +68,18 @@ async function svgToPngDataUrl(svgUrl, maxW = 220, maxH = 60) {
     drawW = drawH * aspect
   }
 
+  // canvas ad alta risoluzione (2x) per evitare sgranature
+  const scale = 2
   const canvas = document.createElement('canvas')
-  canvas.width = Math.max(1, Math.round(drawW))
-  canvas.height = Math.max(1, Math.round(drawH))
+  canvas.width = Math.max(1, Math.round(drawW * scale))
+  canvas.height = Math.max(1, Math.round(drawH * scale))
   const ctx = canvas.getContext('2d')
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
-  ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+  ctx.setTransform(scale, 0, 0, scale, 0, 0)
+  ctx.clearRect(0, 0, drawW, drawH)
+  ctx.drawImage(img, 0, 0, drawW, drawH)
+
   URL.revokeObjectURL(url)
-  return { dataUrl: canvas.toDataURL('image/png'), w: canvas.width, h: canvas.height }
+  return { dataUrl: canvas.toDataURL('image/png'), w: drawW, h: drawH }
 }
 
 async function rasterToPngDataUrl(imgUrl, maxW = 90, maxH = 90) {
@@ -103,7 +107,12 @@ async function rasterToPngDataUrl(imgUrl, maxW = 90, maxH = 90) {
   const ctx = canvas.getContext('2d')
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-  return { dataUrl: canvas.toDataURL('image/png'), w: canvas.width, h: canvas.height }
+
+  return {
+    dataUrl: canvas.toDataURL('image/png'),
+    w: canvas.width,
+    h: canvas.height,
+  }
 }
 
 function getBadgeFrame(doc, margin) {
@@ -185,7 +194,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     throw new Error('generateCertificatePDF must be called in the browser')
   }
 
-  // Foto candidato (da Airtable / user)
+  // Foto studente (diversi possibili campi da Airtable/DB)
   const studentPhotoUrl =
     user?.photoUrl ||
     user?.studentPhotoUrl ||
@@ -223,14 +232,22 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   const pageH = doc.internal.pageSize.getHeight()
 
   // Background frame
-  drawRoundedRect(doc, margin - 18, margin - 18, pageW - (margin - 18) * 2, pageH - (margin - 18) * 2, 14, '#FFFFFF')
+  drawRoundedRect(
+    doc,
+    margin - 18,
+    margin - 18,
+    pageW - (margin - 18) * 2,
+    pageH - (margin - 18) * 2,
+    14,
+    '#FFFFFF'
+  )
 
-  // --- Header: photo (left) + logo (right) + titles ---
+  // --- Header: foto studente (sinistra) + logo Evalua (destra) + titoli ---
   const headerTop = margin
   const headerInnerTop = headerTop + 10
 
-  // 3.1 Foto candidato (se presente) – in alto a sinistra
-  const photoBoxSize = 80
+  // 4.1 Foto studente (se disponibile)
+  const photoBoxSize = 90
   const photoX = margin
   const photoY = headerInnerTop
 
@@ -238,12 +255,19 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     try {
       const photo = await rasterToPngDataUrl(studentPhotoUrl, photoBoxSize, photoBoxSize)
       if (photo?.dataUrl) {
-        // Cornice chiara dietro la foto
+        // Cornice morbida dietro la foto
         doc.setFillColor('#F7F9FB')
         doc.setDrawColor(BRAND.line)
-        doc.roundedRect(photoX - 4, photoY - 4, photoBoxSize + 8, photoBoxSize + 8, 10, 10, 'FD')
+        doc.roundedRect(
+          photoX - 4,
+          photoY - 4,
+          photoBoxSize + 8,
+          photoBoxSize + 8,
+          50,
+          50,
+          'FD'
+        )
 
-        // Foto
         const offsetX = photoX + (photoBoxSize - photo.w) / 2
         const offsetY = photoY + (photoBoxSize - photo.h) / 2
         doc.addImage(photo.dataUrl, 'PNG', offsetX, offsetY, photo.w, photo.h)
@@ -253,9 +277,9 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     }
   }
 
-  // 3.2 Logo Evalua – in alto a destra
+  // 4.2 Logo Evalua in alto a destra (più nitido)
   try {
-    const { dataUrl, w, h } = await svgToPngDataUrl(evaluaLogoUrl, 200, 52)
+    const { dataUrl, w, h } = await svgToPngDataUrl(evaluaLogoUrl, 260, 70)
     const logoX = pageW - margin - w
     const logoY = headerInnerTop
     doc.addImage(dataUrl, 'PNG', logoX, logoY, w, h)
@@ -263,7 +287,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     console.error('Unable to load Evalua logo for certificate', error)
   }
 
-  // 3.3 Titoli – leggermente più in basso per dare respiro
+  // 4.3 Titoli centrati rispetto al contenuto, sotto foto/logo
   const titleY = headerInnerTop + photoBoxSize + 24
 
   doc.setFont('helvetica', 'bold')
@@ -284,7 +308,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   const rightLimitX = badge.x - 12
 
   // Candidate
-  let y = 210
+  let y = 220
   drawSectionTitle(doc, 'Candidate', margin, y, rightLimitX)
   y += 24
 

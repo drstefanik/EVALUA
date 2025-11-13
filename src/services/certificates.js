@@ -12,6 +12,15 @@ export function generateVerificationCode() {
   return `Q-${core}-${chk}`;
 }
 
+function toAirtableDate(value) {
+  if (!value) return new Date().toISOString();
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return new Date().toISOString();
+  }
+  return date.toISOString();
+}
+
 export async function upsertCertificate({ code, studentId, name, testName, level, issuedAt, pdfUrl, status='Active' }) {
   const safe = code.replace(/'/g, "''");
   const table = tbl(CERT_TABLE_NAME);
@@ -22,10 +31,9 @@ export async function upsertCertificate({ code, studentId, name, testName, level
 
   const fields = {
     VerificationCode: code,
-    CandidateName: name,
     TestName: testName,
     Level: level,
-    IssuedAt: issuedAt,
+    IssuedAt: toAirtableDate(issuedAt),
     Status: status,
     PdfUrl: pdfUrl || null,
     ...(studentId ? { Student: [studentId] } : {}),

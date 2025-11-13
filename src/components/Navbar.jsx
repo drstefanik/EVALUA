@@ -79,12 +79,12 @@ export default function Navbar() {
       const s = getStoredSession?.() || session
       const candidate = getDashboardPath?.(s?.role)
       if (candidate === '/dashboard' && !routeExists?.('/dashboard')) {
-        navigate('/login', { replace: false })
+        navigate('/login-student', { replace: false })
         return
       }
-      navigate(candidate || '/login', { replace: false })
+      navigate(candidate || '/login-student', { replace: false })
     } catch {
-      navigate('/login', { replace: false })
+      navigate('/login-student', { replace: false })
     }
   }
 
@@ -187,7 +187,7 @@ export default function Navbar() {
           ) : (
             <div className="hidden items-center gap-2 lg:flex">
               <Link
-                to="/login"
+                to="/login-student"
                 className="rounded-full border border-[var(--border-subtle)] px-4 py-2 text-sm font-semibold text-[var(--text-primary)] hover:border-[var(--border-strong)]"
               >
                 Log in
@@ -254,7 +254,7 @@ export default function Navbar() {
                     Sign up
                   </Link>
                   <Link
-                    to="/login"
+                    to="/login-student"
                     className="block rounded-full border border-[var(--border-subtle)] px-4 py-3 text-center text-sm font-semibold text-[var(--text-primary)]"
                   >
                     Log in

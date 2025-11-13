@@ -206,7 +206,7 @@ export default function SignupSchool() {
 
         <p className="mt-6 text-center text-sm text-slate-600 dark:text-slate-300">
           Already have an account?{' '}
-          <Link to="/login" className="font-semibold text-binavy hover:text-bireg focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-white dark:hover:text-bireg dark:focus-visible:ring-white/20 dark:focus-visible:ring-offset-[#0a0f1f]">
+          <Link to="/login-student" className="font-semibold text-binavy hover:text-bireg focus:outline-none focus-visible:ring-2 focus-visible:ring-bireg/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-white dark:hover:text-bireg dark:focus-visible:ring-white/20 dark:focus-visible:ring-offset-[#0a0f1f]">
             Log in
           </Link>
         </p>

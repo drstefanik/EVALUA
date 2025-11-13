@@ -10,7 +10,7 @@ export default function ForgotPassword() {
           You'll soon be able to recover your access directly from here. In the meantime, contact the EVALUA Education support team.
         </p>
         <Link
-          to="/login"
+          to="/login-student"
           className="mt-6 inline-flex items-center justify-center rounded-full bg-[var(--brand-primary)] px-4 py-2 text-sm font-semibold text-[var(--brand-primary-contrast)] transition hover:opacity-90"
         >
           Back to login

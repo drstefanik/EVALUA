@@ -371,7 +371,7 @@ export default function SignupStudent() {
 
         <p className="mt-6 text-center text-sm text-slate-600 dark:text-slate-300">
           Already have an account?{' '}
-          <Link to="/login" className="font-semibold text-binavy hover:text-bireg">Log in</Link>
+          <Link to="/login-student" className="font-semibold text-binavy hover:text-bireg">Log in</Link>
         </p>
       </div>
     </div>

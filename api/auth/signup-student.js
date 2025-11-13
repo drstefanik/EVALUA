@@ -1,4 +1,5 @@
 // /api/auth/signup-student.js
+import { handleCors } from "../_lib/cors.js";
 import { ensureMethod, parseJsonBody, sendError } from "../_lib/http.js";
 import { hashPassword, signJWT } from "../../src/util.js";
 import { tbl } from "../../src/airtable.js";
@@ -19,6 +20,7 @@ function pick(v, alt = "") {
 }
 
 export default async function handler(req, res) {
+  if (handleCors(req, res)) return;
   if (!ensureMethod(req, res, "POST")) return;
 
   let body = null;

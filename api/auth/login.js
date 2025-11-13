@@ -1,3 +1,4 @@
+import { handleCors } from "../_lib/cors.js";
 import { ensureMethod, parseJsonBody, sendError } from "../_lib/http.js";
 import { comparePassword, signJWT } from "../../src/util.js";
 import { tbl } from "../../src/airtable.js";
@@ -16,6 +17,7 @@ function sanitizeExtras(extras = {}) {
 }
 
 export default async function handler(req, res) {
+  if (handleCors(req, res)) return;
   if (!ensureMethod(req, res, "POST")) return;
 
   let body;

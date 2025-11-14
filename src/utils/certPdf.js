@@ -235,15 +235,13 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     null
 
   // --- normalizziamo subito ID e campi che ci servono ---
-  const testId = result?.testId || result?.TestId || result?.id || '-'
+  const testId = result?.testId || result?.TestId || '-'
 
   const candidateId =
     result?.candidateId ||
     result?.CandidateId ||
     user?.candidateId ||
     user?.CandidateId ||
-    user?.id ||
-    user?.recordId ||
     '-'
 
   const completedAt = result?.completedAt || result?.CompletedAt || null
@@ -284,12 +282,11 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
         photoBoxSize,
         photoBoxSize,
       )
-if (photo?.dataUrl) {
-  const offsetX = photoX + (photoBoxSize - photo.w) / 2
-  const offsetY = photoY + (photoBoxSize - photo.h) / 2
-  doc.addImage(photo.dataUrl, 'PNG', offsetX, offsetY, photo.w, photo.h)
-}
-
+      if (photo?.dataUrl) {
+        const offsetX = photoX + (photoBoxSize - photo.w) / 2
+        const offsetY = photoY + (photoBoxSize - photo.h) / 2
+        doc.addImage(photo.dataUrl, 'PNG', offsetX, offsetY, photo.w, photo.h)
+      }
     } catch (err) {
       console.error('Unable to load student photo for certificate', err)
       doc.setFillColor('#F7F9FB')

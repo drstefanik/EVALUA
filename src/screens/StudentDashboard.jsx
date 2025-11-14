@@ -341,9 +341,7 @@ export default function StudentDashboard() {
     async function loadLatestPlacement() {
       try {
         const res = await fetch('/api/student/latest-placement', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         })
         if (!res.ok) return
         const data = await res.json()

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fetchCurrentUser } from '../api.js'
+import { fetchCurrentUser, getStoredSession } from '../api.js'
 import { generateCertificatePDF } from '../utils/certPdf.js'
 
 function formatValue(value) {
@@ -142,7 +142,16 @@ export default function MyResults({ currentUser }) {
   const [loading, setLoading] = useState(false)
   const [downloadingId, setDownloadingId] = useState(null)
 
+  const session = getStoredSession?.() || null
+  const token = session?.token || ''
+
   useEffect(() => {
+    if (!token) {
+      setResults([])
+      setLoading(false)
+      return undefined
+    }
+
     let active = true
 
     const fetchHistory = async () => {
@@ -152,6 +161,7 @@ export default function MyResults({ currentUser }) {
           method: 'GET',
           headers: {
             Accept: 'application/json',
+            Authorization: 'Bearer ' + token,
           },
         })
 
@@ -185,7 +195,7 @@ export default function MyResults({ currentUser }) {
     return () => {
       active = false
     }
-  }, [])
+  }, [token])
 
   const download = async (attempt) => {
     if (!attempt) return

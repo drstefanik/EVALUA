@@ -19,8 +19,11 @@ function formatDate(value) {
       return d
         .toLocaleString('en-GB', {
           timeZone: 'Europe/Rome',
-          day: '2-digit', month: 'short', year: 'numeric',
-          hour: '2-digit', minute: '2-digit',
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
         })
         .replace(',', '')
     }
@@ -37,7 +40,9 @@ function formatDateOnly(value) {
     if (!isNaN(d.getTime())) {
       return d.toLocaleDateString('en-GB', {
         timeZone: 'Europe/Rome',
-        day: '2-digit', month: 'short', year: 'numeric',
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
       })
     }
     return String(value)
@@ -117,9 +122,11 @@ async function rasterToPngDataUrl(imgUrl, maxW = 90, maxH = 90) {
 
 function getBadgeFrame(doc, margin) {
   const pageW = doc.internal.pageSize.getWidth()
-  const w = 120, h = 120
+  const w = 120
+  const h = 120
   const x = pageW - margin - w
-  const y = 130
+  // 💡 alziamo il badge più in basso per non coprire il logo
+  const y = 170
   return { x, y, w, h }
 }
 
@@ -160,13 +167,20 @@ function normalizeText(value) {
 }
 
 /** Write text with automatic wrapping inside a max width */
-function textInBox(doc, text, x, y, maxWidth, {
-  font = 'helvetica',
-  style = 'normal',
-  size = 10,
-  color = BRAND.text,
-  lineHeight = 12,
-} = {}) {
+function textInBox(
+  doc,
+  text,
+  x,
+  y,
+  maxWidth,
+  {
+    font = 'helvetica',
+    style = 'normal',
+    size = 10,
+    color = BRAND.text,
+    lineHeight = 12,
+  } = {},
+) {
   doc.setFont(font, style)
   doc.setFontSize(size)
   doc.setTextColor(color)
@@ -178,14 +192,18 @@ function textInBox(doc, text, x, y, maxWidth, {
 /** Big CEFR badge (e.g., "B1") on the right side. */
 function drawCefrBadge(doc, levelText = '-', margin) {
   const { x, y, w, h } = getBadgeFrame(doc, margin)
-  doc.setFillColor('#F7F9FB'); doc.setDrawColor(BRAND.line)
+  doc.setFillColor('#F7F9FB')
+  doc.setDrawColor(BRAND.line)
   doc.roundedRect(x, y, w, h, 12, 12, 'FD')
-  doc.setTextColor(BRAND.primary); doc.setFont('helvetica', 'bold')
+  doc.setTextColor(BRAND.primary)
+  doc.setFont('helvetica', 'bold')
   doc.setFontSize(46)
   const tw = doc.getTextWidth(levelText)
   doc.text(levelText, x + w / 2 - tw / 2, y + 70)
-  doc.setFontSize(10); doc.setTextColor(BRAND.mute)
-  const sub = 'CEFR LEVEL'; const tw2 = doc.getTextWidth(sub)
+  doc.setFontSize(10)
+  doc.setTextColor(BRAND.mute)
+  const sub = 'CEFR LEVEL'
+  const tw2 = doc.getTextWidth(sub)
   doc.text(sub, x + w / 2 - tw2 / 2, y + 95)
 }
 
@@ -194,21 +212,28 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     throw new Error('generateCertificatePDF must be called in the browser')
   }
 
-  // Foto studente (usiamo più varianti possibili, inclusa thumbnail Airtable)
-  const studentAttachment = Array.isArray(user?.student_photo) ? user.student_photo[0] : null
+  // --- Foto studente: proviamo tutte le varianti possibili ---
+  const studentAttachment = Array.isArray(user?.student_photo)
+    ? user.student_photo[0]
+    : null
+
   const studentPhotoUrl =
     user?.photoUrl ||
     user?.studentPhotoUrl ||
-    (studentAttachment?.thumbnails?.large?.url || studentAttachment?.url) ||
-    (Array.isArray(user?.photo) ? (user.photo[0]?.thumbnails?.large?.url || user.photo[0]?.url) : null) ||
+    user?.profilePhotoUrl ||
+    user?.avatarUrl ||
+    (typeof user?.studentPhoto === 'string' ? user.studentPhoto : null) ||
+    (Array.isArray(user?.studentPhoto) ? user.studentPhoto[0]?.url : null) ||
+    user?.student_photo_url ||
+    (studentAttachment?.thumbnails?.large?.url ||
+      studentAttachment?.url) ||
+    (Array.isArray(user?.photo)
+      ? user.photo[0]?.thumbnails?.large?.url || user.photo[0]?.url
+      : null) ||
     null
 
   // --- normalizziamo subito ID e campi che ci servono ---
-  const testId =
-    result?.testId ||
-    result?.TestId ||
-    result?.id ||
-    '-'
+  const testId = result?.testId || result?.TestId || result?.id || '-'
 
   const candidateId =
     result?.candidateId ||
@@ -219,12 +244,11 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     user?.recordId ||
     '-'
 
-  const completedAt =
-    result?.completedAt ||
-    result?.CompletedAt ||
-    null
+  const completedAt = result?.completedAt || result?.CompletedAt || null
 
-  const levelText = String(result?.level || result?.estimatedLevel || result?.EstimatedLevel || '-').toUpperCase()
+  const levelText = String(
+    result?.level || result?.estimatedLevel || result?.EstimatedLevel || '-',
+  ).toUpperCase()
 
   const doc = new jsPDF({ unit: 'pt', format: 'A4' })
   const margin = 56
@@ -239,23 +263,26 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     pageW - (margin - 18) * 2,
     pageH - (margin - 18) * 2,
     14,
-    '#FFFFFF'
+    '#FFFFFF',
   )
 
   // --- Header: foto studente (sinistra) + logo Evalua (destra) + titoli ---
   const headerTop = margin
   const headerInnerTop = headerTop + 10
 
-  // 4.1 Foto studente (se disponibile) con placeholder se manca
+  // Foto studente + placeholder
   const photoBoxSize = 90
   const photoX = margin
   const photoY = headerInnerTop
 
   if (studentPhotoUrl) {
     try {
-      const photo = await rasterToPngDataUrl(studentPhotoUrl, photoBoxSize, photoBoxSize)
+      const photo = await rasterToPngDataUrl(
+        studentPhotoUrl,
+        photoBoxSize,
+        photoBoxSize,
+      )
       if (photo?.dataUrl) {
-        // Cornice morbida dietro la foto
         doc.setFillColor('#F7F9FB')
         doc.setDrawColor(BRAND.line)
         doc.roundedRect(
@@ -265,7 +292,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
           photoBoxSize + 8,
           50,
           50,
-          'FD'
+          'FD',
         )
 
         const offsetX = photoX + (photoBoxSize - photo.w) / 2
@@ -274,27 +301,41 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
       }
     } catch (err) {
       console.error('Unable to load student photo for certificate', err)
-      // Placeholder in caso di errore
       doc.setFillColor('#F7F9FB')
       doc.setDrawColor(BRAND.line)
-      doc.roundedRect(photoX - 4, photoY - 4, photoBoxSize + 8, photoBoxSize + 8, 50, 50, 'FD')
+      doc.roundedRect(
+        photoX - 4,
+        photoY - 4,
+        photoBoxSize + 8,
+        photoBoxSize + 8,
+        50,
+        50,
+        'FD',
+      )
       doc.setFont('helvetica', 'normal')
       doc.setFontSize(8)
       doc.setTextColor(BRAND.mute)
       doc.text('No photo', photoX + 20, photoY + photoBoxSize / 2)
     }
   } else {
-    // Placeholder quando non c'è proprio la foto
     doc.setFillColor('#F7F9FB')
     doc.setDrawColor(BRAND.line)
-    doc.roundedRect(photoX - 4, photoY - 4, photoBoxSize + 8, photoBoxSize + 8, 50, 50, 'FD')
+    doc.roundedRect(
+      photoX - 4,
+      photoY - 4,
+      photoBoxSize + 8,
+      photoBoxSize + 8,
+      50,
+      50,
+      'FD',
+    )
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(8)
     doc.setTextColor(BRAND.mute)
     doc.text('No photo', photoX + 20, photoY + photoBoxSize / 2)
   }
 
-  // 4.2 Logo Evalua in alto a destra (più nitido)
+  // Logo Evalua in alto a destra
   try {
     const { dataUrl, w, h } = await svgToPngDataUrl(evaluaLogoUrl, 260, 70)
     const logoX = pageW - margin - w
@@ -304,7 +345,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     console.error('Unable to load Evalua logo for certificate', error)
   }
 
-  // 4.3 Titoli sotto foto/logo
+  // Titoli
   const titleY = headerInnerTop + photoBoxSize + 24
 
   doc.setFont('helvetica', 'bold')
@@ -317,7 +358,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   doc.setTextColor(BRAND.mute)
   doc.text('Official Result Certificate', margin, titleY + 18)
 
-  // CEFR badge
+  // CEFR badge (ora più in basso)
   drawCefrBadge(doc, levelText, margin)
 
   // Limite destro riga sezione = bordo sinistro badge - 12px
@@ -339,35 +380,40 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   y = drawLabelValue(doc, 'Full name', candidateName, margin, y)
   y = drawLabelValue(doc, 'Email', user?.email || '-', margin, y)
   y = drawLabelValue(doc, 'Nationality', user?.nationality || '-', margin, y)
-  y = drawLabelValue(doc, 'Date of birth', formatDateOnly(user?.dateOfBirth), margin, y)
+  y = drawLabelValue(
+    doc,
+    'Date of birth',
+    formatDateOnly(user?.dateOfBirth),
+    margin,
+    y,
+  )
 
   const placeBirthParts = [
     normalizeText(
       user?.placeOfBirth ||
         user?.place_birth ||
         user?.placeBirth ||
-        user?.birthPlace
+        user?.birthPlace,
     ),
     normalizeText(
-      user?.countryOfBirth ||
-        user?.country_birth ||
-        user?.birthCountry
+      user?.countryOfBirth || user?.country_birth || user?.birthCountry,
     ),
   ].filter(Boolean)
 
-  const placeBirthValue = placeBirthParts.length > 0 ? placeBirthParts.join(', ') : '-'
+  const placeBirthValue =
+    placeBirthParts.length > 0 ? placeBirthParts.join(', ') : '-'
   y = drawLabelValue(doc, 'Place of birth', placeBirthValue, margin, y)
 
   const idDocType = normalizeText(
     user?.identificationDocument ||
       user?.identification_document ||
-      user?.identityDocument
+      user?.identityDocument,
   )
   const idDocNumber = normalizeText(
     user?.documentNumber ||
       user?.document_number ||
       user?.identificationNumber ||
-      user?.idNumber
+      user?.idNumber,
   )
 
   let idDocValue = 'Not provided'
@@ -391,19 +437,27 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     levelText,
     margin,
     y,
-    { wLabel: 170 }
+    { wLabel: 170 },
   )
   y = drawLabelValue(
     doc,
     'Confidence',
     typeof result?.confidence === 'number'
       ? `${result.confidence}%`
-      : (result?.confidence || result?.Confidence || '-'),
-    margin, y
+      : result?.confidence || result?.Confidence || '-',
+    margin,
+    y,
   )
-  y = drawLabelValue(doc, 'Items administered', result?.items ?? result?.TotalItems ?? '-', margin, y)
+  y = drawLabelValue(
+    doc,
+    'Items administered',
+    result?.items ?? result?.TotalItems ?? '-',
+    margin,
+    y,
+  )
   if (result?.duration || result?.DurationSec) {
-    const dLabel = result?.duration || (result?.DurationSec ? `${result.DurationSec}s` : '-')
+    const dLabel =
+      result?.duration || (result?.DurationSec ? `${result.DurationSec}s` : '-')
     y = drawLabelValue(doc, 'Duration', dLabel, margin, y)
   }
   y = drawLabelValue(doc, 'Completed', formatDate(completedAt), margin, y)
@@ -415,11 +469,11 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   const innerPad = 14
   const innerW = badge.w - innerPad * 2
   let cardY = 280
-  let rightCardBottom = cardY // ci servirà per la nota sotto
+  let rightCardBottom = cardY
 
   if (hasTestId || hasCandId) {
-    // Pre-calc line counts to size the card
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(10)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
     const testLines = hasTestId
       ? doc.splitTextToSize(String(testId), innerW)
       : []
@@ -429,48 +483,72 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     const lineHeight = 12
 
     const blockHeights =
-      (hasTestId ? (24 /*label gap*/ + testLines.length * lineHeight + 6) : 0) +
-      (hasCandId ? (24 /*label gap*/ + candLines.length * lineHeight + 6) : 0)
+      (hasTestId ? 24 + testLines.length * lineHeight + 6 : 0) +
+      (hasCandId ? 24 + candLines.length * lineHeight + 6 : 0)
 
     const cardHeight = Math.max(96, blockHeights + innerPad * 2)
     rightCardBottom = cardY + cardHeight
 
-    // Draw card
-    doc.setFillColor('#FFFFFF'); doc.setDrawColor('#DADDE2')
+    doc.setFillColor('#FFFFFF')
+    doc.setDrawColor('#DADDE2')
     doc.roundedRect(rightX, cardY, badge.w, cardHeight, 10, 10, 'FD')
 
-    // Content
     let cy = cardY + innerPad + 10
     if (hasTestId) {
-      doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor('#555555')
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(11)
+      doc.setTextColor('#555555')
       doc.text('Test ID', rightX + innerPad, cy)
       cy += 18
       const r1 = textInBox(doc, String(testId), rightX + innerPad, cy, innerW, {
-        size: 10, color: BRAND.text, lineHeight,
+        size: 10,
+        color: BRAND.text,
+        lineHeight,
       })
       cy = r1.nextY + 6
     }
     if (hasCandId) {
-      doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor('#555555')
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(11)
+      doc.setTextColor('#555555')
       doc.text('Candidate ID', rightX + innerPad, cy)
       cy += 18
-      const r2 = textInBox(doc, String(candidateId), rightX + innerPad, cy, innerW, {
-        size: 10, color: BRAND.text, lineHeight,
-      })
+      const r2 = textInBox(
+        doc,
+        String(candidateId),
+        rightX + innerPad,
+        cy,
+        innerW,
+        {
+          size: 10,
+          color: BRAND.text,
+          lineHeight,
+        },
+      )
       cy = r2.nextY + 6
     }
   }
 
-  // Notes box: la mettiamo sempre sotto sia alla sezione Outcome (y) sia alla card destra
+  // Notes box: sempre sotto a sezione outcome e card destra
   const noteTop = Math.max(y + 16, rightCardBottom + 24)
   const noteHeight = 84
-  drawRoundedRect(doc, margin, noteTop, pageW - margin * 2, noteHeight, 8, '#F7F9FB')
+  drawRoundedRect(
+    doc,
+    margin,
+    noteTop,
+    pageW - margin * 2,
+    noteHeight,
+    8,
+    '#F7F9FB',
+  )
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(10)
   doc.setTextColor(BRAND.mute)
   doc.text(
     'This certificate reports the outcome of an adaptive placement procedure (QUAET). Results indicate the estimated CEFR level for placement purposes.',
-    margin + 12, noteTop + 24, { maxWidth: pageW - margin * 2 - 24 }
+    margin + 12,
+    noteTop + 24,
+    { maxWidth: pageW - margin * 2 - 24 },
   )
 
   // Signature / validation area
@@ -485,9 +563,10 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   doc.text('Authorized Signatory', margin, sigY + 16)
 
   // --- Online verification card (code + URL + QR) ---
-  const verificationCode =
-    (result?.verificationCode ||
-      `Q-${String(testId).replaceAll(' ', '')}-${levelText}`).toUpperCase()
+  const verificationCode = (
+    result?.verificationCode ||
+    `Q-${String(testId).replaceAll(' ', '')}-${levelText}`
+  ).toUpperCase()
 
   const verifyUrl = `https://evaluaeducation.org/verify?code=${verificationCode}`
 
@@ -501,26 +580,23 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     console.error('QR generation failed', error)
   }
 
-  // Geometria card: in basso a destra, dentro la cornice
+  // Card in basso a destra
   const vCardW = 280
   const vCardH = 140
   const vCardX = pageW - margin - vCardW
-  const vCardY = sigY - 32 // poco sopra la linea "Authorized Signatory"
+  const vCardY = sigY - 32
 
-  // Cornice card
   doc.setFillColor('#F7F9FB')
   doc.setDrawColor(BRAND.line)
   doc.roundedRect(vCardX, vCardY, vCardW, vCardH, 10, 10, 'FD')
 
   const vCardPad = 14
 
-  // Titolo
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(10)
   doc.setTextColor(BRAND.primary)
   doc.text('Online verification', vCardX + vCardPad, vCardY + 18)
 
-  // Area testo (sinistra)
   const textMaxW =
     vCardW - vCardPad * 2 - (qrDataUrl ? 96 : 0) - (qrDataUrl ? 8 : 0)
   let tvY = vCardY + 36
@@ -535,7 +611,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     vCardX + vCardPad,
     tvY,
     textMaxW,
-    { size: 9, color: BRAND.text, lineHeight: 11 }
+    { size: 9, color: BRAND.text, lineHeight: 11 },
   )
   tvY = rCode.nextY + 4
 
@@ -546,10 +622,9 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     vCardX + vCardPad,
     tvY,
     textMaxW,
-    { size: 9, color: BRAND.mute, lineHeight: 11 }
+    { size: 9, color: BRAND.mute, lineHeight: 11 },
   )
 
-  // QR (destra), centrato verticalmente nella card
   if (qrDataUrl) {
     const qrSize = 96
     const qrX = vCardX + vCardW - vCardPad - qrSize
@@ -564,7 +639,10 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   doc.text('Issuer: Evalua', margin, pageH - 56)
 
   // Safe filename
-  const safeName = String(candidateName).trim().replace(/\s+/g, '_').replace(/[^\w\-]+/g, '')
+  const safeName = String(candidateName)
+    .trim()
+    .replace(/\s+/g, '_')
+    .replace(/[^\w\-]+/g, '')
   const safeDate = String(completedAt || new Date())
     .replaceAll(' ', '_')
     .replaceAll(':', '-')

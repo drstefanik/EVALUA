@@ -317,7 +317,6 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
       doc.setFont('helvetica', 'normal')
       doc.setFontSize(8)
       doc.setTextColor(BRAND.mute)
-      doc.text('No photo', photoX + 22, photoY + photoBoxSize / 2)
     }
   } else {
     doc.setFillColor('#F7F9FB')
@@ -439,7 +438,6 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     levelText,
     margin,
     y,
-    { wLabel: 170 },
   )
   y = drawLabelValue(
     doc,

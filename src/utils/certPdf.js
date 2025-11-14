@@ -333,7 +333,6 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(8)
     doc.setTextColor(BRAND.mute)
-    doc.text('No photo', photoX + 22, photoY + photoBoxSize / 2)
   }
 
   // Logo Evalua in alto a destra

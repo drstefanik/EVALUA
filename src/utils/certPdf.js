@@ -639,7 +639,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     const captionY = qrY + qrSize + 10 // un po' sotto
 
     doc.text(caption, captionX, captionY, { align: 'center' })
-  }
+  
   }
 
   // Footer

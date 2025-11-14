@@ -435,7 +435,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   y += 22
   y = drawLabelValue(
     doc,
-    'Estimated level (CEFR)',
+    'Level (CEFR)',
     levelText,
     margin,
     y,

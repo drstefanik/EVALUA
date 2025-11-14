@@ -47,20 +47,33 @@ export default async function handler(req, res) {
 
   try {
     // filtro per UserId o per email, così prendiamo tutti i tentativi dell’utente
-    const filter = userId
-      ? `OR({UserId} = '${userId}', {UserEmail} = '${email}')`
-      : `{UserEmail} = '${email}'`;
+    const escapeFormulaValue = (value) =>
+      String(value || '').replace(/'/g, "\\'");
 
-    const records = await table
-      .select({
-        filterByFormula: filter,
-        sort: [
-          { field: 'CompletedAt', direction: 'desc' },
-          { field: 'StartedAt', direction: 'desc' },
-        ],
-        maxRecords: 1,
-      })
-      .firstPage();
+    const clauses = [];
+    if (userId) clauses.push(`{UserId} = '${escapeFormulaValue(userId)}'`);
+    if (email) clauses.push(`{UserEmail} = '${escapeFormulaValue(email)}'`);
+
+    const filter =
+      clauses.length > 1
+        ? `OR(${clauses.join(', ')})`
+        : clauses.length === 1
+        ? clauses[0]
+        : "";
+
+    const selectOptions = {
+      sort: [
+        { field: 'CompletedAt', direction: 'desc' },
+        { field: 'StartedAt', direction: 'desc' },
+      ],
+      maxRecords: 1,
+    };
+
+    if (filter) {
+      selectOptions.filterByFormula = filter;
+    }
+
+    const records = await table.select(selectOptions).firstPage();
 
     if (!records || records.length === 0) {
       return res.status(200).json({ ok: true, placement: null });
@@ -69,20 +82,26 @@ export default async function handler(req, res) {
     const record = records[0];
     const f = record.fields;
 
+    const confidenceValue =
+      typeof f.Confidence === 'number'
+        ? f.Confidence
+        : typeof f.ConfidencePct === 'number'
+        ? f.ConfidencePct
+        : null;
+
     const placement = {
       id: record.id, // solo interno, NON usato come Test ID nel PDF
-      level: f.EstimatedLevel || null,
+      testId: f.TestId || null,
+      candidateId: f.CandidateId || null,
       estimatedLevel: f.EstimatedLevel || null,
-      confidence:
-        typeof f.Confidence === 'number'
-          ? f.Confidence
-          : f.ConfidencePct ?? null,
-      testId: f.TestId || null,          // 👈 QAT-...
-      TestId: f.TestId || null,
-      candidateId: f.CandidateId || null, // 👈 CND-...
-      CandidateId: f.CandidateId || null,
-      totalItems: f.TotalItems ?? null,
-      durationSec: f.DurationSec ?? null,
+      level: f.EstimatedLevel || null,
+      confidence: confidenceValue,
+      totalItems:
+        typeof f.TotalItems === 'number' ? f.TotalItems : f.TotalItems ?? null,
+      durationSec:
+        typeof f.DurationSec === 'number'
+          ? f.DurationSec
+          : f.DurationSec ?? null,
       startedAt: f.StartedAt || null,
       completedAt: f.CompletedAt || null,
     };

@@ -80,6 +80,10 @@ export default async function handler(req, res) {
       DurationSec: typeof durationSec === "number" ? durationSec : null,
     };
 
+    if (typeof userId === "string" && userId.startsWith("rec")) {
+      fieldsToCreate.Student = [userId];
+    }
+
     // Se vuoi comunque permettere override manuale da client:
     if (testId) fieldsToCreate.TestId = testId;
     if (candidateId) fieldsToCreate.CandidateId = candidateId;

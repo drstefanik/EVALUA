@@ -232,11 +232,6 @@ export default function MyResults({ currentUser }) {
         sourceUser?.CandidateId ||
         currentUser?.candidateId ||
         currentUser?.CandidateId ||
-        sourceUser?.id ||
-        sourceUser?.recordId ||
-        currentUser?.id ||
-        currentUser?.recordId ||
-        local.id ||
         null
 
       const studentPhotoArray = Array.isArray(sourceUser?.student_photo)
@@ -344,7 +339,8 @@ export default function MyResults({ currentUser }) {
         attempt.TestId ||
         attempt.testId ||
         attempt.placementTestId ||
-        attempt.id ||
+        attempt.testCode ||
+        attempt.TestCode ||
         null
 
       const issuedAtIso =
@@ -357,29 +353,76 @@ export default function MyResults({ currentUser }) {
         attempt.completedAtLabel ||
         issuedAtIso
 
+      const confidenceRaw =
+        typeof attempt.confidence === 'number'
+          ? attempt.confidence
+          : typeof attempt.Confidence === 'number'
+          ? attempt.Confidence
+          : typeof attempt.confidencePct === 'number'
+          ? attempt.confidencePct
+          : null
+
+      const totalItemsValue =
+        typeof attempt.items === 'number'
+          ? attempt.items
+          : typeof attempt.TotalItems === 'number'
+          ? attempt.TotalItems
+          : typeof attempt.totalItems === 'number'
+          ? attempt.totalItems
+          : null
+
+      const durationSeconds =
+        typeof attempt.durationSec === 'number'
+          ? attempt.durationSec
+          : typeof attempt.DurationSec === 'number'
+          ? attempt.DurationSec
+          : typeof attempt.duration === 'number'
+          ? attempt.duration
+          : null
+
+      const startedAtValue = attempt.startedAt || attempt.StartedAt || null
+
+      const completedAtIso =
+        attempt.CompletedAt ||
+        attempt.completedAt ||
+        attempt._createdTime ||
+        issuedAtIso
+
       const resultPayload = {
+        ...attempt,
         level:
           attempt.level ||
           attempt.EstimatedLevel ||
           attempt.estimatedLevel ||
           'N/A',
-        confidence:
-          typeof attempt.confidence === 'number'
-            ? attempt.confidence
-            : (attempt.Confidence ?? attempt.confidence ?? 'N/A'),
+        estimatedLevel:
+          attempt.estimatedLevel ||
+          attempt.EstimatedLevel ||
+          attempt.level ||
+          null,
+        confidence: confidenceRaw,
+        Confidence: confidenceRaw,
         items:
-          typeof attempt.items === 'number'
-            ? attempt.items
-            : (attempt.TotalItems ?? attempt.items ?? '—'),
+          typeof totalItemsValue === 'number'
+            ? totalItemsValue
+            : attempt.items ?? attempt.TotalItems ?? '—',
+        totalItems: totalItemsValue,
+        TotalItems: totalItemsValue,
         duration:
           attempt.durationLabel ||
           attempt.duration ||
-          (attempt.DurationSec ? `${attempt.DurationSec}s` : '—'),
-        completedAt: completedAtDisplay,
-
-        // NEW: ID coerenti con Placements
-        testId,
-        candidateId: candidateIdResolved || undefined,
+          (typeof durationSeconds === 'number' ? `${durationSeconds}s` : '—'),
+        durationSec: durationSeconds,
+        DurationSec: durationSeconds,
+        startedAt: startedAtValue,
+        StartedAt: startedAtValue,
+        completedAt: completedAtIso,
+        CompletedAt: completedAtIso,
+        completedAtLabel: completedAtDisplay,
+        testId: testId || null,
+        TestId: testId || null,
+        candidateId: candidateIdResolved || null,
+        CandidateId: candidateIdResolved || null,
       }
 
       const certificateRequest = {

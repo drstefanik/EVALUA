@@ -334,11 +334,15 @@ export default function StudentDashboard() {
   }, [currentUser, currentUserLoading])
 
   useEffect(() => {
+    if (!token) return
+
     let isMounted = true
 
     async function loadLatestPlacement() {
       try {
-        const res = await fetch('/api/student/latest-placement')
+        const res = await fetch('/api/student/latest-placement', {
+          headers: { Authorization: `Bearer ${token}` },
+        })
         if (!res.ok) return
         const data = await res.json()
         if (!isMounted) return
@@ -366,7 +370,7 @@ export default function StudentDashboard() {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [token])
 
   /* ------------------------------ UI ------------------------------ */
   return (

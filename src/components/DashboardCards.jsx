@@ -4,12 +4,52 @@ function renderLatestResult(latestResult) {
   if (!latestResult) {
     return 'You have no results yet.'
   }
-  const level = latestResult.level ?? '—'
-  const confidence =
-    typeof latestResult.confidence === 'number'
-      ? `${latestResult.confidence}%`
-      : latestResult.confidence || '—'
-  const date = latestResult.date || '—'
+  const levelSource =
+    latestResult.estimatedLevel ??
+    latestResult.level ??
+    latestResult.Level ??
+    latestResult.EstimatedLevel ??
+    '—'
+  const level =
+    levelSource && levelSource !== '—' ? String(levelSource).toUpperCase() : '—'
+
+  const confidenceRaw = (() => {
+    if (typeof latestResult.confidence === 'number') return latestResult.confidence
+    if (typeof latestResult.Confidence === 'number') return latestResult.Confidence
+    if (typeof latestResult.confidencePct === 'number')
+      return latestResult.confidencePct
+    return null
+  })()
+
+  let confidence = '—'
+  if (typeof confidenceRaw === 'number' && !Number.isNaN(confidenceRaw)) {
+    const normalized = confidenceRaw > 1 ? Math.round(confidenceRaw) : Math.round(confidenceRaw * 100)
+    confidence = `${normalized}%`
+  } else {
+    confidence =
+      latestResult.confidence ||
+      latestResult.Confidence ||
+      latestResult.confidenceLabel ||
+      '—'
+  }
+
+  const dateSource =
+    latestResult.date ||
+    latestResult.completedAt ||
+    latestResult.CompletedAt ||
+    latestResult.startedAt ||
+    latestResult.StartedAt ||
+    null
+
+  let date = '—'
+  if (dateSource) {
+    const parsed = new Date(dateSource)
+    if (!Number.isNaN(parsed.getTime())) {
+      date = parsed.toLocaleDateString('en-GB')
+    } else if (typeof dateSource === 'string') {
+      date = dateSource
+    }
+  }
   return (
     <>
       Latest: <strong>{level}</strong> • <strong>{confidence}</strong> on {date}

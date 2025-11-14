@@ -346,21 +346,19 @@ export default function StudentDashboard() {
         if (!res.ok) return
         const data = await res.json()
         if (!isMounted) return
-        if (!data.hasResult) {
+
+        if (!data?.ok) {
           setLatestResult(null)
           return
         }
 
-        setLatestResult({
-          level: data.level || '—',
-          confidence:
-            typeof data.confidence === 'number'
-              ? `${data.confidence}%`
-              : data.confidence || '—',
-          date: data.date ? new Date(data.date).toLocaleDateString('en-GB') : '—',
-          testId: data.testId || null,
-          totalItems: data.totalItems ?? null,
-        })
+        const placement = data.placement || null
+        if (!placement) {
+          setLatestResult(null)
+          return
+        }
+
+        setLatestResult(placement)
       } catch (err) {
         console.error('Failed to load latest placement', err)
       }

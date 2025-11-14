@@ -235,11 +235,24 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     null
 
   // --- normalizziamo subito ID e campi che ci servono ---
-  const testId = result?.testId || result?.TestId || '-'
+  // --- normalizziamo subito ID e campi che ci servono ---
+  // Qui vogliamo SOLO i codici "belli" (QAT-..., CND-...), mai gli ID record Airtable
+  const testId =
+    result?.testId ||
+    result?.TestId ||
+    result?.test_id ||
+    result?.Test_ID ||
+    result?.testCode ||
+    result?.TestCode ||
+    '-'
 
   const candidateId =
     result?.candidateId ||
     result?.CandidateId ||
+    result?.candidate_id ||
+    result?.Candidate_ID ||
+    result?.candidateCode ||
+    result?.CandidateCode ||
     user?.candidateId ||
     user?.CandidateId ||
     '-'

@@ -44,6 +44,7 @@ function getToken() {
   // salvato dopo /api/auth/login
   return localStorage.getItem("authToken") || "";
 }
+
 function AdaptiveTestContent() {
   const { items, error } = useItems();
 
@@ -107,22 +108,33 @@ function AdaptiveTestContent() {
         completedAt,
       };
 
-const token = getToken();
-const resp = await fetch("/api/save-placement", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  },
-  body: JSON.stringify(payload),
-});
+      const token = getToken();
+      const resp = await fetch("/api/save-placement", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
 
-const data = await resp.json();
+      // Leggiamo i codici "belli" restituiti dall'API (QAT-..., CND-...)
+      let data = null;
+      try {
+        data = await resp.json();
+      } catch {
+        data = null;
+      }
 
-// 👉 aggiorniamo finalResult con i codici “belli” generati da Airtable
-if (data?.testId) finalResult.testId = data.testId;
-if (data?.candidateId) finalResult.candidateId = data.candidateId;
+      if (data?.testId) {
+        finalResult.testId = data.testId;
+      }
+      if (data?.candidateId) {
+        finalResult.candidateId = data.candidateId;
+      }
 
+      // opzionale: aggiorniamo lo state result con i nuovi campi
+      setResult((prev) => (prev ? { ...prev, ...finalResult } : finalResult));
     } catch (err) {
       console.error("Failed to save placement result", err);
     }

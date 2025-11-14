@@ -427,17 +427,13 @@ export default function MyResults({ currentUser }) {
     }
   }
 
-  return (
-    <div
-      id="my-results"
-      className="mt-10 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/70"
-    >
-      <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">My Results</h2>
-      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+    return (
+    <div className="pt-2">
+      <p className="text-sm text-slate-600 dark:text-slate-300">
         Track the outcomes of your adaptive assessments and monitor your progress toward certification.
       </p>
 
-      <div className="mt-6 overflow-x-auto">
+      <div className="mt-4 overflow-x-auto">
         <table className="min-w-full border-collapse text-left text-sm">
           <thead>
             <tr className="border-b border-slate-200 text-slate-600 dark:border-slate-700 dark:text-slate-300">

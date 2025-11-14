@@ -134,6 +134,7 @@ export default function StudentDashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [adaptiveResults, setAdaptiveResults] = useState([])
+  const [latestResult, setLatestResult] = useState(null)
 
   const { progress, upsert } = useProgress(token, studentId)
 
@@ -319,11 +320,6 @@ export default function StudentDashboard() {
     window.scrollTo({ top: y, behavior: 'smooth' })
   }, [])
 
-  const latestAdaptiveResult = useMemo(
-    () => adaptiveResults[0] || null,
-    [adaptiveResults]
-  )
-
   const featureFlags = useMemo(() => {
     if (currentUser) {
       return {
@@ -338,6 +334,41 @@ export default function StudentDashboard() {
     }
     return { courses: false, quaet: false, results: false, personal_details: false }
   }, [currentUser, currentUserLoading])
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadLatestPlacement() {
+      try {
+        const res = await fetch('/api/student/latest-placement')
+        if (!res.ok) return
+        const data = await res.json()
+        if (!isMounted) return
+        if (!data.hasResult) {
+          setLatestResult(null)
+          return
+        }
+
+        setLatestResult({
+          level: data.level || '—',
+          confidence:
+            typeof data.confidence === 'number'
+              ? `${data.confidence}%`
+              : data.confidence || '—',
+          date: data.date ? new Date(data.date).toLocaleDateString('en-GB') : '—',
+          testId: data.testId || null,
+          totalItems: data.totalItems ?? null,
+        })
+      } catch (err) {
+        console.error('Failed to load latest placement', err)
+      }
+    }
+
+    loadLatestPlacement()
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined
@@ -366,14 +397,6 @@ export default function StudentDashboard() {
                 : typeof entry?.AskedByLevel === 'object' &&
                   entry?.AskedByLevel !== null
                 ? entry.AskedByLevel
-                : {}
-            const askedBySkill =
-              typeof entry?.askedBySkill === 'object' &&
-              entry?.askedBySkill !== null
-                ? entry.askedBySkill
-                : typeof entry?.AskedBySkill === 'object' &&
-                  entry?.AskedBySkill !== null
-                ? entry.AskedBySkill
                 : {}
             const totalItemsValue =
               typeof entry?.totalItems === 'number'
@@ -410,7 +433,6 @@ export default function StudentDashboard() {
               durationSec: durationValue,
               DurationSec: durationValue,
               askedByLevel,
-              askedBySkill,
               startedAt,
               completedAt,
               CompletedAt: completedAt,
@@ -473,21 +495,6 @@ export default function StudentDashboard() {
     const secLabel = `${remaining}s`
     return `${minLabel}${minLabel ? ' ' : ''}${secLabel}`.trim()
   }, [])
-
-  const latestResultCard = useMemo(() => {
-    if (!latestAdaptiveResult) return null
-    const completed =
-      latestAdaptiveResult.completedAt || latestAdaptiveResult.startedAt
-    const confidencePct =
-      typeof latestAdaptiveResult.confidence === 'number'
-        ? Math.round(latestAdaptiveResult.confidence * 100)
-        : null
-    return {
-      level: latestAdaptiveResult.estimatedLevel || '—',
-      confidence: confidencePct !== null ? confidencePct : '—',
-      date: formatDateTime(completed),
-    }
-  }, [latestAdaptiveResult, formatDateTime])
 
   const resultsForTable = useMemo(() => {
     return adaptiveResults.map((attempt, index) => {
@@ -578,7 +585,7 @@ export default function StudentDashboard() {
 
         <div className="card rounded-3xl p-6">
           <DashboardCards
-            latestResult={latestResultCard}
+            latestResult={latestResult}
             features={featureFlags}
             onGoToCourses={() => scrollToSection('learning-hub')}
             onGoToResults={() => scrollToSection('my-results')}

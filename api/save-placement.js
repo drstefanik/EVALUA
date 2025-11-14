@@ -1,43 +1,6 @@
 // api/save-placement.js
 import { verifyJWT } from "../src/util.js";
-
-// helpers
-function toISOOrNull(v) {
-  if (!v) return null;
-  const d = new Date(v);
-  return isNaN(d.getTime()) ? null : d.toISOString();
-}
-
-// Test ID es: QAT-251112-AX7
-function genTestId() {
-  const d = new Date();
-  const yy = String(d.getFullYear()).slice(2);
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-
-  const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // niente I/O confondenti
-  const nums = "23456789";
-  const pool = letters + nums;
-
-  let suffix = "";
-  for (let i = 0; i < 3; i++) {
-    const idx = Math.floor(Math.random() * pool.length);
-    suffix += pool[idx];
-  }
-
-  return `QAT-${yy}${mm}${dd}-${suffix}`;
-}
-
-// Candidate ID es: CND-7FK2XM
-function genCandidateId() {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let code = "";
-  for (let i = 0; i < 6; i++) {
-    const idx = Math.floor(Math.random() * chars.length);
-    code += chars[idx];
-  }
-  return `CND-${code}`;
-}
+import { tbl } from "../src/airtable.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -49,108 +12,77 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Missing Airtable env vars" });
   }
 
+  let body = {};
   try {
-    const body =
-      (typeof req.json === "function")
-        ? await req.json()
-        : (req.body || {});
+    body = typeof req.json === "function" ? await req.json() : req.body || {};
+  } catch (err) {
+    console.error("save-placement: invalid JSON body", err);
+    return res.status(400).json({ error: "Invalid JSON payload" });
+  }
 
-    const header = (n) => req.headers[n]?.toString() || "";
-    const cookie = (name) =>
+  let userId = body.userId || body.userID || body.studentId || "";
+  let email = body.email || body.userEmail || "";
+
+  try {
+    const rawToken =
+      req.headers.authorization?.replace("Bearer ", "") ||
       (req.headers.cookie || "")
         .split(";")
         .map((s) => s.trim())
-        .find((c) => c.startsWith(name + "="))?.split("=")[1] || "";
+        .find((c) => c.startsWith("token="))
+        ?.split("=")[1] ||
+      "";
 
-    let claims = null;
-    const bearer = header("authorization");
-    if (bearer?.toLowerCase().startsWith("bearer ")) {
-      try {
-        claims = verifyJWT(bearer.slice(7));
-      } catch {
-        // token non valido, proseguiamo senza claims
+    if (rawToken) {
+      const claims = await verifyJWT(rawToken);
+      if (claims) {
+        userId = userId || claims.id || claims.userId || "";
+        email = email || claims.email || claims.userEmail || "";
       }
     }
+  } catch (e) {
+    console.error("save-placement: JWT verification failed", e);
+  }
 
-    const userIdHeader = header("x-user-id") || null;
-    const userEmailHeader = header("x-user-email") || header("x-user") || null;
-    const userIdFromBody = body.userId || null;
-    const userEmailFromBody = body.userEmail || null;
-    const userIdCookie = cookie("userId") || null;
-    const userEmailCookie = cookie("userEmail") || null;
+  if (!userId || !email) {
+    return res.status(400).json({ error: "Missing userId or email for placement save" });
+  }
 
-    const normalizedUserId =
-      userIdFromBody || userIdHeader || userIdCookie || claims?.userId || null;
-    const normalizedUserEmail =
-      userEmailFromBody || userEmailHeader || userEmailCookie || claims?.email || null;
+  const table = tbl(AIRTABLE_TABLE_PLACEMENTS);
 
-    const estimatedLevel = body.estimatedLevel ?? null;
+  const {
+    testId,
+    candidateId,
+    estimatedLevel,
+    confidence,
+    askedByLevel,
+    totalItems,
+    startedAt,
+    durationSec,
+    completedAt,
+  } = body;
 
-    const confidence =
-      typeof body.confidence === "string"
-        ? Number(String(body.confidence).replace("%", "").trim()) || null
-        : (typeof body.confidence === "number" ? body.confidence : null);
-
-    const totalItems = body.totalItems ?? null;
-
-    const startedAtISO = toISOOrNull(body.startedAt) || new Date().toISOString();
-    // CompletedAt è un campo computed in Airtable, quindi NON lo inviamo
-
-    const askedByLevel =
-      typeof body.askedByLevel === "string"
-        ? body.askedByLevel
-        : JSON.stringify(body.askedByLevel || {});
-
-    // ID “umani”, sempre generati qui
-    const testId = genTestId();
-    const candidateId = genCandidateId();
-
-    const fields = {
-      UserId: normalizedUserId,
-      UserEmail: normalizedUserEmail,
-      EstimatedLevel: estimatedLevel,
-      Confidence: confidence,
-      AskedByLevel: askedByLevel,
-      TotalItems: totalItems,
-      StartedAt: startedAtISO,
-      DurationSec: body.durationSec ?? null,
-      TestId: testId,
-      CandidateId: candidateId,
-    };
-
-    if (body.studentRecordId) fields.Student = [body.studentRecordId];
-
-    const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(
-      AIRTABLE_TABLE_PLACEMENTS
-    )}`;
-
-    const resp = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${AIRTABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ records: [{ fields }], typecast: true }),
+  try {
+    const record = await table.create({
+      UserId: userId,
+      UserEmail: email,
+      TestId: testId || "",
+      CandidateId: candidateId || "",
+      EstimatedLevel: estimatedLevel || "",
+      Confidence: typeof confidence === "number" ? confidence : null,
+      AskedByLevel: askedByLevel ? String(askedByLevel) : "",
+      TotalItems: typeof totalItems === "number" ? totalItems : null,
+      StartedAt: startedAt || new Date().toISOString(),
+      DurationSec: typeof durationSec === "number" ? durationSec : null,
+      CompletedAt: completedAt || null,
     });
-
-    if (!resp.ok) {
-      const t = await resp.text();
-      console.error("Airtable error in save-placement:", resp.status, t);
-      return res.status(resp.status).json({ error: "Airtable error", detail: t });
-    }
-
-    const data = await resp.json();
-    const created = data?.records?.[0];
 
     return res.status(200).json({
       ok: true,
-      id: created?.id || null,      // record Airtable (solo per uso interno)
-      testId,                       // ID figo da mostrare allo studente
-      candidateId,                  // ID figo da mostrare allo studente
-      airtable: data,
+      id: record.id,
     });
-  } catch (e) {
-    console.error("save-placement error:", e);
-    return res.status(500).json({ error: e?.message || "Unknown error" });
+  } catch (err) {
+    console.error("save-placement Airtable error", err);
+    return res.status(500).json({ error: "Unable to save placement" });
   }
 }

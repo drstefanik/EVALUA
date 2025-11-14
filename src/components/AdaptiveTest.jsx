@@ -16,6 +16,9 @@ import {
 const TOTAL_CAP = 22; // solo per progress bar visuale
 
 function getCurrentUserFromStorage() {
+  if (typeof window === "undefined" || !window.localStorage) {
+    return { id: "", email: "" };
+  }
   const fallback = {
     id: localStorage.getItem("userId") || "",
     email: localStorage.getItem("userEmail") || "",
@@ -41,7 +44,7 @@ function getToken() {
   // salvato dopo /api/auth/login
   return localStorage.getItem("authToken") || "";
 }
-function AdaptiveTestContent({ currentUser }) {
+function AdaptiveTestContent() {
   const { items, error } = useItems();
 
   // Fasi
@@ -57,13 +60,91 @@ function AdaptiveTestContent({ currentUser }) {
   // Timing & metriche
   const startedAtIsoRef = useRef(null);
   const startedAtTsRef = useRef(null);
-  const askedBySkillRef = useRef({ listening: 0, reading: 0 });
-  const lastSavedEntryIdRef = useRef(null);
+  const currentUserFromStorage = getCurrentUserFromStorage();
 
-  const noteAsked = (nextItem) => {
-    if (!nextItem || !nextItem.skill) return;
-    const k = nextItem.skill;
-    askedBySkillRef.current[k] = (askedBySkillRef.current[k] || 0) + 1;
+  async function savePlacement(finalResult, stateSnapshot) {
+    try {
+      if (!finalResult || !stateSnapshot) return;
+
+      const rawConfidence =
+        typeof finalResult.confidence === "number"
+          ? finalResult.confidence
+          : typeof finalResult.Confidence === "number"
+          ? finalResult.Confidence
+          : null;
+
+      const completedAt = new Date().toISOString();
+
+      const payload = {
+        userId: currentUserFromStorage.id || "",
+        email: currentUserFromStorage.email || "",
+        testId: stateSnapshot.testId || stateSnapshot.testCode || "",
+        candidateId: stateSnapshot.candidateId || "",
+        estimatedLevel:
+          finalResult.level || finalResult.estimatedLevel || finalResult.currentLevel || "",
+        confidence:
+          typeof rawConfidence === "number"
+            ? Math.round(
+                rawConfidence > 1
+                  ? Math.min(100, Math.max(0, rawConfidence))
+                  : Math.min(100, Math.max(0, rawConfidence * 100))
+              )
+            : null,
+        askedByLevel: JSON.stringify(stateSnapshot.askedByLevel || {}),
+        totalItems:
+          typeof stateSnapshot.totalItems === "number"
+            ? stateSnapshot.totalItems
+            : Array.isArray(stateSnapshot.askedItems)
+            ? stateSnapshot.askedItems.length
+            : typeof stateSnapshot.askedCount === "number"
+            ? stateSnapshot.askedCount
+            : null,
+        startedAt: stateSnapshot.startedAt || null,
+        durationSec:
+          typeof stateSnapshot.durationSec === "number"
+            ? stateSnapshot.durationSec
+            : null,
+        completedAt,
+      };
+
+      const token = getToken();
+      await fetch("/api/save-placement", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
+    } catch (err) {
+      console.error("Failed to save placement result", err);
+    }
+  }
+
+  const finalizeTest = () => {
+    const finalResult = computeResult(st);
+    const duration =
+      typeof startedAtTsRef.current === "number"
+        ? Math.round((Date.now() - startedAtTsRef.current) / 1000)
+        : null;
+
+    const stateSnapshot = {
+      ...st,
+      testId: st.testId,
+      testCode: st.testCode,
+      candidateId: st.candidateId,
+      askedByLevel: st.askedByLevel,
+      askedItems: st.askedItems,
+      totalItems: st.totalItems ?? st.askedCount ?? null,
+      askedCount: st.askedCount,
+      startedAt: startedAtIsoRef.current,
+      durationSec: duration,
+    };
+
+    setFinished(true);
+    setResult(finalResult);
+    savePlacement(finalResult, stateSnapshot);
+    setPhase("finished");
   };
 
   // Avvio effettivo del test quando si passa a "running"
@@ -74,16 +155,12 @@ function AdaptiveTestContent({ currentUser }) {
     // reset timing e contatori ad ogni nuovo tentativo
     startedAtIsoRef.current = new Date().toISOString();
     startedAtTsRef.current = Date.now();
-    askedBySkillRef.current = { listening: 0, reading: 0 };
 
     const next = pickNextItem(st, items);
     if (!next) {
-      setFinished(true);
-      setResult(computeResult(st));
-      setPhase("finished");
+      finalizeTest();
     } else {
       setItem(next);
-      noteAsked(next);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, items, error]);
@@ -91,12 +168,9 @@ function AdaptiveTestContent({ currentUser }) {
   const goNext = () => {
     const next = pickNextItem(st, items);
     if (!next) {
-      setFinished(true);
-      setResult(computeResult(st));
-      setPhase("finished");
+      finalizeTest();
     } else {
       setItem(next);
-      noteAsked(next);
     }
   };
 
@@ -109,141 +183,6 @@ function AdaptiveTestContent({ currentUser }) {
       goNext();
     }, 140);
   };
-
-  // Salvataggio su Airtable via API route
-  useEffect(() => {
-    if (!finished || !result) return;
-
-    const { id: storedId, email: storedEmail } = getCurrentUserFromStorage();
-    const token = getToken();
-
-    const completedAtIso = new Date().toISOString();
-    const totalItemsSafe = (() => {
-      try {
-        const obj = result?.askedByLevel || {};
-        return Object.values(obj).reduce((a, b) => a + (Number(b) || 0), 0);
-      } catch {
-        return st?.askedCount || null;
-      }
-    })();
-
-    const askedByLevel = result?.askedByLevel || st?.askedByLevel || {};
-    const studentRecordId = currentUser?.recordId || currentUser?.id || null;
-    const normalizedUserId = studentRecordId || storedId || null;
-    const normalizedEmail = currentUser?.email || storedEmail || null;
-
-    const payload = {
-      userId: normalizedUserId,
-      userEmail: normalizedEmail,
-      studentRecordId,
-      estimatedLevel: result?.estimatedLevel || st?.current || null,
-      confidence: result?.confidence ?? null, // numero 0..1 o 0..100 (server lo normalizza)
-      askedByLevel,
-      askedBySkill: askedBySkillRef.current,
-      totalItems: totalItemsSafe,
-      startedAt: startedAtIsoRef.current,
-      durationSec: Math.round((Date.now() - startedAtTsRef.current) / 1000),
-      completedAt: completedAtIso,
-    };
-
-    const storageKey = "evaluaAdaptiveResults";
-    const entryId = `${payload.startedAt || completedAtIso}-${payload.estimatedLevel || "result"}`;
-
-    if (lastSavedEntryIdRef.current === entryId) {
-      return;
-    }
-    lastSavedEntryIdRef.current = entryId;
-
-    const entry = {
-      id: entryId,
-      estimatedLevel: payload.estimatedLevel || null,
-      confidence: payload.confidence ?? null,
-      totalItems: payload.totalItems ?? null,
-      durationSec: payload.durationSec ?? null,
-      askedByLevel: askedByLevel || {},
-      askedBySkill: payload.askedBySkill || {},
-      startedAt: payload.startedAt,
-      completedAt: completedAtIso,
-      TestId: null,
-      testId: null,
-      CandidateId: null,
-      candidateId: null,
-    };
-
-    const persistEntry = (value) => {
-      const raw = window.localStorage.getItem(storageKey);
-      const parsed = raw ? JSON.parse(raw) : [];
-      const list = Array.isArray(parsed) ? parsed : [];
-      const updated = [value, ...list.filter((it) => it?.id !== value.id)];
-      window.localStorage.setItem(storageKey, JSON.stringify(updated.slice(0, 20)));
-      window.dispatchEvent(new CustomEvent("evalua:adaptive-result-saved", { detail: value }));
-    };
-
-    const enrichEntryWithServerIds = (testId, candidateId) => {
-      try {
-        const raw = window.localStorage.getItem(storageKey);
-        const parsed = raw ? JSON.parse(raw) : [];
-        if (!Array.isArray(parsed)) return;
-        const nextList = parsed.map((item) => {
-          if (item?.id !== entryId) return item;
-          return {
-            ...item,
-            TestId: testId || item?.TestId || null,
-            testId: testId || item?.testId || null,
-            CandidateId: candidateId || item?.CandidateId || null,
-            candidateId: candidateId || item?.candidateId || null,
-          };
-        });
-        window.localStorage.setItem(storageKey, JSON.stringify(nextList.slice(0, 20)));
-        const updatedEntry = nextList.find((it) => it?.id === entryId);
-        if (updatedEntry) {
-          window.dispatchEvent(
-            new CustomEvent("evalua:adaptive-result-saved", { detail: updatedEntry })
-          );
-        }
-      } catch (err) {
-        console.error("adaptive-results enrichment failed:", err);
-      }
-    };
-
-    if (typeof window !== "undefined") {
-      try {
-        persistEntry(entry);
-      } catch (err) {
-        console.error("adaptive-results storage failed:", err);
-      }
-    }
-
-    (async () => {
-      try {
-        const response = await fetch("/api/save-placement", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            "x-user-id": payload.userId ?? "",
-            "x-user-email": payload.userEmail ?? "",
-          },
-          body: JSON.stringify(payload),
-        });
-
-        if (!response.ok) {
-          const text = await response.text().catch(() => "");
-          console.error("save-placement failed:", response.status, text);
-          return;
-        }
-
-        const data = await response.json().catch(() => null);
-        if (!data) return;
-
-        if ((data.testId || data.candidateId) && typeof window !== "undefined") {
-          enrichEntryWithServerIds(data.testId || null, data.candidateId || null);
-        }
-      } catch (err) {
-        console.error("save-placement failed:", err);
-      }
-    })();
-  }, [currentUser, finished, result]);
 
   // ---- UI di stato/caricamento/errore
   if (error) {
@@ -449,7 +388,7 @@ export default function AdaptiveTest() {
         </div>
       }
     >
-      <AdaptiveTestContent currentUser={currentUser} />
+      <AdaptiveTestContent />
     </FeatureGate>
   )
 }

@@ -535,7 +535,7 @@ if (photo?.dataUrl) {
   doc.setFontSize(9)
   doc.setTextColor(BRAND.mute)
   doc.text(
-    'This certificate reports the outcome of an adaptive placement procedure (QUAET). Results indicate the estimated CEFR level for placement purposes.',
+    'This certificate officially records the result of the QUAET adaptive English assessment and certifies the candidate’s CEFR level of English proficiency. The QUAET assessment is developed in accordance with CEFR guidelines and psychometric quality standards.',
     margin + 12,
     noteTop + 22,
     { maxWidth: pageW - margin * 2 - 24 },

@@ -107,15 +107,22 @@ function AdaptiveTestContent() {
         completedAt,
       };
 
-      const token = getToken();
-      await fetch("/api/save-placement", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify(payload),
-      });
+const token = getToken();
+const resp = await fetch("/api/save-placement", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  },
+  body: JSON.stringify(payload),
+});
+
+const data = await resp.json();
+
+// 👉 aggiorniamo finalResult con i codici “belli” generati da Airtable
+if (data?.testId) finalResult.testId = data.testId;
+if (data?.candidateId) finalResult.candidateId = data.candidateId;
+
     } catch (err) {
       console.error("Failed to save placement result", err);
     }

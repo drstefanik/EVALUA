@@ -284,23 +284,12 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
         photoBoxSize,
         photoBoxSize,
       )
-      if (photo?.dataUrl) {
-        doc.setFillColor('#F7F9FB')
-        doc.setDrawColor(BRAND.line)
-        doc.roundedRect(
-          photoX - 4,
-          photoY - 4,
-          photoBoxSize + 8,
-          photoBoxSize + 8,
-          50,
-          50,
-          'FD',
-        )
+if (photo?.dataUrl) {
+  const offsetX = photoX + (photoBoxSize - photo.w) / 2
+  const offsetY = photoY + (photoBoxSize - photo.h) / 2
+  doc.addImage(photo.dataUrl, 'PNG', offsetX, offsetY, photo.w, photo.h)
+}
 
-        const offsetX = photoX + (photoBoxSize - photo.w) / 2
-        const offsetY = photoY + (photoBoxSize - photo.h) / 2
-        doc.addImage(photo.dataUrl, 'PNG', offsetX, offsetY, photo.w, photo.h)
-      }
     } catch (err) {
       console.error('Unable to load student photo for certificate', err)
       doc.setFillColor('#F7F9FB')

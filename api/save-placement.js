@@ -2,6 +2,34 @@
 import { verifyJWT } from "../src/util.js";
 import { tbl } from "../src/airtable.js";
 
+function generateTestId() {
+  const now = new Date();
+  const romeDate = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Rome",
+    year: "2-digit",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(now);
+  const [day, month, year] = romeDate.split("/");
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let slug = "";
+  for (let i = 0; i < 3; i += 1) {
+    const index = Math.floor(Math.random() * alphabet.length);
+    slug += alphabet[index];
+  }
+  return `QAT-${year}${month}${day}-${slug}`;
+}
+
+function generateCandidateId() {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let slug = "";
+  for (let i = 0; i < 6; i += 1) {
+    const index = Math.floor(Math.random() * alphabet.length);
+    slug += alphabet[index];
+  }
+  return `CND-${slug}`;
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -67,6 +95,10 @@ export default async function handler(req, res) {
     // completedAt: è computed in Airtable, non lo inviamo
   } = body;
 
+  const finalTestId = (testId && String(testId).trim()) || generateTestId();
+  const finalCandidateId =
+    (candidateId && String(candidateId).trim()) || generateCandidateId();
+
   try {
     // ---- Creazione record su Airtable ----
     const fieldsToCreate = {
@@ -78,28 +110,21 @@ export default async function handler(req, res) {
       TotalItems: typeof totalItems === "number" ? totalItems : null,
       StartedAt: startedAt || new Date().toISOString(),
       DurationSec: typeof durationSec === "number" ? durationSec : null,
+      TestId: finalTestId,
+      CandidateId: finalCandidateId,
     };
 
     if (typeof userId === "string" && userId.startsWith("rec")) {
       fieldsToCreate.Student = [userId];
     }
 
-    // Se vuoi comunque permettere override manuale da client:
-    if (testId) fieldsToCreate.TestId = testId;
-    if (candidateId) fieldsToCreate.CandidateId = candidateId;
-
     const record = await table.create(fieldsToCreate);
-
-    // Qui leggiamo i valori "belli" (QAT-… / CND-…) dai campi Airtable
-    const savedFields = record.fields || {};
-    const finalTestId = savedFields.TestId || testId || "";
-    const finalCandidateId = savedFields.CandidateId || candidateId || "";
 
     // ---- Response verso il front-end ----
     return res.status(200).json({
       ok: true,
-      id: record.id,              // recordId Airtable (se ti serve)
-      testId: finalTestId,        // <-- usa questo nel PDF
+      id: record.id, // recordId Airtable (se ti serve)
+      testId: finalTestId, // <-- usa questo nel PDF
       candidateId: finalCandidateId, // <-- e questo
     });
   } catch (err) {

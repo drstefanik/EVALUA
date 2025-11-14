@@ -59,7 +59,7 @@ export default async function handler(req, res) {
     totalItems,
     startedAt,
     durationSec,
-    completedAt,
+    // completedAt,  // <– non lo usiamo perché il campo è computed in Airtable
   } = body;
 
   try {
@@ -74,7 +74,7 @@ export default async function handler(req, res) {
       TotalItems: typeof totalItems === "number" ? totalItems : null,
       StartedAt: startedAt || new Date().toISOString(),
       DurationSec: typeof durationSec === "number" ? durationSec : null,
-      CompletedAt: completedAt || null,
+      // NIENTE CompletedAt qui: è un campo formula/computed in Airtable
     });
 
     return res.status(200).json({

@@ -573,9 +573,9 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     console.error('QR generation failed', error)
   }
 
-  // Card in basso a destra
+    // Card in basso a destra
   const vCardW = 280
-  const vCardH = 132
+  const vCardH = 148 // un filo più alta per dare aria al QR
   const vCardX = pageW - margin - vCardW
   const vCardY = sigY - 30
 
@@ -590,14 +590,15 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   doc.setTextColor(BRAND.primary)
   doc.text('Online verification', vCardX + vCardPad, vCardY + 18)
 
-  const textMaxW =
-    vCardW - vCardPad * 2 - (qrDataUrl ? 90 : 0) - (qrDataUrl ? 8 : 0)
+  // ora il testo usa tutta la larghezza della card
+  const textMaxW = vCardW - vCardPad * 2
   let tvY = vCardY + 34
 
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(9)
   doc.setTextColor(BRAND.text)
 
+  // codice tutto su una riga (senza riservare spazio al QR)
   const rCode = textInBox(
     doc,
     `Code: ${verificationCode}`,
@@ -609,7 +610,7 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
   tvY = rCode.nextY + 4
 
   doc.setTextColor(BRAND.mute)
-  textInBox(
+  const rVerify = textInBox(
     doc,
     'Verify at: www.evaluaeducation.org/verify',
     vCardX + vCardPad,
@@ -617,12 +618,28 @@ export async function generateCertificatePDF({ user = {}, result = {} }) {
     textMaxW,
     { size: 9, color: BRAND.mute, lineHeight: 11 },
   )
+  tvY = rVerify.nextY
 
   if (qrDataUrl) {
-    const qrSize = 90
+    const qrSize = 80
     const qrX = vCardX + vCardW - vCardPad - qrSize
-    const qrY = vCardY + (vCardH - qrSize) / 2
+    // mettiamo il QR sotto il testo, con un piccolo margine
+    const minQrY = tvY + 10
+    const maxQrY = vCardY + vCardH - vCardPad - qrSize
+    const qrY = Math.min(maxQrY, minQrY)
+
     doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize)
+    // Testo sotto il QR
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(8)
+    doc.setTextColor(BRAND.mute)
+
+    const caption = "Scan the QR code to verify"
+    const captionX = qrX + qrSize / 2  // centro del QR
+    const captionY = qrY + qrSize + 10 // un po' sotto
+
+    doc.text(caption, captionX, captionY, { align: 'center' })
+  }
   }
 
   // Footer

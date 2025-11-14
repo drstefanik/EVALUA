@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { fetchCurrentUser } from '../api.js'
 import { generateCertificatePDF } from '../utils/certPdf.js'
 
 function formatValue(value) {
@@ -37,54 +38,138 @@ export default function MyResults({ results, currentUser }) {
       // ---- User data (ID, anagrafica) ----
       const local = getLocalUser()
 
+      const profileParams = {}
+      const preferredId =
+        currentUser?.recordId || currentUser?.id || local.id || undefined
+      const preferredEmail = currentUser?.email || local.email || undefined
+      if (preferredId) profileParams.id = preferredId
+      if (preferredEmail) profileParams.email = preferredEmail
+
+      let latestUser = null
+      try {
+        latestUser = await fetchCurrentUser(profileParams)
+      } catch (profileError) {
+        console.error(
+          'Unable to refresh student profile for certificate',
+          profileError
+        )
+      }
+
+      const sourceUser = latestUser || currentUser || {}
+
       // CandidateId "bello" generato in Placements (CAND-XXXX)
       const candidateIdResolved =
         attempt.CandidateId ||
         attempt.candidateId ||
+        sourceUser?.candidateId ||
+        sourceUser?.CandidateId ||
         currentUser?.candidateId ||
         currentUser?.CandidateId ||
+        sourceUser?.id ||
+        sourceUser?.recordId ||
         currentUser?.id ||
         currentUser?.recordId ||
         local.id ||
         null
 
+      const studentPhotoArray = Array.isArray(sourceUser?.student_photo)
+        ? sourceUser.student_photo
+        : Array.isArray(currentUser?.student_photo)
+        ? currentUser.student_photo
+        : []
+
+      const recordId =
+        pickField(
+          sourceUser?.recordId,
+          sourceUser?.id,
+          currentUser?.recordId,
+          currentUser?.id,
+          local.id
+        ) || null
+
+      const nameFromSource = pickField(
+        sourceUser?.fullName,
+        sourceUser?.name,
+        [sourceUser?.firstName, sourceUser?.lastName]
+          .filter(Boolean)
+          .join(' ') || undefined,
+        currentUser?.fullName,
+        currentUser?.name,
+        currentUser?.displayName,
+        sourceUser?.email,
+        currentUser?.email,
+        'Candidate'
+      )
+
+      const studentPhotoUrl =
+        pickField(
+          sourceUser?.studentPhotoUrl,
+          currentUser?.studentPhotoUrl,
+          studentPhotoArray[0]?.thumbnails?.large?.url,
+          studentPhotoArray[0]?.url,
+          null
+        ) || undefined
+
       const userPayload = {
+        ...sourceUser,
         // usato dal PDF per "Candidate ID" se non arriva da result
-        id: candidateIdResolved || local.id || '',
+        id: pickField(candidateIdResolved, recordId, local.id, '') || '',
+        recordId,
         candidateId: candidateIdResolved || undefined,
-        fullName:
-          currentUser?.name ||
-          currentUser?.fullName ||
-          currentUser?.displayName ||
-          currentUser?.email ||
-          'Candidate',
-        email: currentUser?.email || local.email || '',
-        nationality: currentUser?.nationality || currentUser?.Nationality || '-',
-        dateOfBirth: currentUser?.dateOfBirth || currentUser?.DateOfBirth || null,
+        fullName: nameFromSource,
+        email: pickField(sourceUser?.email, currentUser?.email, local.email, '') || '',
+        nationality:
+          pickField(
+            sourceUser?.nationality,
+            currentUser?.nationality,
+            currentUser?.Nationality,
+            '-'
+          ) || '-',
+        dateOfBirth:
+          pickField(
+            sourceUser?.dateOfBirth,
+            currentUser?.dateOfBirth,
+            currentUser?.DateOfBirth,
+            null
+          ) || null,
         placeOfBirth:
           pickField(
+            sourceUser?.placeOfBirth,
+            sourceUser?.place_birth,
             currentUser?.placeOfBirth,
             currentUser?.place_birth,
-            currentUser?.PlaceOfBirth
+            currentUser?.PlaceOfBirth,
+            ''
           ) || '',
         countryOfBirth:
           pickField(
+            sourceUser?.countryOfBirth,
+            sourceUser?.country_birth,
             currentUser?.countryOfBirth,
             currentUser?.country_birth,
-            currentUser?.CountryOfBirth
+            currentUser?.CountryOfBirth,
+            ''
           ) || '',
         identificationDocument:
           pickField(
+            sourceUser?.identificationDocument,
+            sourceUser?.identification_document,
             currentUser?.identificationDocument,
             currentUser?.identification_document,
-            currentUser?.IdentificationDocument
+            currentUser?.IdentificationDocument,
+            ''
           ) || '',
         documentNumber:
           pickField(
+            sourceUser?.documentNumber,
+            sourceUser?.document_number,
             currentUser?.documentNumber,
             currentUser?.document_number,
-            currentUser?.DocumentNumber
+            currentUser?.DocumentNumber,
+            ''
           ) || '',
+        student_photo: studentPhotoArray,
+        studentPhotoUrl,
       }
 
       // ---- Result data (normalizzato per il PDF) ----
@@ -131,10 +216,7 @@ export default function MyResults({ results, currentUser }) {
       }
 
       const certificateRequest = {
-        studentId:
-          currentUser?.recordId ||
-          currentUser?.id ||
-          null,
+        studentId: recordId,
         name: userPayload.fullName,
         testName:
           attempt.testName ||

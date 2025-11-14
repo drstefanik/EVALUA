@@ -107,6 +107,16 @@ export default async function handler(req, res) {
       pickField(f, ["last_name", "Last name", "Last Name", "LastName"]) || "";
     const phone = pickField(f, ["phone", "Phone", "mobile", "Mobile"]) || "";
     const studentPhoto = Array.isArray(f.student_photo) ? f.student_photo : [];
+    const studentPhotoUrl = (() => {
+      if (!studentPhoto.length) return null;
+      const first = studentPhoto[0] || {};
+      return (
+        first?.thumbnails?.large?.url ||
+        first?.thumbnails?.full?.url ||
+        first?.url ||
+        null
+      );
+    })();
 
     res.json({
       id: record.id,
@@ -123,6 +133,7 @@ export default async function handler(req, res) {
       identificationDocument,
       documentNumber,
       student_photo: studentPhoto,
+      studentPhotoUrl,
       features: {
         courses: Boolean(f.enable_courses),
         quaet: Boolean(f.enable_quaet),

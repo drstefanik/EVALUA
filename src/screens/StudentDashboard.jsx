@@ -13,7 +13,6 @@ import PersonalDetails from '../components/PersonalDetails.jsx'
 import CollapsibleSection from '../components/CollapsibleSection.jsx'
 
 const API_BASE = import.meta.env.VITE_AUTH_API ?? '/api'
-const ADAPTIVE_RESULTS_STORAGE_KEY = 'evaluaAdaptiveResults'
 
 /* ----------------------------- helpers ----------------------------- */
 function relationToId(value) {
@@ -133,7 +132,6 @@ export default function StudentDashboard() {
   const [selectedFolderId, setSelectedFolderId] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [adaptiveResults, setAdaptiveResults] = useState([])
   const [latestResult, setLatestResult] = useState(null)
 
   const { progress, upsert } = useProgress(token, studentId)
@@ -370,196 +368,6 @@ export default function StudentDashboard() {
     }
   }, [])
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return undefined
-
-    const loadResults = () => {
-      try {
-        const raw = window.localStorage.getItem(ADAPTIVE_RESULTS_STORAGE_KEY)
-        if (!raw) {
-          setAdaptiveResults([])
-          return
-        }
-        const parsed = JSON.parse(raw)
-        if (!Array.isArray(parsed)) {
-          setAdaptiveResults([])
-          return
-        }
-        const normalized = parsed
-          .map((entry, index) => {
-            const startedAt = entry?.startedAt || entry?.StartedAt || null
-            const completedAt =
-              entry?.completedAt || entry?.CompletedAt || startedAt || null
-            const askedByLevel =
-              typeof entry?.askedByLevel === 'object' &&
-              entry?.askedByLevel !== null
-                ? entry.askedByLevel
-                : typeof entry?.AskedByLevel === 'object' &&
-                  entry?.AskedByLevel !== null
-                ? entry.AskedByLevel
-                : {}
-            const totalItemsValue =
-              typeof entry?.totalItems === 'number'
-                ? entry.totalItems
-                : typeof entry?.TotalItems === 'number'
-                ? entry.TotalItems
-                : null
-            const durationValue =
-              typeof entry?.durationSec === 'number'
-                ? entry.durationSec
-                : typeof entry?.DurationSec === 'number'
-                ? entry.DurationSec
-                : null
-            const confidenceRaw =
-              typeof entry?.confidence === 'number'
-                ? entry.confidence
-                : typeof entry?.Confidence === 'number'
-                ? entry.Confidence
-                : null
-            const estimatedLevelValue =
-              entry?.estimatedLevel || entry?.EstimatedLevel || null
-            const testId = entry?.TestId || entry?.testId || null
-            const candidateId = entry?.CandidateId || entry?.candidateId || null
-
-            return {
-              ...entry,
-              id: entry?.id || `${startedAt || 'attempt'}-${index}`,
-              estimatedLevel: estimatedLevelValue,
-              EstimatedLevel: estimatedLevelValue,
-              confidence: confidenceRaw,
-              Confidence: confidenceRaw,
-              totalItems: totalItemsValue,
-              TotalItems: totalItemsValue,
-              durationSec: durationValue,
-              DurationSec: durationValue,
-              askedByLevel,
-              startedAt,
-              completedAt,
-              CompletedAt: completedAt,
-              TestId: testId,
-              testId: testId,
-              CandidateId: candidateId,
-              candidateId: candidateId,
-            }
-          })
-          .sort((a, b) => {
-            const aTime = new Date(
-              a.completedAt || a.startedAt || 0
-            ).getTime()
-            const bTime = new Date(
-              b.completedAt || b.startedAt || 0
-            ).getTime()
-            return bTime - aTime
-          })
-        setAdaptiveResults(normalized)
-      } catch {
-        setAdaptiveResults([])
-      }
-    }
-
-    loadResults()
-
-    const handleStorage = (event) => {
-      if (event.key === ADAPTIVE_RESULTS_STORAGE_KEY) loadResults()
-    }
-    const handleCustom = () => loadResults()
-
-    window.addEventListener('storage', handleStorage)
-    window.addEventListener('evalua:adaptive-result-saved', handleCustom)
-
-    return () => {
-      window.removeEventListener('storage', handleStorage)
-      window.removeEventListener('evalua:adaptive-result-saved', handleCustom)
-    }
-  }, [])
-
-  const formatDateTime = useCallback((value) => {
-    if (!value) return '—'
-    try {
-      const date = new Date(value)
-      if (Number.isNaN(date.getTime())) return '—'
-      return date.toLocaleString(undefined, {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      })
-    } catch {
-      return '—'
-    }
-  }, [])
-
-  const formatDuration = useCallback((seconds) => {
-    if (typeof seconds !== 'number' || Number.isNaN(seconds)) return '—'
-    const minutes = Math.floor(seconds / 60)
-    const remaining = seconds % 60
-    const minLabel = minutes ? `${minutes}m` : ''
-    const secLabel = `${remaining}s`
-    return `${minLabel}${minLabel ? ' ' : ''}${secLabel}`.trim()
-  }, [])
-
-  const resultsForTable = useMemo(() => {
-    return adaptiveResults.map((attempt, index) => {
-      const completed = attempt.completedAt || attempt.startedAt || null
-      const confidenceRaw =
-        typeof attempt.confidence === 'number'
-          ? attempt.confidence
-          : typeof attempt.Confidence === 'number'
-          ? attempt.Confidence
-          : null
-      const confidencePct =
-        typeof confidenceRaw === 'number'
-          ? confidenceRaw > 1
-            ? Math.round(confidenceRaw)
-            : Math.round(confidenceRaw * 100)
-          : null
-      const totalItemsValue =
-        typeof attempt.totalItems === 'number'
-          ? attempt.totalItems
-          : typeof attempt.TotalItems === 'number'
-          ? attempt.TotalItems
-          : null
-      const durationSeconds =
-        typeof attempt.durationSec === 'number'
-          ? attempt.durationSec
-          : typeof attempt.DurationSec === 'number'
-          ? attempt.DurationSec
-          : null
-      const testId = attempt.TestId ?? attempt.testId ?? null
-      const candidateId =
-        attempt.CandidateId ?? attempt.candidateId ?? null
-      const estimatedLevelValue =
-        attempt.estimatedLevel ??
-        attempt.EstimatedLevel ??
-        attempt.level ??
-        null
-
-      return {
-        ...attempt,
-        id: attempt.id || `result-${index}`,
-        level: estimatedLevelValue || '—',
-        estimatedLevel: estimatedLevelValue,
-        EstimatedLevel: estimatedLevelValue,
-        confidence: confidencePct,
-        Confidence: confidencePct,
-        confidenceLabel:
-          confidencePct !== null ? `${confidencePct}%` : '—',
-        items: totalItemsValue !== null ? totalItemsValue : '—',
-        totalItems: totalItemsValue,
-        TotalItems: totalItemsValue,
-        duration: durationSeconds,
-        durationSec: durationSeconds,
-        DurationSec: durationSeconds,
-        durationLabel: formatDuration(durationSeconds),
-        completedAt: completed,
-        completedAtLabel: formatDateTime(completed),
-        CompletedAt: completed,
-        TestId: testId,
-        testId: testId,
-        CandidateId: candidateId,
-        candidateId: candidateId,
-      }
-    })
-  }, [adaptiveResults, formatDateTime, formatDuration])
-
   /* ------------------------------ UI ------------------------------ */
   return (
     <div className="min-h-screen bg-surface-muted">
@@ -791,7 +599,7 @@ export default function StudentDashboard() {
               title="My Results"
               defaultOpen={false}
             >
-              <MyResults results={resultsForTable} currentUser={currentUser} />
+              <MyResults currentUser={currentUser} />
             </CollapsibleSection>
           </div>
         </FeatureGate>

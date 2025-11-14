@@ -1,10 +1,120 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { fetchCurrentUser } from '../api.js'
 import { generateCertificatePDF } from '../utils/certPdf.js'
 
 function formatValue(value) {
   if (value === null || value === undefined || value === '') return '—'
   return value
+}
+
+function formatDateTime(value) {
+  if (!value) return '—'
+  try {
+    const date = new Date(value)
+    if (Number.isNaN(date.getTime())) return '—'
+    return date.toLocaleString(undefined, {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    })
+  } catch {
+    return '—'
+  }
+}
+
+function formatDuration(seconds) {
+  if (typeof seconds !== 'number' || Number.isNaN(seconds)) return '—'
+  const minutes = Math.floor(seconds / 60)
+  const remaining = Math.round(seconds % 60)
+  const minLabel = minutes ? `${minutes}m` : ''
+  const secLabel = `${remaining}s`
+  return `${minLabel}${minLabel ? ' ' : ''}${secLabel}`.trim()
+}
+
+function resolveConfidence(value) {
+  if (typeof value === 'number' && !Number.isNaN(value)) {
+    const pct = value > 1 ? Math.round(value) : Math.round(value * 100)
+    return {
+      raw: value,
+      label: `${pct}%`,
+      pct,
+    }
+  }
+
+  if (typeof value === 'string' && value.trim() !== '') {
+    return {
+      raw: value.trim(),
+      label: value.trim(),
+      pct: null,
+    }
+  }
+
+  return {
+    raw: null,
+    label: '—',
+    pct: null,
+  }
+}
+
+function normalizeResult(entry, index) {
+  const completedAt =
+    entry?.completedAt ||
+    entry?.CompletedAt ||
+    entry?.startedAt ||
+    entry?.StartedAt ||
+    null
+
+  const estimatedLevel =
+    entry?.estimatedLevel ||
+    entry?.EstimatedLevel ||
+    entry?.level ||
+    null
+
+  const confidenceValue =
+    entry?.confidence ??
+    entry?.Confidence ??
+    (typeof entry?.confidencePct === 'number' ? entry.confidencePct : null)
+
+  const confidence = resolveConfidence(confidenceValue)
+
+  const totalItems =
+    entry?.totalItems ?? entry?.TotalItems ?? entry?.items ?? null
+
+  const durationSeconds =
+    entry?.durationSec ?? entry?.DurationSec ?? entry?.duration ?? null
+
+  const durationValue =
+    typeof durationSeconds === 'number' && !Number.isNaN(durationSeconds)
+      ? durationSeconds
+      : null
+
+  const candidateId = entry?.candidateId ?? entry?.CandidateId ?? null
+  const testId = entry?.testId ?? entry?.TestId ?? null
+
+  return {
+    ...entry,
+    id: entry?.id || entry?.recordId || entry?._id || `result-${index}`,
+    completedAt,
+    completedAtLabel: formatDateTime(completedAt),
+    CompletedAt: completedAt,
+    StartedAt: entry?.startedAt || entry?.StartedAt || null,
+    estimatedLevel,
+    EstimatedLevel: estimatedLevel,
+    level: estimatedLevel ?? '—',
+    confidence: confidence.raw,
+    Confidence: confidence.raw,
+    confidenceLabel: confidence.label,
+    confidencePct: confidence.pct,
+    totalItems,
+    TotalItems: totalItems,
+    items: totalItems ?? '—',
+    durationSec: durationValue,
+    DurationSec: durationValue,
+    durationLabel: formatDuration(durationValue),
+    candidateId,
+    CandidateId: candidateId,
+    testId,
+    TestId: testId,
+  }
 }
 
 function pickField(...values) {
@@ -27,8 +137,55 @@ function getLocalUser() {
   }
 }
 
-export default function MyResults({ results, currentUser }) {
+export default function MyResults({ currentUser }) {
+  const [results, setResults] = useState([])
+  const [loading, setLoading] = useState(false)
   const [downloadingId, setDownloadingId] = useState(null)
+
+  useEffect(() => {
+    let active = true
+
+    const fetchHistory = async () => {
+      setLoading(true)
+      try {
+        const response = await fetch('/api/student/placements-history', {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+          },
+        })
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`)
+        }
+
+        const payload = await response.json()
+        if (active && payload?.ok && Array.isArray(payload.results)) {
+          const normalized = payload.results.map((entry, index) =>
+            normalizeResult(entry, index)
+          )
+          setResults(normalized)
+        } else if (active) {
+          setResults([])
+        }
+      } catch (error) {
+        if (active) {
+          console.error('Unable to load placement history', error)
+          setResults([])
+        }
+      } finally {
+        if (active) {
+          setLoading(false)
+        }
+      }
+    }
+
+    fetchHistory()
+
+    return () => {
+      active = false
+    }
+  }, [])
 
   const download = async (attempt) => {
     if (!attempt) return
@@ -260,8 +417,6 @@ export default function MyResults({ results, currentUser }) {
     }
   }
 
-  const hasResults = Array.isArray(results) && results.length > 0
-
   return (
     <div
       id="my-results"
@@ -272,25 +427,39 @@ export default function MyResults({ results, currentUser }) {
         Track the outcomes of your adaptive assessments and monitor your progress toward certification.
       </p>
 
-      {!hasResults ? (
-        <div className="mt-6 rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-5 text-sm text-slate-600 dark:border-white/10 dark:bg-[#111a33] dark:text-slate-300">
-          No adaptive test results available yet. Launch your first attempt with the QUAET Adaptive Test above.
-        </div>
-      ) : (
-        <div className="mt-6 overflow-x-auto">
-          <table className="min-w-full border-collapse text-left text-sm">
-            <thead>
-              <tr className="border-b border-slate-200 text-slate-600 dark:border-slate-700 dark:text-slate-300">
-                <th className="px-3 py-2 font-semibold">Completed</th>
-                <th className="px-3 py-2 font-semibold">Estimated level</th>
-                <th className="px-3 py-2 font-semibold">Confidence</th>
-                <th className="px-3 py-2 font-semibold">Items</th>
-                <th className="px-3 py-2 font-semibold">Duration</th>
-                <th className="px-3 py-2 font-semibold text-right">Certificate</th>
+      <div className="mt-6 overflow-x-auto">
+        <table className="min-w-full border-collapse text-left text-sm">
+          <thead>
+            <tr className="border-b border-slate-200 text-slate-600 dark:border-slate-700 dark:text-slate-300">
+              <th className="px-3 py-2 font-semibold">Completed</th>
+              <th className="px-3 py-2 font-semibold">Estimated level</th>
+              <th className="px-3 py-2 font-semibold">Confidence</th>
+              <th className="px-3 py-2 font-semibold">Items</th>
+              <th className="px-3 py-2 font-semibold">Duration</th>
+              <th className="px-3 py-2 font-semibold text-right">Certificate</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="px-3 py-4 text-center text-slate-600 dark:text-slate-300"
+                >
+                  Loading results…
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {results.map((attempt) => (
+            ) : results.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="px-3 py-4 text-center text-slate-600 dark:text-slate-300"
+                >
+                  You have no results yet.
+                </td>
+              </tr>
+            ) : (
+              results.map((attempt) => (
                 <tr
                   key={attempt.id}
                   className="border-b border-slate-100 last:border-none dark:border-slate-800"
@@ -333,11 +502,11 @@ export default function MyResults({ results, currentUser }) {
                     </button>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

@@ -24,7 +24,16 @@ export async function findByEmailIn(tableName, email) {
 const ADMIN_TABLE = process.env.AIRTABLE_TABLE_ADMINS || "Admin";
 
 export async function findAdminByEmail(email) {
-  return findByEmailIn(ADMIN_TABLE, email);
+  const admin = await findByEmailIn(ADMIN_TABLE, email);
+  if (!admin) return null;
+
+  return {
+    id: admin.id,
+    email: admin.email,
+    full_name: admin.full_name,
+    password_hash: admin.password_hash,
+    status: admin.status,
+  };
 }
 
 export async function findSchoolByEmail(email) {

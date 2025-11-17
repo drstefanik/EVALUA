@@ -13,6 +13,9 @@ import SignupStudent from './screens/SignupStudent.jsx'
 import AdminDashboard from './screens/AdminDashboard.jsx'
 import SchoolDashboard from './screens/SchoolDashboard.jsx'
 import StudentDashboard from './screens/StudentDashboard.jsx'
+import AdminLayout from './pages/admin/AdminLayout.jsx'
+import AdminAnalytics from './pages/admin/AdminAnalytics.jsx'
+import Schools from './pages/admin/Schools.jsx'
 import Logout from './screens/Logout.jsx'
 import ForgotPassword from './screens/ForgotPassword.jsx'
 import About from './pages/public/About.jsx'
@@ -62,7 +65,16 @@ const router = createBrowserRouter([
       // ✅ Aree protette
       {
         element: <ProtectedRoute allowedRoles={['admin']} />,
-        children: [{ path: '/admin', element: <AdminDashboard /> }]
+        children: [
+          {
+            element: <AdminLayout />,
+            children: [
+              { path: '/admin', element: <AdminDashboard /> },
+              { path: '/admin/analytics', element: <AdminAnalytics /> },
+              { path: '/admin/schools', element: <Schools /> },
+            ],
+          },
+        ],
       },
       {
         element: <ProtectedRoute allowedRoles={['school']} />,

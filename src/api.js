@@ -146,6 +146,17 @@ export async function login({ email, password }) {
   })
 }
 
+export async function fetchAdminAnalytics({ from, to } = {}) {
+  const params = new URLSearchParams()
+  if (from) params.append('from', from)
+  if (to) params.append('to', to)
+
+  const query = params.toString()
+  const path = query ? `/api/admin/analytics?${query}` : '/api/admin/analytics'
+
+  return request(path, { withAuth: true })
+}
+
 export async function signupSchool({ name, email, password, otp_code }) {
   return request('/api/auth/signup-school', {
     method: 'POST',

@@ -21,8 +21,10 @@ export async function findByEmailIn(tableName, email) {
   });
 }
 
+const ADMIN_TABLE = process.env.AIRTABLE_TABLE_ADMINS || "Admin";
+
 export async function findAdminByEmail(email) {
-  return findByEmailIn("Admin", email);
+  return findByEmailIn(ADMIN_TABLE, email);
 }
 
 export async function findSchoolByEmail(email) {

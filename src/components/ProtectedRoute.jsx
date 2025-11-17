@@ -7,14 +7,16 @@ export default function ProtectedRoute({ allowedRoles }) {
   const session = getStoredSession()
   const token = session?.token
   const role = session?.role
+  const wantsAdmin = allowedRoles?.includes('admin')
+  const loginPath = wantsAdmin ? '/login-admin' : '/login-student'
 
   if (!token) {
-    return <Navigate to="/login-student" state={{ from: location }} replace />
+    return <Navigate to={loginPath} state={{ from: location }} replace />
   }
 
   if (allowedRoles && allowedRoles.length > 0) {
     if (!role || !allowedRoles.includes(role)) {
-      const fallback = role ? getDashboardPath(role) : '/login-student'
+      const fallback = role ? getDashboardPath(role) : loginPath
       return <Navigate to={fallback} replace />
     }
   }

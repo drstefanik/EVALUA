@@ -153,6 +153,13 @@ export async function loginAdmin({ email, password }) {
   })
 }
 
+export async function signupAdmin(payload) {
+  return request('/api/auth/signup-admin', {
+    method: 'POST',
+    body: payload,
+  })
+}
+
 export async function fetchAdminAnalytics({ from, to } = {}) {
   const params = new URLSearchParams()
   if (from) params.append('from', from)

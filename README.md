@@ -16,3 +16,10 @@ npm install
 cp .env.example .env
 npm run build && npm run preview
 ```
+
+### Environment
+
+Add the following secrets to your `.env` (and hosting provider) to enable admin provisioning:
+
+- `AIRTABLE_TABLE_ADMINS` – Airtable table name for administrators (default `Admin`).
+- `ADMIN_SIGNUP_SECRET` – server-side code required by the hidden `/admin-setup` page to create admin accounts.

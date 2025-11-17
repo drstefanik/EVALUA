@@ -146,6 +146,13 @@ export async function login({ email, password }) {
   })
 }
 
+export async function loginAdmin({ email, password }) {
+  return request('/api/auth/login-admin', {
+    method: 'POST',
+    body: { email, password },
+  })
+}
+
 export async function fetchAdminAnalytics({ from, to } = {}) {
   const params = new URLSearchParams()
   if (from) params.append('from', from)

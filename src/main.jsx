@@ -10,6 +10,7 @@ import Home from './screens/Home.jsx'
 import LoginStudent from './screens/Login.jsx'
 import SignupSchool from './screens/SignupSchool.jsx'
 import SignupStudent from './screens/SignupStudent.jsx'
+import LoginAdmin from './pages/auth/LoginAdmin.jsx'
 import AdminDashboard from './screens/AdminDashboard.jsx'
 import SchoolDashboard from './screens/SchoolDashboard.jsx'
 import StudentDashboard from './screens/StudentDashboard.jsx'
@@ -51,6 +52,7 @@ const router = createBrowserRouter([
       { path: '/verify', element: <Verify /> },
       { path: '/login', element: <Navigate to="/login-student" replace /> },
       { path: '/login-student', element: <LoginStudent /> },
+      { path: '/login-admin', element: <LoginAdmin /> },
       { path: '/signup-school', element: <SignupSchool /> },
       { path: '/signup-student', element: <SignupStudent /> },
       { path: '/logout', element: <Logout /> },

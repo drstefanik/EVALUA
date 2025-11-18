@@ -23,14 +23,6 @@ export default function AdminLayout() {
           >
             Analytics
           </NavLink>
-          <NavLink
-            to='/admin/schools'
-            className={({ isActive }) =>
-              `block px-3 py-2 rounded-lg transition hover:bg-slate-100 ${isActive ? 'bg-slate-100 font-semibold' : ''}`
-            }
-          >
-            Schools &amp; OTPs
-          </NavLink>
         </div>
       </aside>
       <main className='md:col-span-4'>

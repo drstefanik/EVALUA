@@ -17,7 +17,6 @@ import SchoolDashboard from './screens/SchoolDashboard.jsx'
 import StudentDashboard from './screens/StudentDashboard.jsx'
 import AdminLayout from './pages/admin/AdminLayout.jsx'
 import AdminAnalytics from './pages/admin/AdminAnalytics.jsx'
-import Schools from './pages/admin/Schools.jsx'
 import Logout from './screens/Logout.jsx'
 import ForgotPassword from './screens/ForgotPassword.jsx'
 import About from './pages/public/About.jsx'
@@ -75,7 +74,6 @@ const router = createBrowserRouter([
             children: [
               { path: '/admin', element: <AdminDashboard /> },
               { path: '/admin/analytics', element: <AdminAnalytics /> },
-              { path: '/admin/schools', element: <Schools /> },
             ],
           },
         ],
